@@ -1,0 +1,54 @@
+{
+  "name": "match-iz",
+  "version": "1.0.0",
+  "description": "A tiny pattern-matching library in the style of the TC39 proposal",
+  "author": "Conan Theobald",
+  "license": "MIT",
+  "keywords": [
+    "pattern",
+    "matching",
+    "switch",
+    "conditional",
+    "when",
+    "otherwise"
+  ],
+  "main": "./dist/match-iz.cjs.js",
+  "module": "dist/match-iz.esm.js",
+  "exports": {
+    "default": "./dist/match-iz.cjs.js",
+    "import": "./dist/match-iz.esm.js",
+    "browser": "./dist/match-iz.browser.js",
+    "require": "./dist/match-iz.cjs.js"
+  },
+  "files": [
+    "dist/**/*.js",
+    "CHANGELOG.md",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=10"
+  },
+  "homepage": "https://github.com/shuckster/match-iz",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shuckster/match-iz"
+  },
+  "bugs": {
+    "url": "https://github.com/shuckster/match-iz/issues",
+    "email": "bugs+match-iz@conans.co.uk"
+  },
+  "scripts": {
+    "test": "node ./tests/run.js",
+    "build": "pnpm run build:esbuild",
+    "build:clean": "rimraf dist/; mkdir -p dist/",
+    "build:all": "pnpm run build:clean ; pnpm run build",
+    "build:esbuild": "node ./build-config/esbuild.js"
+  },
+  "devDependencies": {
+    "compose-paths": "^1.0.8",
+    "esbuild": "^0.12.15",
+    "eslint": "^7.30.0",
+    "rimraf": "^3.0.2"
+  }
+}
