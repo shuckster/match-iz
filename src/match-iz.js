@@ -32,7 +32,7 @@ const when = pattern => handler => value => ({
   value: () =>
     !isFunction(handler)
       ? handler
-      : isRegExp(pattern)
+      : isString(value) && isRegExp(pattern)
       ? handler(value.match(pattern))
       : handler(value)
 })
@@ -50,7 +50,7 @@ const valueMatches = (pattern, value) =>
 const isEqual = (left, right) =>
   isFunction(left)
     ? left(right)
-    : isRegExp(left)
+    : isString(right) && isRegExp(left)
     ? left.test(right)
     : left === right
 
