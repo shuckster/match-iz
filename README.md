@@ -41,21 +41,21 @@ $ pnpm i match-iz
 import { match, when, against, otherwise } from 'match-iz'
 ```
 
-The library is about 100 SLOC, just over 1.2K minified.
+The library is about 100 SLOC, just over 1.5K minified.
 
 ## Examples
 
 All examples assume the following header:
 
 ```js
-import * as lib from 'match-iz'
-const { match, when, otherwise } = lib
+import * as matchiz from 'match-iz'
+const { match, when, otherwise } = matchiz
 ```
 
 ### Front-end component:
 
 ```jsx
-const { spread, defined } = lib
+const { spread, defined } = matchiz
 
 function AccountPage(props) {
   const { loading, error, data } = spread(defined)
@@ -72,30 +72,31 @@ function AccountPage(props) {
 ### Fetching:
 
 ```js
-const { gte, inRange } = lib
+const { gte, inRange } = matchiz
 
 async function getJsonLength() {
   const res = await fetch('/json')
   return match(res)(
-    // Object prop match + destructuring return value
-    when({ status: 200 })(({ headers: { 'Content-Length': s } = {} }) => {
-      return `size is ${s}`
-    }),
+    // when res.status === 200, get res.headers."Content-Length"
+    when({ status: 200 })
+      (({ headers: { 'Content-Length': s } = {} }) => {
+        return `size is ${s}`
+      }),
 
-    // Custom predicate
+    // Custom "pattern" predicate
     when(({ status }) => status >= 500)(() => {
       return 'Server error!'
     }),
 
-    // Object prop match, literal return instead of function
+    // Literal return instead of "handler" predicate
     when({ status: 404 })('JSON not found'),
 
-    // greater-than-or-equal matcher
+    // when res.status >= 400...
     when({ status: gte(400) })(() => {
       return 'Flagrant error!'
     }),
 
-    // range matcher
+    // when res.status >= 300 && res.status <= 399
     when({ status: inRange(300, 399) })(() => {
       return 'This is fine...'
     }),
@@ -110,22 +111,28 @@ async function getJsonLength() {
 ```js
 function todosReducer(state, action) {
   return match(action)(
-    when({ type: 'set-visibility-filter' })(({ payload }) => ({
-      ...state,
-      visFilter: payload
-    })),
+    when({ type: 'set-visibility-filter' })
+      (({ payload: visFilter }) => ({
+        ...state,
+        visFilter
+      })),
 
-    when({ type: 'add-todo' })(({ payload: text }) => ({
-      ...state,
-      todos: [...state.todos, { text, completed: false }]
-    })),
+    when({ type: 'add-todo' })
+      (({ payload: text }) => ({
+        ...state,
+        todos: [...state.todos, { text, completed: false }]
+      })),
 
-    when({ type: 'toggle-todo' })(({ payload: index }) => ({
-      ...state,
-      todos: state.todos.map((todo, i) =>
-        i !== index ? todo : { ...todo, completed: !todo.completed }
-      )
-    })),
+    when({ type: 'toggle-todo' })
+      (({ payload: index }) => ({
+        ...state,
+        todos: state.todos.map((todo, i) =>
+          i !== index ? todo : { 
+            ...todo, 
+            completed: !todo.completed 
+          }
+        )
+      })),
 
     otherwise(state)
   )
@@ -135,7 +142,7 @@ function todosReducer(state, action) {
 ### Overloading, sort-of:
 
 ```js
-const { spread, defined } = lib
+const { spread, defined } = matchiz
 
 function getLength(vector) {
   const { x, y, z } = spread(defined)
@@ -152,13 +159,15 @@ function getLength(vector) {
 
 ```js
 match('1 + 2')(
-  when(/(?<firstName>\w+) (?<lastName>\w+)/)(({ groups: { lastName } }) => {
-    return `Ahoy, Captain ${lastName}`
-  }),
+  when(/(?<firstName>\w+) (?<lastName>\w+)/)
+    (({ groups: { lastName } }) => {
+      return `Ahoy, Captain ${lastName}`
+    }),
 
-  when(/(?<left>\d+) \+ (?<right>\d+)/)(({ groups: { left, right } }) => {
-    return add(left, right)
-  }),
+  when(/(?<left>\d+) \+ (?<right>\d+)/)
+    (({ groups: { left, right } }) => {
+      return add(left, right)
+    }),
 
   otherwise("I couldn't parse that!")
 )
@@ -179,9 +188,9 @@ match(value)(...predicates)
 // returns: winning value
 ```
 
-Each predicate will receive the `value` passed to `match()`.
+Each predicate receives the `value` passed to `match()`.
 
-The first predicate to return a truthy value wins, and `match` returns it.
+The first one to return a truthy value wins, and `match` returns it.
 
 ### `when()`
 
@@ -202,9 +211,22 @@ when(pattern)(handler)
 If `match` sees such an object return from a predicate:
 
 - `matched()` is run to determine the win-state
-- `value()` retrieves the result
+- `value()` retrieves the winning value
 
-#### RegExp
+#### AND / OR
+
+```js
+// if message ends with "world!" AND number === 42
+when({ message: endsWith('world!'), number: 42 })
+
+// if message ends with "world!" OR number === 42
+when([{ message: endsWith('world!') }, { number: 42 }])
+
+// 1 OR 2 OR 'chili dogs'
+when([1, 2, 'chili dogs'])
+```
+
+#### Regular Expressions
 
 ```js
 match('hello, world!')(
@@ -212,28 +234,37 @@ match('hello, world!')(
     return matches
   })
 )
-// [ 'world', index: 7, input: 'hello, world!', groups: undefined ]
+// 1. [ 'world', index: 7, input: 'hello, world!', groups: undefined ]
+
+match({ text: 'hello, world!' })(
+  when({ text: /world/ })(obj => {
+    return obj
+  })
+)
+// 2. { text: 'hello, world!' }
 ```
 
-When passing a `RegExp` to `when`, notice that the first argument to `handler` is not the `value` from `match()`, but the result of running `value.match(/world/)`.
+1. Passing a `RegExp` literal to `when` will pass the match-array as the first argument to `handler` (if it's a function).
+
+2. Using a `RegExp` on an object-prop passes the `value` from `match()`, as usual.
 
 ### `otherwise()`
 
 ```js
 otherwise(handler)
-// winning value
+// returns: winning value
 ```
 
-Essentially `when` without a `pattern`.
+Always wins, so put it at the end to deal with fallbacks.
 
-`handler` can be a function or a literal (same as for `when`.)
+`handler` can be a function or a literal.
 
 ## Helpers
 
-You can use these in your `when`'s:
+You can use these in your `when()` `pattern`'s:
 
 ```js
-const { gt, lt, gte, lte, inRange, startsWith, endsWith, includes } = lib
+const { gt, lt, gte, lte, inRange, startsWith, endsWith, includes } = matchiz
 ```
 
 - `gt` = greater than
@@ -271,27 +302,27 @@ match(object)(
 )
 ```
 
+You can make your own:
+
+```js
+const isNumber = x => Number.isNumber(x)
+
+when({ status: isNumber })('Status is a number')
+```
+
 Equality is achieved with literals:
 
 ```js
-when({ message: 'hello, world!', number: 42 })
+when({ number: 42 })
 when('hello, world!')
 when(3)
 when(false)
 when(null)
 ```
 
-In addition to the regular-expression matching outlined in the [example above](#regular-expressions), you can match object-props too:
-
-```js
-when({ text: /world/ })
-```
-
-For object-props, you won't receive the regular-expression match-results array in the handler.
-
 ## What is `spread(defined)`?
 
-I added this helper because the [TC39 spec](https://github.com/tc39/proposal-pattern-matching) proposes both conditional _and_ destructuring behaviour within the same syntax:
+The [TC39 spec](https://github.com/tc39/proposal-pattern-matching) proposes both conditional _and_ destructuring behaviour within the same syntax:
 
 ```js
 // checks that `error` is truthy, and destructures
@@ -299,12 +330,12 @@ I added this helper because the [TC39 spec](https://github.com/tc39/proposal-pat
 when ({ error }) { <Error error={error} />; }
 ```
 
-Very concise!
+Very concise! Unfortunately, we can't do that with current syntax.
 
-We can't do that with current syntax unfortunately, but we can lean on [Object initializer notation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer) to help get close:
+But we can lean on [Object initializer notation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer) to get close:
 
 ```js
-const { defined } = lib
+const { defined } = matchiz
 
 // without:
 when({ error: defined })(<Error {...props} />)
@@ -335,12 +366,12 @@ It uses [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Referenc
 
 ## What about `against()`?
 
-It's the same as `match`, but the order of currying is reversed.
+It's the same as `match()`, but the order of currying is reversed.
 
 For example, the previous `getLength` example could be:
 
 ```js
-const { against, spread, defined } = lib
+const { against, spread, defined } = matchiz
 const { x, y, z } = spread(defined)
 
 const getLength = against(
@@ -350,7 +381,29 @@ const getLength = against(
 )
 ```
 
-I guess that makes it easier to pass into a memoizer.
+I guess that makes it easier to pass into a memoizer?
+
+```js
+const fontSize = memoize(
+  against(
+    when([100, 200])('Super Thin'),
+    when(300)('Thin'),
+    when([400, 500])('Normal'),
+    when([600, 700, 800])('Bold'),
+    when(900)('Heavy'),
+    otherwise('Not valid')
+  )
+)
+;[
+  100, 200, 300, 
+  400, 500, 600,
+  700, 800, 900, 
+  901
+].forEach(size => {
+  console.log(`${size} = `, fontSize(size))
+})
+
+```
 
 Anyway, that's all I got!
 

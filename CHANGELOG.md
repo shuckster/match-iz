@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.2] - 2021-07-18
+
+### Fixed
+
+- RegExps guard for strings
+- spread() should not mutate its argument
+
 ## [1.0.1] - 2021-07-18
 
 ### Fixed
