@@ -264,7 +264,13 @@ Always wins, so put it at the end to deal with fallbacks.
 You can use these in your `when()` `pattern`'s:
 
 ```js
-const { gt, lt, gte, lte, inRange, startsWith, endsWith, includes } = matchiz
+const { 
+  gt, lt, gte, lte, inRange,      // numbers
+  startsWith, endsWith,           // strings
+  includes,                       // strings + arrays
+  empty, isFalse, falsy,
+  defined, isTrue, truthy
+} = matchiz
 ```
 
 - `gt` = greater than
@@ -275,8 +281,11 @@ const { gt, lt, gte, lte, inRange, startsWith, endsWith, includes } = matchiz
 - `startsWith` = 'hello ...'
 - `endsWith` = '... world!'
 - `includes` = for arrays and strings
-- `empty` = falsy matcher
-- `defined` = truthy matcher
+- `empty` = true for null, undefined, NaN, [], and {}
+- `defined` = negates empty, but `false` counts as "defined"
+
+Also:
+- `isTrue` / `isFalse` / `truthy` / `falsy`
 
 Use them like this:
 

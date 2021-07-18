@@ -13,7 +13,8 @@ const {
   inRange,
   startsWith,
   endsWith,
-  includes
+  includes,
+  isTrue
 } = lib
 
 const testCases = [
@@ -52,7 +53,7 @@ const testCases = [
         { input: ['ignatius', 'cheese'], expecting: 'includesArray' },
         { input: 'chili dogs', expecting: 'includesString' },
         { input: undefined, expecting: 'empty' },
-        { input: true, expecting: 'defined' }
+        { input: false, expecting: 'defined' }
       ],
       run: (assertCase, input) => {
         assertCase(

@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2021-07-18
+
+### Fixed
+
+- empty() should not include 'false'
+
+### Added
+
+- Provide truthy/falsy/isTrue/isFalse
+
 ## [1.0.4] - 2021-07-18
 
 ### Fixed

@@ -58,11 +58,13 @@ const isEqual = (left, right) =>
 // Matchers
 //
 
-const defined = value => !!value
 const empty = value =>
-  (!value && value !== 0) ||
+  value !== value ||
+  (!value && value !== 0 && value !== false) ||
   (isArray(value) && !value.length) ||
   (isPojo(value) && !Object.keys(value).length)
+
+const defined = value => !empty(value)
 
 const gt = m => ifNumber(value => value > m)
 const lt = m => ifNumber(value => value < m)
@@ -72,6 +74,10 @@ const inRange = ifNumber((min, max) => value => value >= min && value <= max)
 const startsWith = m => ifString(value => value.startsWith(m))
 const endsWith = m => ifString(value => value.endsWith(m))
 const includes = m => ifArrayOrString(value => value.includes(m))
+const isTrue = value => value === true
+const isFalse = value => value === false
+const truthy = value => !!value
+const falsy = value => !value
 
 //
 // Helpers
@@ -104,6 +110,10 @@ module.exports = {
   startsWith,
   endsWith,
   includes,
+  isTrue,
+  isFalse,
+  truthy,
+  falsy,
   spread,
   when,
   otherwise
