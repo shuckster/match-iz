@@ -59,7 +59,11 @@ const isEqual = (left, right) =>
 //
 
 const defined = value => !!value
-const empty = value => !value
+const empty = value =>
+  (!value && value !== 0) ||
+  (isArray(value) && !value.length) ||
+  (isPojo(value) && !Object.keys(value).length)
+
 const gt = m => ifNumber(value => value > m)
 const lt = m => ifNumber(value => value < m)
 const gte = m => ifNumber(value => value >= m)

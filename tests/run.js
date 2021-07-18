@@ -337,6 +337,61 @@ const testCases = [
         )
       }
     }
+  ],
+  [
+    'Custom pattern',
+    {
+      cases: [
+        { input: { status: 1 }, expecting: 'status is an integer' },
+        { input: 1, expecting: 'input is an integer' }
+      ],
+      run: (assertCase, input) => {
+        const isInteger = value => Number.isInteger(value)
+
+        assertCase(
+          match(input)(
+            when({ status: isInteger })('status is an integer'),
+            when(isInteger)('input is an integer')
+          )
+        )
+      }
+    }
+  ],
+  [
+    'empty() === undefined',
+    {
+      cases: [{ input: undefined, expecting: 'empty' }],
+      run: (assertCase, input) => {
+        assertCase(match(input)(when(empty)('empty')))
+      }
+    }
+  ],
+  [
+    'empty() === null',
+    {
+      cases: [{ input: null, expecting: 'empty' }],
+      run: (assertCase, input) => {
+        assertCase(match(input)(when(empty)('empty')))
+      }
+    }
+  ],
+  [
+    'empty() === []',
+    {
+      cases: [{ input: [], expecting: 'empty' }],
+      run: (assertCase, input) => {
+        assertCase(match(input)(when(empty)('empty')))
+      }
+    }
+  ],
+  [
+    'empty() === {}',
+    {
+      cases: [{ input: {}, expecting: 'empty' }],
+      run: (assertCase, input) => {
+        assertCase(match(input)(when(empty)('empty')))
+      }
+    }
   ]
 ]
 
