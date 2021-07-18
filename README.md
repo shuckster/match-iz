@@ -1,5 +1,23 @@
 # match-iz
 
+<p>
+  <a href="https://github.com/shuckster/match-iz/blob/master/LICENSE">
+    <img
+      alt="MIT license"
+      src="https://img.shields.io/npm/l/match-iz?style=plastic"
+    /></a>
+  <a href="https://bundlephobia.com/result?p=match-iz">
+    <img
+      alt="npm bundle size"
+      src="https://img.shields.io/bundlephobia/minzip/match-iz?style=plastic"
+    /></a>
+  <a href="https://www.npmjs.com/package/match-iz">
+    <img
+      alt="Version"
+      src="https://img.shields.io/npm/v/match-iz?style=plastic"
+    /></a>
+</p>
+
 Functional, declarative `pattern-matching` inspired by the [spec proposed by TC39](https://github.com/tc39/proposal-pattern-matching).
 
 ```jsx
