@@ -25,7 +25,7 @@ function buildMatches({ file, format, define }) {
       entryPoints: [paths.SRC],
       define: define,
       format: format,
-      ...(format === 'iife' && { globalName: 'matches' }),
+      ...(format === 'iife' && { globalName: 'matchiz' }),
       platform: 'node',
       target: ['es6'],
       minify: true,
