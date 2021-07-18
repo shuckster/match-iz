@@ -305,9 +305,9 @@ match(object)(
 You can make your own:
 
 ```js
-const isNumber = x => Number.isNumber(x)
+const isInteger = value => Number.isInteger(value)
 
-when({ status: isNumber })('Status is a number')
+when({ status: isInteger })('Status is an integer')
 ```
 
 Equality is achieved with literals:
