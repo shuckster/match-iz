@@ -73,7 +73,7 @@ const includes = m => ifArrayOrString(value => value.includes(m))
 // Helpers
 //
 
-const spread = fn => new Proxy(fn, { get: (_, prop) => fn(prop) })
+const spread = fn => new Proxy({}, { get: (_, prop) => fn(prop) })
 
 function ifString(fn) {
   return (...n) => n.every(isString) && fn(...n)
