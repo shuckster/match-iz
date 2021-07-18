@@ -13,8 +13,7 @@ const {
   inRange,
   startsWith,
   endsWith,
-  includes,
-  isTrue
+  includes
 } = lib
 
 const testCases = [
