@@ -66,8 +66,8 @@ const testCases = [
             when(endsWith('world!'))('endsWith'),
             when(includes('cheese'))('includesArray'),
             when(includes('chili'))('includesString'),
-            when(empty())('empty'),
-            when(defined())('defined')
+            when(empty)('empty'),
+            when(defined)('defined')
           )
         )
       }

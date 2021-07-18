@@ -58,8 +58,8 @@ const isEqual = (left, right) =>
 // Matchers
 //
 
-const defined = () => value => !!value
-const empty = () => value => !value
+const defined = value => !!value
+const empty = value => !value
 const gt = m => ifNumber(value => value > m)
 const lt = m => ifNumber(value => value < m)
 const gte = m => ifNumber(value => value >= m)
@@ -73,7 +73,7 @@ const includes = m => ifArrayOrString(value => value.includes(m))
 // Helpers
 //
 
-const spread = fn => new Proxy({}, { get: (_, prop) => fn(prop) })
+const spread = fn => new Proxy({}, { get: () => fn })
 
 function ifString(fn) {
   return (...n) => n.every(isString) && fn(...n)
