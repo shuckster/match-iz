@@ -287,8 +287,8 @@ match(literal)(
   when(includes('batman')),
   when(includes('robin')),
   when(lte(80)),
-  when(empty()),
-  when(defined())
+  when(empty),
+  when(defined)
 )
 
 match(object)(
@@ -297,8 +297,8 @@ match(object)(
   when({ array: includes('batman') }),
   when({ string: includes('robin') }),
   when({ length: lte(80) }),
-  when({ cup: empty() }),
-  when({ pencil: defined() })
+  when({ cup: empty }),
+  when({ pencil: defined })
 )
 ```
 
