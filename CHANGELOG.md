@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1] - 2021-07-18
+
+### Fixed
+
+- inRange() should check that value isNumber, not min/max
+
 ## [1.1.0] - 2021-07-18
 
 ### Fixed
