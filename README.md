@@ -29,6 +29,36 @@ match(props)(
 )
 ```
 
+```js
+match(vector)(
+  when({ x, y, z })(({ x, y, z }) => Math.hypot(x, y, z)),
+  when({ x, y })(({ x, y }) => Math.hypot(x, y)),
+  otherwise(vector => vector.length)
+)
+```
+
+```js
+match('1 + 2')(
+  when(/(?<left>\d+) \+ (?<right>\d+)/)
+    (({ groups: { left, right } }) => {
+      return add(left, right)
+    }),
+
+  otherwise("I couldn't parse that!")
+)
+```
+
+```js
+match(res)(
+  when({ status: 200 })
+    (({ headers: { 'Content-Length': s } = {} }) => {
+      return `size is ${s}`
+    }),
+
+  when({ status: 404 })('JSON not found')
+)
+```
+
 Full examples + documentation below.
 
 ## Installation, usage
@@ -43,30 +73,13 @@ import { match, when, against, otherwise } from 'match-iz'
 
 The library is about 100 SLOC, just over 1.5K minified.
 
-## Examples
+## Full examples
 
 All examples assume the following header:
 
 ```js
 import * as matchiz from 'match-iz'
 const { match, when, otherwise } = matchiz
-```
-
-### Front-end component:
-
-```jsx
-const { spread, defined } = matchiz
-
-function AccountPage(props) {
-  const { loading, error, data } = spread(defined)
-
-  return match(props)(
-    when({ loading })(<Loading />),
-    when({ error })(<Error {...props} />),
-    when({ data })(<Page {...props} />),
-    otherwise(<Logout />)
-  )
-}
 ```
 
 ### Fetching:
@@ -106,51 +119,19 @@ async function getJsonLength() {
 }
 ```
 
-### Reducer:
+### Front-end component:
 
-```js
-function todosReducer(state, action) {
-  return match(action)(
-    when({ type: 'set-visibility-filter' })
-      (({ payload: visFilter }) => ({
-        ...state,
-        visFilter
-      })),
-
-    when({ type: 'add-todo' })
-      (({ payload: text }) => ({
-        ...state,
-        todos: [...state.todos, { text, completed: false }]
-      })),
-
-    when({ type: 'toggle-todo' })
-      (({ payload: index }) => ({
-        ...state,
-        todos: state.todos.map((todo, i) =>
-          i !== index ? todo : { 
-            ...todo, 
-            completed: !todo.completed 
-          }
-        )
-      })),
-
-    otherwise(state)
-  )
-}
-```
-
-### Overloading, sort-of:
-
-```js
+```jsx
 const { spread, defined } = matchiz
 
-function getLength(vector) {
-  const { x, y, z } = spread(defined)
+function AccountPage(props) {
+  const { loading, error, data } = spread(defined)
 
-  return match(vector)(
-    when({ x, y, z })(({ x, y, z }) => Math.hypot(x, y, z)),
-    when({ x, y })(({ x, y }) => Math.hypot(x, y)),
-    otherwise(vector => vector.length)
+  return match(props)(
+    when({ loading })(<Loading />),
+    when({ error })(<Error {...props} />),
+    when({ data })(<Page {...props} />),
+    otherwise(<Logout />)
   )
 }
 ```
@@ -177,9 +158,57 @@ function add(left, right) {
 }
 ```
 
+### Reducer:
+
+```js
+function todosReducer(state, action) {
+  return match(action)(
+    when({ type: 'set-visibility-filter' })
+      (({ payload: visFilter }) => ({
+        ...state,
+        visFilter
+      })),
+
+    when({ type: 'add-todo' })
+      (({ payload: text }) => ({
+        ...state,
+        todos: [...state.todos, { text, completed: false }]
+      })),
+
+    when({ type: 'toggle-todo' })
+      (({ payload: index }) => ({
+        ...state,
+        todos: state.todos.map((todo, i) =>
+          i !== index ? todo : { 
+            ...todo, completed: !todo.completed 
+          }
+        )
+      })),
+
+    otherwise(state)
+  )
+}
+```
+
+### Overloading, sort-of:
+
+```js
+const { spread, defined } = matchiz
+
+function getLength(vector) {
+  const { x, y, z } = spread(defined)
+
+  return match(vector)(
+    when({ x, y, z })(({ x, y, z }) => Math.hypot(x, y, z)),
+    when({ x, y })(({ x, y }) => Math.hypot(x, y)),
+    otherwise(vector => vector.length)
+  )
+}
+```
+
 # Documentation
 
-## Core: `match` / `when` / `otherwise`
+## Core: match / when / otherwise
 
 ### `match()`
 
@@ -264,12 +293,18 @@ Always wins, so put it at the end to deal with fallbacks.
 You can use these in your `when()` `pattern`'s:
 
 ```js
-const { 
-  gt, lt, gte, lte, inRange,      // numbers
-  startsWith, endsWith,           // strings
-  includes,                       // strings + arrays
-  empty, isFalse, falsy,
-  defined, isTrue, truthy
+const {
+  // numbers
+  gt, lt, gte, lte, inRange,
+
+  // strings
+  startsWith, endsWith,
+
+  // strings + arrays
+  includes,
+
+  // truthiness
+  empty, isFalse, falsy, defined, isTrue, truthy
 } = matchiz
 ```
 
@@ -277,7 +312,7 @@ const {
 - `lt` = less than
 - `gte` = greater than or equal
 - `lte` = less than or equal
-- `inRange` = min to max
+- `inRange` = within min ... max
 - `startsWith` = 'hello ...'
 - `endsWith` = '... world!'
 - `includes` = for arrays and strings
@@ -285,29 +320,30 @@ const {
 - `defined` = negates empty, but `false` counts as "defined"
 
 Also:
+
 - `isTrue` / `isFalse` / `truthy` / `falsy`
 
 Use them like this:
 
 ```js
 match(literal)(
-  when(inRange(100, 200)),
-  when(startsWith('hello')),
-  when(includes('batman')),
-  when(includes('robin')),
-  when(lte(80)),
-  when(empty),
-  when(defined)
+  when(inRange(100, 200))( ... ),
+  when(startsWith('hello'))( ... ),
+  when(includes('batman'))( ... ),
+  when(includes('robin'))( ... ),
+  when(lte(80))( ... ),
+  when(empty)( ... ),
+  when(defined)( ... ),
 )
 
 match(object)(
-  when({ status: inRange(100, 200) }),
-  when({ text: startsWith('hello') }),
-  when({ array: includes('batman') }),
-  when({ string: includes('robin') }),
-  when({ length: lte(80) }),
-  when({ cup: empty }),
-  when({ pencil: defined })
+  when({ status: inRange(100, 200) })( ... ),
+  when({ text: startsWith('hello') })( ... ),
+  when({ array: includes('batman') })( ... ),
+  when({ string: includes('robin') })( ... ),
+  when({ length: lte(80) })( ... ),
+  when({ cup: empty })( ... ),
+  when({ pencil: defined })( ... ),
 )
 ```
 
@@ -322,11 +358,11 @@ when({ status: isInteger })('Status is an integer')
 Equality is achieved with literals:
 
 ```js
-when({ number: 42 })
-when('hello, world!')
-when(3)
-when(false)
-when(null)
+when({ number: 42 })( ... )
+when('hello, world!')( ... )
+when(3)( ... )
+when(false)( ... )
+when(null)( ... )
 ```
 
 ## What is `spread(defined)`?
@@ -390,7 +426,7 @@ const getLength = against(
 )
 ```
 
-I guess that makes it easier to pass into a memoizer?
+That makes it easier to pass into a memoizer:
 
 ```js
 const fontSize = memoize(
@@ -403,15 +439,12 @@ const fontSize = memoize(
     otherwise('Not valid')
   )
 )
-;[
-  100, 200, 300, 
-  400, 500, 600,
-  700, 800, 900, 
-  901
+
+;[100, 200, 300, 400, 500, 
+  600, 700, 800, 900, 901
 ].forEach(size => {
   console.log(`${size} = `, fontSize(size))
 })
-
 ```
 
 Anyway, that's all I got!
