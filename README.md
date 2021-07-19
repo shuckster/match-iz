@@ -304,7 +304,7 @@ const {
   includes,
 
   // truthiness
-  empty, isFalse, falsy, defined, isTrue, truthy
+  empty, falsy, defined, truthy
 } = matchiz
 ```
 
@@ -318,10 +318,8 @@ const {
 - `includes` = for arrays and strings
 - `empty` = true for null, undefined, NaN, [], and {}
 - `defined` = negates empty, but `false` counts as "defined"
-
-Also:
-
-- `isTrue` / `isFalse` / `truthy` / `falsy`
+- `truthy` = a !! check
+- `falsy` = a ! check
 
 Use them like this:
 

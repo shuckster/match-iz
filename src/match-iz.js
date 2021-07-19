@@ -74,8 +74,6 @@ const inRange = (min, max) => ifNumber(value => value >= min && value <= max)
 const startsWith = m => ifString(value => value.startsWith(m))
 const endsWith = m => ifString(value => value.endsWith(m))
 const includes = m => ifArrayOrString(value => value.includes(m))
-const isTrue = value => value === true
-const isFalse = value => value === false
 const truthy = value => !!value
 const falsy = value => !value
 
@@ -110,8 +108,6 @@ module.exports = {
   startsWith,
   endsWith,
   includes,
-  isTrue,
-  isFalse,
   truthy,
   falsy,
   spread,

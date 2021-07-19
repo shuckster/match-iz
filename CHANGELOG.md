@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2021-07-19
+
+### Removed
+
+- Literals already cover use-case for isTrue/isFalse
+
 ## [1.1.2] - 2021-07-19
 
 ### Updated
