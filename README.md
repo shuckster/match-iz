@@ -71,7 +71,14 @@ $ pnpm i match-iz
 import { match, when, against, otherwise } from 'match-iz'
 ```
 
-The library is about 100 SLOC, just over 1.5K minified.
+```html
+<script src="https://unpkg.com/match-iz/dist/match-iz.browser.js"></script>
+<script>
+  const { match, when, against, otherwise } = matchiz
+</script>
+```
+
+The library is about 100 SLOC, just over 1.7K minified.
 
 ## Full examples
 
