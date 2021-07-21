@@ -3,3 +3,4 @@ _scratch
 node_modules
 pnpm-debug.log
 publish.sh
+tempCodeRunnerFile.*
