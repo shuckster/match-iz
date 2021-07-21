@@ -49,7 +49,7 @@ const valueMatches = (pattern, value) =>
 
 const isEqual = (left, right) =>
   isPojo(left)
-    ? valueMatches(left, right || {})
+    ? valueMatches(left, right)
     : isFunction(left)
     ? left(right)
     : isString(right) && isRegExp(left)
