@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.1] - 2021-07-21
+
+### Updated
+
+- Updated test for nested patterns
+- Remove superfluous coercion
+
 ## [1.3.0] - 2021-07-21
 
 ### Added
