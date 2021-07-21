@@ -100,7 +100,7 @@ const testCases = [
         },
         {
           input: { status: 200 },
-          expecting: 'size is undefined'
+          expecting: "I didn't understand that..."
         },
         {
           input: { status: 301 },
@@ -129,12 +129,15 @@ const testCases = [
         }
 
         const res = fetch('/json')
+        const isInteger = Number.isInteger
 
         assertCase(
           match(res)(
             // Object prop match + destructuring value
-            when({ status: 200 })(
-              ({ headers: { 'Content-Length': s } = {} }) => `size is ${s}`
+            when({ status: 200, headers: { 'Content-Length': isInteger } })(
+              ({ headers: { 'Content-Length': size } }) => {
+                return `size is ${size}`
+              }
             ),
 
             // Object prop match

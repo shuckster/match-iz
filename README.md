@@ -50,9 +50,9 @@ match('1 + 2')(
 
 ```js
 match(res)(
-  when({ status: 200 })
-    (({ headers: { 'Content-Length': s } = {} }) => {
-      return `size is ${s}`
+  when({ status: 200, headers: { 'Content-Length': isInteger } })
+    (({ headers: { 'Content-Length': size } }) => {
+      return `size is ${size}`
     }),
 
   when({ status: 404 })('JSON not found')
