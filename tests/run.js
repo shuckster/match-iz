@@ -370,6 +370,10 @@ const testCases = [
           expecting: 'nested "there"'
         },
         {
+          input: { status: 1, hello: { where: 'everywhere' } },
+          expecting: 'nested "everywhere"'
+        },
+        {
           input: { status: 1 },
           expecting: 'just status 1'
         }
@@ -379,6 +383,9 @@ const testCases = [
           match(input)(
             when({ status: 1, hello: { where: 'world' } })('nested "world"'),
             when({ status: 1, hello: { where: 'there' } })('nested "there"'),
+            when({ status: 1, hello: { where: /where|every/ } })(
+              'nested "everywhere"'
+            ),
             when({ status: 1 })('just status 1')
           )
         )
