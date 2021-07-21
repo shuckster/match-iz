@@ -42,13 +42,15 @@ const otherwise = handler => value =>
 
 const valueMatches = (pattern, value) =>
   isPojo(pattern)
-    ? Object.keys(pattern).every(key => isEqual(pattern[key], value[key]))
+    ? Object.keys(pattern).every(key => isEqual(pattern[key], value?.[key]))
     : isArray(pattern)
     ? pattern.some(subPattern => valueMatches(subPattern, value))
     : isEqual(pattern, value)
 
 const isEqual = (left, right) =>
-  isFunction(left)
+  isPojo(left)
+    ? valueMatches(left, right || {})
+    : isFunction(left)
     ? left(right)
     : isString(right) && isRegExp(left)
     ? left.test(right)

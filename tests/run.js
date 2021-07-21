@@ -358,6 +358,35 @@ const testCases = [
     }
   ],
   [
+    'Nested pattern objects',
+    {
+      cases: [
+        {
+          input: { status: 1, hello: { where: 'world' } },
+          expecting: 'nested "world"'
+        },
+        {
+          input: { status: 1, hello: { where: 'there' } },
+          expecting: 'nested "there"'
+        },
+        {
+          input: { status: 1 },
+          expecting: 'just status 1'
+        }
+      ],
+      run: (assertCase, input) => {
+        assertCase(
+          match(input)(
+            when({ status: 1, hello: { where: 'world' } })('nested "world"'),
+            when({ status: 1, hello: { where: 'there' } })('nested "there"'),
+            when({ status: 1 })('just status 1')
+          )
+        )
+      }
+    }
+  ],
+
+  [
     'empty() === undefined',
     {
       cases: [{ input: undefined, expecting: 'empty' }],
