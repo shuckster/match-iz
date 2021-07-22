@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.2] - 2021-07-22
+
+### Fixed
+
+- otherwise() was returning all falsy values as `undefined`
+
 ## [1.3.1] - 2021-07-21
 
 ### Updated

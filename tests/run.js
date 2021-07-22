@@ -25,7 +25,8 @@ const testCases = [
         { input: true, expecting: 'true' },
         { input: false, expecting: 'false' },
         { input: 1, expecting: '1' },
-        { input: 'hello, world!', expecting: 'hello, world!' }
+        { input: 'hello, world!', expecting: 'hello, world!' },
+        { input: 'non-existent', expecting: false }
       ],
       run: (assertCase, input) => {
         assertCase(
@@ -35,7 +36,8 @@ const testCases = [
             when({ test: 1 })('should not throw if "null" is an input'),
             when(null)('null'),
             when(1)('1'),
-            when('hello, world!')('hello, world!')
+            when('hello, world!')('hello, world!'),
+            otherwise(false)
           )
         )
       }
@@ -81,13 +83,15 @@ const testCases = [
     {
       cases: [
         { input: { note: 'ahoyhoy, world!' }, expecting: 'world' },
-        { input: { text: 'hello, world!' }, expecting: 'hello' }
+        { input: { text: 'hello, world!' }, expecting: 'hello' },
+        { input: 'non-existent', expecting: null }
       ],
       run: (assertCase, input) => {
         assertCase(
           match(input)(
             when({ text: /hello/ })('hello'),
-            when({ note: /world/ })('world')
+            when({ note: /world/ })('world'),
+            otherwise(null)
           )
         )
       }

@@ -37,8 +37,10 @@ const when = pattern => handler => value => ({
       : handler(value)
 })
 
-const otherwise = handler => value =>
-  isFunction(handler) ? handler(value) : handler
+const otherwise = handler => value => ({
+  matched: () => true,
+  value: () => (!isFunction(handler) ? handler : handler(value))
+})
 
 const valueMatches = (pattern, value) =>
   isPojo(pattern)
