@@ -21,6 +21,7 @@ const testCases = [
     'Literals',
     {
       cases: [
+        { input: null, expecting: 'null' },
         { input: true, expecting: 'true' },
         { input: false, expecting: 'false' },
         { input: 1, expecting: '1' },
@@ -31,6 +32,8 @@ const testCases = [
           match(input)(
             when(true)('true'),
             when(false)('false'),
+            when({ test: 1 })('should not throw if "null" is an input'),
+            when(null)('null'),
             when(1)('1'),
             when('hello, world!')('hello, world!')
           )
