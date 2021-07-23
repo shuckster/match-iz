@@ -88,15 +88,15 @@ const falsy = value => !value
 const spread = fn => new Proxy({}, { get: () => fn })
 
 function ifString(fn) {
-  return (...n) => n.every(isString) && fn(...n)
+  return value => isString(value) && fn(value)
 }
 
 function ifArrayOrString(fn) {
-  return (...n) => n.every(x => isArray(x) || isString(x)) && fn(...n)
+  return value => (isArray(value) || isString(value)) && fn(value)
 }
 
 function ifNumber(fn) {
-  return (...n) => n.every(isNumber) && fn(...n)
+  return value => isNumber(value) && fn(value)
 }
 
 module.exports = {
