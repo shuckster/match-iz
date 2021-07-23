@@ -300,6 +300,30 @@ Always wins, so put it at the end to deal with fallbacks.
 You can use these in your `when()` `pattern`'s:
 
 ```js
+match(literal)(
+  when(inRange(100, 200))( ... ),
+  when(startsWith('hello'))( ... ),
+  when(includes('batman'))( ... ),
+  when(includes('robin'))( ... ),
+  when(lte(80))( ... ),
+  when(empty)( ... ),
+  when(defined)( ... ),
+)
+
+match(object)(
+  when({ status: inRange(100, 200) })( ... ),
+  when({ text: startsWith('hello') })( ... ),
+  when({ array: includes('batman') })( ... ),
+  when({ string: includes('robin') })( ... ),
+  when({ length: lte(80) })( ... ),
+  when({ cup: empty })( ... ),
+  when({ pencil: defined })( ... ),
+)
+```
+
+Here's the full list:
+
+```js
 const {
   // numbers
   gt, lt, gte, lte, inRange,
@@ -328,34 +352,10 @@ const {
 - `truthy` = a !! check
 - `falsy` = a ! check
 
-Use them like this:
-
-```js
-match(literal)(
-  when(inRange(100, 200))( ... ),
-  when(startsWith('hello'))( ... ),
-  when(includes('batman'))( ... ),
-  when(includes('robin'))( ... ),
-  when(lte(80))( ... ),
-  when(empty)( ... ),
-  when(defined)( ... ),
-)
-
-match(object)(
-  when({ status: inRange(100, 200) })( ... ),
-  when({ text: startsWith('hello') })( ... ),
-  when({ array: includes('batman') })( ... ),
-  when({ string: includes('robin') })( ... ),
-  when({ length: lte(80) })( ... ),
-  when({ cup: empty })( ... ),
-  when({ pencil: defined })( ... ),
-)
-```
-
 You can make your own:
 
 ```js
-const isInteger = value => Number.isInteger(value)
+const isInteger = Number.isInteger
 
 when({ status: isInteger })('Status is an integer')
 ```
