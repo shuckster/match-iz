@@ -12,6 +12,7 @@
     "when",
     "otherwise"
   ],
+  "types": "index.d.ts",
   "main": "./dist/match-iz.cjs.js",
   "module": "dist/match-iz.esm.js",
   "exports": {
@@ -24,7 +25,8 @@
     "dist/**/*.js",
     "CHANGELOG.md",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "index.d.ts"
   ],
   "engines": {
     "node": ">=10"
@@ -49,6 +51,7 @@
     "compose-paths": "^1.0.8",
     "esbuild": "^0.12.15",
     "eslint": "^7.31.0",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "typescript": "^4.3.5"
   }
 }

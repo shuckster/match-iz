@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.3] - 2021-07-23
+
+### Added
+
+- Basic `index.d.ts` for type hints and examples
+
 ## [1.3.2] - 2021-07-22
 
 ### Fixed
