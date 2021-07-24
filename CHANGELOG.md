@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.4] - 2021-07-24
+
+### Added
+
+- `index.d.ts` against() example
+
 ## [1.3.3] - 2021-07-23
 
 ### Added

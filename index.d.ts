@@ -7,6 +7,15 @@ export type TEvaluator = {
 }
 
 declare module 'match-iz' {
+  /**
+   * @example
+   * against(
+   *   when(valueOrCondition)(result),
+   *   when(valueOrCondition)(result),
+   *   otherwise(fallbackResult)
+   * )(valueToTestAgainst)
+   * @param fns
+   */
   export function against(...fns: TMatchTester[]): (match: any) => any
 
   /**
