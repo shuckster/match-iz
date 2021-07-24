@@ -70,14 +70,14 @@ const empty = value =>
 
 const defined = value => !empty(value)
 
-const gt = m => ifNumber(value => value > m)
-const lt = m => ifNumber(value => value < m)
-const gte = m => ifNumber(value => value >= m)
-const lte = m => ifNumber(value => value <= m)
+const gt = n => ifNumber(value => value > n)
+const lt = n => ifNumber(value => value < n)
+const gte = n => ifNumber(value => value >= n)
+const lte = n => ifNumber(value => value <= n)
 const inRange = (min, max) => ifNumber(value => value >= min && value <= max)
-const startsWith = m => ifString(value => value.startsWith(m))
-const endsWith = m => ifString(value => value.endsWith(m))
-const includes = m => ifArrayOrString(value => value.includes(m))
+const startsWith = s => ifString(value => value.startsWith(s))
+const endsWith = s => ifString(value => value.endsWith(s))
+const includes = o => ifArrayOrString(value => value.includes(o))
 const truthy = value => !!value
 const falsy = value => !value
 
