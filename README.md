@@ -59,6 +59,17 @@ match(res)(
 )
 ```
 
+Also provides `against(...)(value)`:
+
+```js
+lines.filter(against(
+  when(/remove-this-one/)(false), 
+  when(/and-this-one-too/)(false), 
+  when(endsWith('-and-another'))(false), 
+  otherwise(true)
+))
+```
+
 Full examples + documentation below.
 
 ## Installation, usage
@@ -450,6 +461,19 @@ const fontSize = memoize(
 ].forEach(size => {
   console.log(`${size} = `, fontSize(size))
 })
+```
+
+...and `map`/`reduce`/`filter`:
+
+```js
+const html = lines
+  .filter(against(
+    when(/remove-this-one/)(false), 
+    when(/and-this-one-too/)(false), 
+    when(endsWith('-and-another'))(false), 
+    otherwise(true)
+  ))
+  .join('\n')
 ```
 
 Anyway, that's all I got!
