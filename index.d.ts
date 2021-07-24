@@ -14,7 +14,6 @@ declare module 'match-iz' {
    *   when(valueOrCondition)(result),
    *   otherwise(fallbackResult)
    * )(valueToTestAgainst)
-   * @param fns
    */
   export function against(...fns: TMatchTester[]): (match: any) => any
 
@@ -25,7 +24,6 @@ declare module 'match-iz' {
    *   when(valueOrCondition)(result),
    *   otherwise(fallbackResult)
    * )
-   * @param value
    */
   export function match(value: any): (...fns: TMatchTester[]) => any
 
@@ -38,14 +36,12 @@ declare module 'match-iz' {
    * when(/test/)             // RegExp
    * when(x => x)             // predicate
    * when({ value: defined }) // structural
-   * @param pattern
    */
   export function when(pattern: any | TPredicate): TMatchHandler
 
   /**
    * @example
    * otherwise(fallbackResult)
-   * @param handler
    */
   export function otherwise(handler: any): TMatchTester
 
@@ -68,8 +64,6 @@ declare module 'match-iz' {
    * match(vector)(
    *   when({ x, y, z })(...)
    * )
-   * @param fn
-   * @returns object
    */
   export function spread(fn: TPredicate): object
 }
