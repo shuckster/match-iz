@@ -208,7 +208,7 @@ function todosReducer(state, action) {
 }
 ```
 
-### Overloading, sort-of:
+### Overloading:
 
 ```js
 const { spread, defined } = matchiz
@@ -281,14 +281,14 @@ match('hello, world!')(
     return matches
   })
 )
-// 1. [ 'world', index: 7, input: 'hello, world!', groups: undefined ]
+// ^ 1 :: [ 'world', index: 7, input: 'hello, world!', groups: undefined ]
 
 match({ text: 'hello, world!' })(
   when({ text: /world/ })(obj => {
     return obj
   })
 )
-// 2. { text: 'hello, world!' }
+// ^ 2 :: { text: 'hello, world!' }
 ```
 
 1. Passing a `RegExp` literal to `when` will pass the match-array as the first argument to `handler` (if it's a function).
