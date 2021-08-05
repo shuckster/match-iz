@@ -1,10 +1,10 @@
 const {
-  isFunction,
-  isRegExp,
-  isPojo,
   isArray,
+  isFunction,
+  isNumber,
+  isRegExp,
   isString,
-  isNumber
+  isPojo
 } = require('./types')
 
 //
@@ -120,4 +120,12 @@ module.exports = {
   truthy,
   falsy,
   spread,
+
+  // types
+  isArray,
+  isFunction,
+  isNumber,
+  isRegExp,
+  isString,
+  isPojo
 }
