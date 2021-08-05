@@ -11,47 +11,47 @@ const {
 // match-iz
 //
 
-function match(value) {
-  return (...fns) => against(...fns)(value)
+function match(haystack) {
+  return (...needles) => against(...needles)(haystack)
 }
 
-function against(...fns) {
+function against(...needles) {
   let result
-  return match =>
-    fns.find(run => {
-      const received = run(match)
+  return haystack =>
+    needles.find(needle => {
+      const received = needle(haystack)
       const { matched, value } = received || {}
       return [matched, value].every(isFunction)
-        ? matched(match) && ((result = value(match)), true)
+        ? matched(haystack) && ((result = value(haystack)), true)
         : received && (result = received)
     }) && result
 }
 
-const otherwise = handler => value => ({
+const otherwise = handler => haystack => ({
   matched: () => true,
-  value: () => (!isFunction(handler) ? handler : handler(value))
+  value: () => (!isFunction(handler) ? handler : handler(haystack))
 })
 
-const when = pattern => handler => value => ({
-  matched: () => valueMatches(pattern, value),
+const when = needle => handler => haystack => ({
+  matched: () => found(needle, haystack),
   value: () =>
     !isFunction(handler)
       ? handler
-      : isString(value) && isRegExp(pattern)
-      ? handler(value.match(pattern))
-      : handler(value)
+      : isString(haystack) && isRegExp(needle)
+      ? handler(haystack.match(needle))
+      : handler(haystack)
 })
 
-const valueMatches = (pattern, value) =>
-  isPojo(pattern)
-    ? Object.keys(pattern).every(key => isEqual(pattern[key], value?.[key]))
-    : isArray(pattern)
-    ? pattern.some(subPattern => valueMatches(subPattern, value))
-    : isEqual(pattern, value)
+const found = (needle, haystack) =>
+  isPojo(needle)
+    ? Object.keys(needle).every(key => isEqual(needle[key], haystack?.[key]))
+    : isArray(needle)
+    ? needle.some(thread => found(thread, haystack))
+    : isEqual(needle, haystack)
 
 const isEqual = (left, right) =>
   isPojo(left)
-    ? valueMatches(left, right)
+    ? found(left, right)
     : isFunction(left)
     ? left(right)
     : isString(right) && isRegExp(left)
