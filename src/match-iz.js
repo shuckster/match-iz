@@ -11,6 +11,10 @@ const {
 // match-iz
 //
 
+function match(value) {
+  return (...fns) => against(...fns)(value)
+}
+
 function against(...fns) {
   let result
   return match =>
@@ -23,9 +27,10 @@ function against(...fns) {
     }) && result
 }
 
-function match(value) {
-  return (...fns) => against(...fns)(value)
-}
+const otherwise = handler => value => ({
+  matched: () => true,
+  value: () => (!isFunction(handler) ? handler : handler(value))
+})
 
 const when = pattern => handler => value => ({
   matched: () => valueMatches(pattern, value),
@@ -35,11 +40,6 @@ const when = pattern => handler => value => ({
       : isString(value) && isRegExp(pattern)
       ? handler(value.match(pattern))
       : handler(value)
-})
-
-const otherwise = handler => value => ({
-  matched: () => true,
-  value: () => (!isFunction(handler) ? handler : handler(value))
 })
 
 const valueMatches = (pattern, value) =>
@@ -100,8 +100,13 @@ function ifNumber(fn) {
 }
 
 module.exports = {
+  // match-iz
   against,
   match,
+  when,
+  otherwise,
+
+  // matching helpers
   defined,
   empty,
   gt,
@@ -115,6 +120,4 @@ module.exports = {
   truthy,
   falsy,
   spread,
-  when,
-  otherwise
 }
