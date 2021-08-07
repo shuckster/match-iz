@@ -371,6 +371,19 @@ const isInteger = Number.isInteger
 when({ status: isInteger })('Status is an integer')
 ```
 
+Since `1.4.0`, you can also use these:
+
+```js
+const {
+  isArray,
+  isFunction,
+  isNumber,
+  isRegExp,
+  isString,
+  isPojo,    // https://google.com/search?q=javascript+pojo
+} = matchiz
+```
+
 Equality is achieved with literals:
 
 ```js

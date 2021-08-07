@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2021-08-07
+
+### Updated
+
+- Export runtime type checkers, why not
+
 ## [1.3.6] - 2021-07-24
 
 ### Updated
