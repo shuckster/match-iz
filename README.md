@@ -68,6 +68,21 @@ lines.filter(against(
   when(endsWith('-and-another'))(false), 
   otherwise(true)
 ))
+
+const memoize = (fn, cache = new Map()) =>
+  x => cache.has(x) 
+     ? cache.get(x) 
+     : cache.set(x, fn(x)).get(x)
+
+const fib = memoize(
+  against(
+    when(lte(0))(0),
+    when(1)(1),
+    otherwise(x => fib(x - 1) + fib(x - 2))
+  )
+)
+
+fib(35)
 ```
 
 Full examples + documentation below.
