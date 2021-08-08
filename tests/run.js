@@ -2,7 +2,7 @@ const { strict } = require('assert')
 const { isPojo, isArray } = require('../src/types')
 const lib = require('../src/match-iz')
 
-const { match, when, otherwise, spread } = lib
+const { match, against, when, otherwise, spread } = lib
 const {
   defined,
   empty,
@@ -402,7 +402,25 @@ const testCases = [
       }
     }
   ],
-
+  [
+    'sort(against...',
+    {
+      cases: [{ input: [10, 9, 8, 7], expecting: [7, 8, 9, 10] }],
+      run: (assertCase, input) => {
+        assertCase(
+          input.sort(
+            nargs(
+              against(
+                when(([a, b]) => a < b)(-1),
+                when(([a, b]) => a === b)(0),
+                when(([a, b]) => a > b)(1)
+              )
+            )
+          )
+        )
+      }
+    }
+  ],
   [
     'empty() === undefined',
     {
@@ -440,6 +458,10 @@ const testCases = [
     }
   ]
 ]
+
+function nargs(fn) {
+  return (...args) => fn(args)
+}
 
 function makeTester(expecting, message) {
   return saw => {
