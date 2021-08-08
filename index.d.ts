@@ -1,10 +1,12 @@
 export type TPredicate = (value: any) => boolean
-export type TMatchTester = (value: any) => TEvaluator | any
-export type TMatchHandler = (handler: any) => TMatchTester
+
 export type TEvaluator = {
   matched: () => boolean
   value: () => any
 }
+
+export type TMatchTester = (value: any) => TEvaluator | any
+export type TMatchHandler = (handler: any) => TMatchTester
 
 declare module 'match-iz' {
   /**
@@ -15,7 +17,7 @@ declare module 'match-iz' {
    *   otherwise(fallbackResult)
    * )(valueToTestAgainst)
    */
-  export function against(...fns: TMatchTester[]): (match: any) => any
+  export function against(...needles: TMatchTester[]): (haystack: any) => any
 
   /**
    * @example
@@ -25,7 +27,7 @@ declare module 'match-iz' {
    *   otherwise(fallbackResult)
    * )
    */
-  export function match(value: any): (...fns: TMatchTester[]) => any
+  export function match(haystack: any): (...needles: TMatchTester[]) => any
 
   /**
    * @example
