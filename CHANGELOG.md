@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.1] - 2021-08-08
+
+### Added
+
+- Add runtime type checkers to index.d.ts
+
 ## [1.4.0] - 2021-08-07
 
 ### Updated
