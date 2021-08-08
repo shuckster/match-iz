@@ -68,7 +68,9 @@ lines.filter(against(
   when(endsWith('-and-another'))(false), 
   otherwise(true)
 ))
+```
 
+```js
 const memoize = (fn, cache = new Map()) =>
   x => cache.has(x) 
      ? cache.get(x) 
@@ -83,6 +85,18 @@ const fib = memoize(
 )
 
 fib(35)
+```
+
+```js
+const nargs = fn => (...args) => fn(args)
+
+numbers.sort(nargs(
+  against(
+    when(([a, b]) => a < b)(-1),
+    when(([a, b]) => a === b)(0),
+    when(([a, b]) => a > b)(1)
+  )
+))
 ```
 
 Full examples + documentation below.
