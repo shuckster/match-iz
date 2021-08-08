@@ -58,6 +58,13 @@ declare module 'match-iz' {
   export function endsWith(text: string): TPredicate
   export function includes(content: any): TPredicate
 
+  export function isArray(value: any): boolean
+  export function isFunction(value: any): boolean
+  export function isNumber(value: any): boolean
+  export function isRegExp(value: any): boolean
+  export function isString(value: any): boolean
+  export function isPojo(value: any): boolean
+
   /**
    * @example
    * const { x, y, z } = spread(defined)
