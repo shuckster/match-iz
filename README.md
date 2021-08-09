@@ -38,6 +38,14 @@ match(vector)(
 ```
 
 ```js
+match(['', '2', undefined])(
+  when(['1', _, _, _])('one'),
+  when([_, '2', _, _])('two'),
+  otherwise('nope')
+)
+```
+
+```js
 match('1 + 2')(
   when(/(?<left>\d+) \+ (?<right>\d+)/)
     (({ groups: { left, right } }) => {
@@ -253,6 +261,18 @@ function getLength(vector) {
 }
 ```
 
+### Matching array contents (since v1.5.0):
+
+```js
+const { empty: _ } = matchiz
+
+match(['', '2', undefined])(
+  when(['1', _, _])('one'),
+  when([_, '2', _])('two'),
+  otherwise('nope')
+)
+```
+
 # Documentation
 
 ## Core: match / when / otherwise
@@ -291,15 +311,39 @@ If `match` sees such an object return from a predicate:
 
 #### AND / OR
 
+If the match `value` is NOT an array, using an array within a `when` will perform a logical `OR` against the contained values:
+
 ```js
 // if message ends with "world!" AND number === 42
-when({ message: endsWith('world!'), number: 42 })
+match({ message: 'hello wrrld!', number: 42 })(
+  when({ message: endsWith('world!'), number: 42 })('ok!')
+)
+// undefined
 
 // if message ends with "world!" OR number === 42
-when([{ message: endsWith('world!') }, { number: 42 }])
+match({ message: 'hello wrrld!', number: 42 })(
+  when([{ message: endsWith('world!') }, { number: 42 }])('ok!')
+)
+// "ok!"
 
 // 1 OR 2 OR 'chili dogs'
-when([1, 2, 'chili dogs'])
+match(2)(
+  when([1, 2, 'chili dogs'])('ok!')
+)
+// "ok!"
+```
+
+Since v1.5.0: If both `match` and `when` values are arrays, the contents will be compared up to the length of the `when` array, applying any contained predicates:
+
+```js
+const { empty: _ } = matchiz
+
+match(['', '2', undefined])(
+  when(['1', _, _])('one'),
+  when([_, '2', _])('two'),
+  otherwise('nope')
+)
+// "two"
 ```
 
 #### Regular Expressions

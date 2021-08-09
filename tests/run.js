@@ -422,6 +422,33 @@ const testCases = [
     }
   ],
   [
+    'Matching an array against an array instead of literals/objects',
+    {
+      cases: [
+        { input: ['1'], expecting: 'one' },
+        { input: ['1', ''], expecting: 'one' },
+        { input: ['1', '', ''], expecting: 'one' },
+        { input: ['1', '', '', '!'], expecting: 'nope' },
+        { input: ['', '2'], expecting: 'two' },
+        { input: ['', '2', ''], expecting: 'two' },
+        { input: [undefined, '2', ''], expecting: 'two' },
+        { input: ['', '2', undefined], expecting: 'two' },
+        { input: ['', []], expecting: 'nope' },
+        { input: 'fish', expecting: 'nope' }
+      ],
+      run: (assertCase, input) => {
+        const _ = empty
+        assertCase(
+          match(input)(
+            when(['1', _, _, _])('one'),
+            when([_, '2', _, _])('two'),
+            otherwise('nope')
+          )
+        )
+      }
+    }
+  ],
+  [
     'Logical OR',
     {
       cases: [

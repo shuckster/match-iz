@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.0] - 2021-08-09
+
+### Added
+
+- Can now match against contents of an array
+
 ## [1.4.1] - 2021-08-08
 
 ### Added

@@ -46,7 +46,9 @@ const found = (needle, haystack) =>
   isPojo(needle)
     ? Object.keys(needle).every(key => isEqual(needle[key], haystack?.[key]))
     : isArray(needle)
-    ? needle.some(thread => found(thread, haystack))
+    ? isArray(haystack)
+      ? needle.every((one, index) => isEqual(one, haystack?.[index]))
+      : needle.some(thread => found(thread, haystack))
     : isEqual(needle, haystack)
 
 const isEqual = (left, right) =>
