@@ -27,33 +27,7 @@ match(props)(
   when({ data })(<Page {...props} />),
   otherwise(<Logout />)
 )
-```
-
-```js
-match(vector)(
-  when({ x, y, z })(({ x, y, z }) => Math.hypot(x, y, z)),
-  when({ x, y })(({ x, y }) => Math.hypot(x, y)),
-  otherwise(vector => vector.length)
-)
-```
-
-```js
-match(['', '2', undefined])(
-  when(['1', _, _, _])('one'),
-  when([_, '2', _, _])('two'),
-  otherwise('nope')
-)
-```
-
-```js
-match('1 + 2')(
-  when(/(?<left>\d+) \+ (?<right>\d+)/)
-    (({ groups: { left, right } }) => {
-      return add(left, right)
-    }),
-
-  otherwise("I couldn't parse that!")
-)
+// <Loading />
 ```
 
 ```js
@@ -65,6 +39,37 @@ match(res)(
 
   when({ status: 404 })('JSON not found')
 )
+// size is 42
+```
+
+```js
+match(['', '2', undefined])(
+  when(['1', _, _, _])('one'),
+  when([_, '2', _, _])('two'),
+  otherwise('nope')
+)
+// "two"
+```
+
+```js
+match('1 + 2')(
+  when(/(?<left>\d+) \+ (?<right>\d+)/)
+    (({ groups: { left, right } }) => {
+      return add(left, right)
+    }),
+
+  otherwise("I couldn't parse that!")
+)
+// 3
+```
+
+```js
+match(vector)(
+  when({ x, y, z })(({ x, y, z }) => Math.hypot(x, y, z)),
+  when({ x, y })(({ x, y }) => Math.hypot(x, y)),
+  otherwise(vector => vector.length)
+)
+// 3.14
 ```
 
 Also provides `against(...)(value)`:
