@@ -53,7 +53,7 @@ const found = (needle, haystack) =>
     : isEqual(needle, haystack)
 
 const isEqual = (left, right) =>
-  isPojo(left)
+  isPojo(left) || isArray(left)
     ? found(left, right)
     : isFunction(left)
     ? left(right)

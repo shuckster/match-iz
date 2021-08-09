@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Updated
 
 - Will do the right thing with `NaN`
+- Can handle sub-arrays as well as sub-pojos
 
 ## [1.6.0] - 2021-08-09
 

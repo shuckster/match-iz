@@ -456,6 +456,8 @@ const testCases = [
         { input: [1, NaN], expecting: '1 NaN' },
         { input: [2, NaN], expecting: '2 NaN' },
         { input: [3, NaN], expecting: '3 NaN' },
+        { input: [4, NaN, [NaN]], expecting: '4 NaN' },
+        { input: [4, NaN, [NaN, 'b']], expecting: '5 NaN' }
       ],
       run: (assertCase, input) => {
         assertCase(
@@ -463,6 +465,8 @@ const testCases = [
             when([1, NaN])('1 NaN'),
             when([2, isNaN])('2 NaN'),
             when([3, Number.isNaN])('3 NaN'),
+            when([4, Number.isNaN, [NaN]])('4 NaN'),
+            when([4, isNaN, [NaN, 'b']])('5 NaN'),
             otherwise('oops')
           )
         )
