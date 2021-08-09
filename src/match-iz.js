@@ -52,14 +52,14 @@ const found = (needle, haystack) =>
       : needle.some(thread => found(thread, haystack))
     : isEqual(needle, haystack)
 
-const isEqual = (left, right) =>
-  isPojo(left) || isArray(left)
-    ? found(left, right)
-    : isFunction(left)
-    ? left(right)
-    : isString(right) && isRegExp(left)
-    ? left.test(right)
-    : left === right || [left, right].every(Number.isNaN)
+const isEqual = (needle, haystack) =>
+  isPojo(needle) || isArray(needle)
+    ? found(needle, haystack)
+    : isFunction(needle)
+    ? needle(haystack)
+    : isString(haystack) && isRegExp(needle)
+    ? needle.test(haystack)
+    : needle === haystack || [needle, haystack].every(Number.isNaN)
 
 //
 // Matchers
