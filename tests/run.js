@@ -450,6 +450,26 @@ const testCases = [
     }
   ],
   [
+    'Can match NaN, sub-arrays',
+    {
+      cases: [
+        { input: [1, NaN], expecting: '1 NaN' },
+        { input: [2, NaN], expecting: '2 NaN' },
+        { input: [3, NaN], expecting: '3 NaN' },
+      ],
+      run: (assertCase, input) => {
+        assertCase(
+          match(input)(
+            when([1, NaN])('1 NaN'),
+            when([2, isNaN])('2 NaN'),
+            when([3, Number.isNaN])('3 NaN'),
+            otherwise('oops')
+          )
+        )
+      }
+    }
+  ],
+  [
     'Logical OR',
     {
       cases: [

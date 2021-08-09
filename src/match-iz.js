@@ -59,7 +59,7 @@ const isEqual = (left, right) =>
     ? left(right)
     : isString(right) && isRegExp(left)
     ? left.test(right)
-    : left === right
+    : left === right || [left, right].every(Number.isNaN)
 
 //
 // Matchers
