@@ -44,8 +44,9 @@ match(res)(
 
 ```js
 match(['', '2', undefined])(
-  when(['1', _, _, _])('one'),
-  when([_, '2', _, _])('two'),
+  when(['1', _, _])('one'),
+  when([_, '2', _, _])('two, with four items'),
+  when([_, '2', _])('two'),
   otherwise('nope')
 )
 // "two"
@@ -338,13 +339,14 @@ match(2)(
 // "ok!"
 ```
 
-Since v1.5.0: If both `match` and `when` values are arrays, the contents will be compared up to the length of the `when` array, applying any contained predicates:
+Since v1.5.0: If both `match` and `when` values are arrays, the contents will be compared (applying any predicates in the `when`):
 
 ```js
 const { empty: _ } = matchiz
 
 match(['', '2', undefined])(
   when(['1', _, _])('one'),
+  when([_, '2', _, _])('two, with four items'),
   when([_, '2', _])('two'),
   otherwise('nope')
 )

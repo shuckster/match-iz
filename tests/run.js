@@ -425,14 +425,13 @@ const testCases = [
     'Matching an array against an array instead of literals/objects',
     {
       cases: [
-        { input: ['1'], expecting: 'one' },
-        { input: ['1', ''], expecting: 'one' },
-        { input: ['1', '', ''], expecting: 'one' },
+        { input: ['1', '', undefined, ''], expecting: 'one' },
         { input: ['1', '', '', '!'], expecting: 'nope' },
-        { input: ['', '2'], expecting: 'two' },
-        { input: ['', '2', ''], expecting: 'two' },
-        { input: [undefined, '2', ''], expecting: 'two' },
-        { input: ['', '2', undefined], expecting: 'two' },
+        { input: ['', '2'], expecting: 'two, two items' },
+        { input: ['', '2', '', ''], expecting: 'two, four items' },
+        { input: ['', '2', ''], expecting: 'two, three items' },
+        { input: [undefined, '2', ''], expecting: 'two, three items' },
+        { input: ['', '2', undefined], expecting: 'two, three items' },
         { input: ['', []], expecting: 'nope' },
         { input: 'fish', expecting: 'nope' }
       ],
@@ -441,7 +440,9 @@ const testCases = [
         assertCase(
           match(input)(
             when(['1', _, _, _])('one'),
-            when([_, '2', _, _])('two'),
+            when([_, '2', _, _])('two, four items'),
+            when([_, '2'])('two, two items'),
+            when([_, '2', _])('two, three items'),
             otherwise('nope')
           )
         )

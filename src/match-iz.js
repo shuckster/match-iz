@@ -47,7 +47,8 @@ const found = (needle, haystack) =>
     ? Object.keys(needle).every(key => isEqual(needle[key], haystack?.[key]))
     : isArray(needle)
     ? isArray(haystack)
-      ? needle.every((one, index) => isEqual(one, haystack?.[index]))
+      ? needle.length === haystack.length &&
+        needle.every((one, index) => isEqual(one, haystack?.[index]))
       : needle.some(thread => found(thread, haystack))
     : isEqual(needle, haystack)
 
