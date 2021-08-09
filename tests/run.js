@@ -422,6 +422,29 @@ const testCases = [
     }
   ],
   [
+    'Logical OR',
+    {
+      cases: [
+        {
+          input: { message: 'hello world!', number: 42 },
+          expecting: "that's no good"
+        },
+        {
+          input: { message: 'hello wrrld!', number: 42 },
+          expecting: 'ok!'
+        }
+      ],
+      run: (assertCase, input) => {
+        assertCase(
+          match(input)(
+            when({ message: endsWith('world!'), number: 42 })("that's no good"),
+            when([{ message: endsWith('world!') }, { number: 42 }])('ok!')
+          )
+        )
+      }
+    }
+  ],
+  [
     'empty() === undefined',
     {
       cases: [{ input: undefined, expecting: 'empty' }],
