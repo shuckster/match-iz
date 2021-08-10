@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.2] - 2021-08-10
+
+### Fixed
+
+- Use ESM for source/build files
+- Fix ESM build (import { ... } from 'match-iz' was not working right)
+
 ## [1.6.1] - 2021-08-09
 
 ### Updated

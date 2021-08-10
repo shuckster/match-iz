@@ -1,6 +1,7 @@
-const { strict } = require('assert')
-const { isPojo, isArray } = require('../src/types')
-const lib = require('../src/match-iz')
+import { strict } from 'assert'
+
+import { isPojo, isArray } from '../src/types.js'
+import * as lib from '../src/match-iz.js'
 
 const { match, against, when, otherwise, spread } = lib
 const {

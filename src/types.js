@@ -13,7 +13,7 @@ const isPojo = obj =>
     ? false
     : Object.getPrototypeOf(obj) === objectPrototype
 
-module.exports = {
+export {
   isArguments,
   isArray,
   isFunction,

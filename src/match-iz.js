@@ -1,11 +1,11 @@
-const {
+import {
   isArray,
   isFunction,
   isNumber,
   isRegExp,
   isString,
   isPojo
-} = require('./types')
+} from './types.js'
 
 //
 // match-iz
@@ -102,13 +102,12 @@ function ifNumber(fn) {
   return value => isNumber(value) && fn(value)
 }
 
-module.exports = {
+export {
   // match-iz
   against,
   match,
   when,
   otherwise,
-
   // matching helpers
   defined,
   empty,
@@ -123,7 +122,6 @@ module.exports = {
   truthy,
   falsy,
   spread,
-
   // types
   isArray,
   isFunction,

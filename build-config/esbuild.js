@@ -2,11 +2,12 @@
 // Build with esbuild
 //
 
-const fs = require('fs')
-const esbuild = require('esbuild')
-const pkg = require('../package.json')
+import fs from 'fs'
+import esbuild from 'esbuild'
 
-const { paths, banner, outputs } = require('./common')
+const pkg = JSON.parse(fs.readFileSync('./package.json'))
+
+import { paths, banner, outputs } from './common.js'
 
 function main() {
   Promise.all(

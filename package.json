@@ -11,6 +11,7 @@
     "match-when",
     "otherwise"
   ],
+  "type": "module",
   "types": "index.d.ts",
   "main": "./dist/match-iz.cjs.js",
   "module": "dist/match-iz.esm.js",

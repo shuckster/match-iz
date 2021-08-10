@@ -1,8 +1,8 @@
-const { composePaths } = require('compose-paths')
+import { composePaths } from 'compose-paths'
 
 const paths = composePaths(`
 
-  ${__dirname}/../
+  ${process.env.PWD}/
 
     /src
       /match-iz.js             = SRC
@@ -39,8 +39,4 @@ function banner(pkg, build = '') {
 ${build}`
 }
 
-module.exports = {
-  paths,
-  outputs,
-  banner
-}
+export { paths, outputs, banner }
