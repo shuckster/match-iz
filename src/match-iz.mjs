@@ -5,7 +5,7 @@ import {
   isRegExp,
   isString,
   isPojo
-} from './types.js'
+} from './types.mjs'
 
 //
 // match-iz

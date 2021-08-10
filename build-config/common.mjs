@@ -5,7 +5,7 @@ const paths = composePaths(`
   ${process.env.PWD}/
 
     /src
-      /match-iz.js             = SRC
+      /match-iz.mjs            = SRC
 
     /dist
       /match-iz.esm.js         = DIST_ESM

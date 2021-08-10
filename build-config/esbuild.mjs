@@ -7,7 +7,7 @@ import esbuild from 'esbuild'
 
 const pkg = JSON.parse(fs.readFileSync('./package.json'))
 
-import { paths, banner, outputs } from './common.js'
+import { paths, banner, outputs } from './common.mjs'
 
 function main() {
   Promise.all(

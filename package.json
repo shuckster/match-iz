@@ -11,7 +11,6 @@
     "match-when",
     "otherwise"
   ],
-  "type": "module",
   "types": "index.d.ts",
   "main": "./dist/match-iz.cjs.js",
   "module": "dist/match-iz.esm.js",
@@ -41,11 +40,11 @@
     "email": "bugs+match-iz@conans.co.uk"
   },
   "scripts": {
-    "test": "node ./tests/run.js",
+    "test": "node ./tests/run.mjs",
     "build": "pnpm run build:esbuild",
     "build:clean": "rimraf dist/; mkdir -p dist/",
     "build:all": "pnpm run build:clean ; pnpm run build",
-    "build:esbuild": "node ./build-config/esbuild.js"
+    "build:esbuild": "node ./build-config/esbuild.mjs"
   },
   "devDependencies": {
     "compose-paths": "^1.0.8",

@@ -1,7 +1,7 @@
 import { strict } from 'assert'
 
-import { isPojo, isArray } from '../src/types.js'
-import * as lib from '../src/match-iz.js'
+import { isPojo, isArray } from '../src/types.mjs'
+import * as lib from '../src/match-iz.mjs'
 
 const { match, against, when, otherwise, spread } = lib
 const {

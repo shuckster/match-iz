@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.3] - 2021-08-10
+
+### Fixed
+
+- We're exposing CJS as well as ESM, so use .mjs instead of "type": "module" for build/source files. Fixes CJS imports
+
 ## [1.6.2] - 2021-08-10
 
 ### Fixed
