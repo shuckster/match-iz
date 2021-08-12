@@ -103,12 +103,16 @@ function ifNumber(fn) {
 }
 
 export {
+  //
   // match-iz
+  //
   against,
   match,
   when,
   otherwise,
+  //
   // matching helpers
+  //
   defined,
   empty,
   gt,
@@ -122,7 +126,9 @@ export {
   truthy,
   falsy,
   spread,
+  //
   // types
+  //
   isArray,
   isFunction,
   isNumber,
