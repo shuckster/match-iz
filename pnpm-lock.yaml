@@ -1,14 +1,14 @@
 lockfileVersion: 5.3
 
 specifiers:
-  compose-paths: ^1.0.8
+  compose-paths: ^1.1.0
   esbuild: ^0.12.19
   eslint: ^7.32.0
   rimraf: ^3.0.2
   typescript: ^4.3.5
 
 devDependencies:
-  compose-paths: 1.0.8
+  compose-paths: 1.1.0
   esbuild: 0.12.19
   eslint: 7.32.0
   rimraf: 3.0.2
@@ -189,8 +189,8 @@ packages:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
     dev: true
 
-  /compose-paths/1.0.8:
-    resolution: {integrity: sha512-okkVITkIqalRxV3m1d9ZFu0l8YjlvdMVe5jVMSjU873IlCRqEBlvDJbUpCTLc4lGeuJ5L0SO86bIpEnF+Jvfwg==}
+  /compose-paths/1.1.0:
+    resolution: {integrity: sha512-1Nzbq2Q4Lb62QkeqMJ3yLgja/Q2XkPFwyZ2q2kCcpneEMsPtAGSkqHxwikHMXgl2ZYXwIoYnmIpwlOgxLHxgjA==}
     engines: {node: '>=10'}
     dev: true
 

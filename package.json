@@ -47,7 +47,7 @@
     "build:esbuild": "node ./build-config/esbuild.mjs"
   },
   "devDependencies": {
-    "compose-paths": "^1.0.8",
+    "compose-paths": "^1.1.0",
     "esbuild": "^0.12.19",
     "eslint": "^7.32.0",
     "rimraf": "^3.0.2",
