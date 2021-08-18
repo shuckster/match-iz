@@ -2,14 +2,14 @@ lockfileVersion: 5.3
 
 specifiers:
   compose-paths: ^1.1.0
-  esbuild: ^0.12.19
+  esbuild: ^0.12.20
   eslint: ^7.32.0
   rimraf: ^3.0.2
   typescript: ^4.3.5
 
 devDependencies:
   compose-paths: 1.1.0
-  esbuild: 0.12.19
+  esbuild: 0.12.20
   eslint: 7.32.0
   rimraf: 3.0.2
   typescript: 4.3.5
@@ -43,7 +43,7 @@ packages:
       ajv: 6.12.6
       debug: 4.3.2
       espree: 7.3.1
-      globals: 13.10.0
+      globals: 13.11.0
       ignore: 4.0.6
       import-fresh: 3.3.0
       js-yaml: 3.14.1
@@ -241,8 +241,8 @@ packages:
       ansi-colors: 4.1.1
     dev: true
 
-  /esbuild/0.12.19:
-    resolution: {integrity: sha512-5NuT1G6THW7l3fsSCDkcPepn24R0XtyPjKoqKHD8LfhqMXzCdz0mrS9HgO6hIhzVT7zt0T+JGbzCqF5AH8hS9w==}
+  /esbuild/0.12.20:
+    resolution: {integrity: sha512-u7+0qTo9Z64MD9PhooEngCmzyEYJ6ovFhPp8PLNh3UasR5Ihjv6HWVXqm8uHmasdQlpsAf0IsY4U0YVUfCpt4Q==}
     hasBin: true
     requiresBuild: true
     dev: true
@@ -307,7 +307,7 @@ packages:
       file-entry-cache: 6.0.1
       functional-red-black-tree: 1.0.1
       glob-parent: 5.1.2
-      globals: 13.10.0
+      globals: 13.11.0
       ignore: 4.0.6
       import-fresh: 3.3.0
       imurmurhash: 0.1.4
@@ -432,8 +432,8 @@ packages:
       path-is-absolute: 1.0.1
     dev: true
 
-  /globals/13.10.0:
-    resolution: {integrity: sha512-piHC3blgLGFjvOuMmWZX60f+na1lXFDhQXBf1UYp2fXPXqvEUbOhNwi6BsQ0bQishwedgnjkwv1d9zKf+MWw3g==}
+  /globals/13.11.0:
+    resolution: {integrity: sha512-08/xrJ7wQjK9kkkRoI3OFUBbLx4f+6x3SGwcPvQ0QH6goFDrOU2oyAWrmh3dJezu65buo+HBMzAMQy6rovVC3g==}
     engines: {node: '>=8'}
     dependencies:
       type-fest: 0.20.2
