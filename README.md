@@ -20,107 +20,6 @@
 
 Functional, declarative `pattern-matching` inspired by the [spec proposed by TC39](https://github.com/tc39/proposal-pattern-matching).
 
-```jsx
-match(props)(
-  when({ loading })(<Loading />),
-  when({ error })(<Error {...props} />),
-  when({ data })(<Page {...props} />),
-  otherwise(<Logout />)
-)
-// <Loading />
-```
-
-```js
-match(res)(
-  when({ status: 200, headers: { 'Content-Length': isInteger } })
-    (({ headers: { 'Content-Length': size } }) => {
-      return `size is ${size}`
-    }),
-
-  when({ status: 404 })('JSON not found')
-)
-// size is 42
-```
-
-```js
-match(['', '2', undefined])(
-  when(['1', _, _])('one'),
-  when([_, '2', _, _])('two, with four items'),
-  when([_, '2', _])('two'),
-  otherwise('nope')
-)
-// "two"
-```
-
-```js
-match('1 + 2')(
-  when(/(?<left>\d+) \+ (?<right>\d+)/)
-    (({ groups: { left, right } }) => {
-      return add(left, right)
-    }),
-
-  otherwise("I couldn't parse that!")
-)
-// 3
-```
-
-```js
-match(vector)(
-  when({ x, y, z })(({ x, y, z }) => Math.hypot(x, y, z)),
-  when({ x, y })(({ x, y }) => Math.hypot(x, y)),
-  otherwise(vector => vector.length)
-)
-// 3.14
-```
-
-Also provides `against(...)(value)`:
-
-```js
-lines.filter(against(
-  when(/remove-this-one/)(false), 
-  when(/and-this-one-too/)(false), 
-  when(endsWith('-and-another'))(false), 
-  otherwise(true)
-))
-```
-
-```js
-const memoize = (fn, cache = new Map()) =>
-  x => cache.has(x) 
-     ? cache.get(x) 
-     : cache.set(x, fn(x)).get(x)
-
-const fib = memoize(
-  against(
-    when(lte(0))(0),
-    when(1)(1),
-    otherwise(x => fib(x - 1) + fib(x - 2))
-  )
-)
-
-fib(35)
-```
-
-```js
-const nargs = fn => (...args) => fn(args)
-
-numbers.sort(nargs(
-  against(
-    when(([a, b]) => a < b)(-1),
-    when(([a, b]) => a === b)(0),
-    when(([a, b]) => a > b)(1)
-  )
-))
-```
-
-Full examples + documentation below.
-
-## Installation, usage
-
-```cli
-$ pnpm i match-iz
-```
-
 ```js
 import { match, when, against, otherwise } from 'match-iz'
 ```
@@ -134,28 +33,127 @@ import { match, when, against, otherwise } from 'match-iz'
 
 The library is about 100 SLOC, just over 1.7K minified.
 
-## Full examples
+Examples:
 
-All examples assume the following header:
+### Front-end component:
+
+```jsx
+match(props)(
+  when({ loading })(<Loading />),
+  when({ error })(<Error {...props} />),
+  when({ data })(<Page {...props} />),
+  otherwise(<Logout />)
+)
+// <Loading />
+```
+
+<details>
+<summary>Full example</summary>
+
+```jsx
+import * as matchiz from 'match-iz'
+
+const { match, when, otherwise } = matchiz
+const { spread, defined } = matchiz
+
+function AccountPage(props) {
+  const { loading, error, data } = spread(defined)
+
+  return match(props)(
+    when({ loading })(<Loading />),
+    when({ error })(<Error {...props} />),
+    when({ data })(<Page {...props} />),
+    otherwise(<Logout />)
+  )
+}
+```
+
+</details>
+
+&nbsp;
+
+### Reducer:
 
 ```js
-import * as matchiz from 'match-iz'
-const { match, when, otherwise } = matchiz
+match(action)(
+  when({ type: 'add-todo' })(({ payload: text }) => ({
+    ...state,
+    todos: [...state.todos, { text, completed: false }]
+  })),
+
+  otherwise(state)
+)
 ```
+
+<details>
+<summary>Full example</summary>
+
+```js
+import { match, when, otherwise } from 'match-iz'
+
+const todosReducer = (state, action) =>
+  match(action)(
+    when({ type: 'set-visibility-filter' })(({ payload: visFilter }) => ({
+      ...state,
+      visFilter
+    })),
+
+    when({ type: 'add-todo' })(({ payload: text }) => ({
+      ...state,
+      todos: [...state.todos, { text, completed: false }]
+    })),
+
+    when({ type: 'toggle-todo' })(({ payload: index }) => ({
+      ...state,
+      todos: state.todos.map((todo, i) =>
+        i !== index
+          ? todo
+          : {
+              ...todo,
+              completed: !todo.completed
+            }
+      )
+    })),
+
+    otherwise(state)
+  )
+```
+
+</details>
+
+&nbsp;
 
 ### Fetching:
 
 ```js
+match(res)(
+  when({ status: 200, headers: { 'Content-Length': isInteger } })(
+    ({ headers: { 'Content-Length': size } }) => {
+      return `size is ${size}`
+    }
+  ),
+
+  when({ status: 404 })('JSON not found')
+)
+// size is 42
+```
+
+<details>
+<summary>Full example</summary>
+
+```js
+import * as matchiz from 'match-iz'
+
+const { match, when, otherwise } = matchiz
 const { gte, inRange } = matchiz
 
 async function getJsonLength() {
   const res = await fetch('/json')
   return match(res)(
     // when res.status === 200, get res.headers."Content-Length"
-    when({ status: 200 })
-      (({ headers: { 'Content-Length': s } = {} }) => {
-        return `size is ${s}`
-      }),
+    when({ status: 200 })(({ headers: { 'Content-Length': s } = {} }) => {
+      return `size is ${s}`
+    }),
 
     // Custom "pattern" predicate
     when(({ status }) => status >= 500)(() => {
@@ -180,36 +178,37 @@ async function getJsonLength() {
 }
 ```
 
-### Front-end component:
+</details>
 
-```jsx
-const { spread, defined } = matchiz
-
-function AccountPage(props) {
-  const { loading, error, data } = spread(defined)
-
-  return match(props)(
-    when({ loading })(<Loading />),
-    when({ error })(<Error {...props} />),
-    when({ data })(<Page {...props} />),
-    otherwise(<Logout />)
-  )
-}
-```
+&nbsp;
 
 ### Regular Expressions:
 
 ```js
 match('1 + 2')(
-  when(/(?<firstName>\w+) (?<lastName>\w+)/)
-    (({ groups: { lastName } }) => {
-      return `Ahoy, Captain ${lastName}`
-    }),
+  when(/(?<left>\d+) \+ (?<right>\d+)/)(({ groups: { left, right } }) =>
+    add(left, right)
+  ),
 
-  when(/(?<left>\d+) \+ (?<right>\d+)/)
-    (({ groups: { left, right } }) => {
-      return add(left, right)
-    }),
+  otherwise("I couldn't parse that!")
+)
+// 3
+```
+
+<details>
+<summary>Full example</summary>
+
+```js
+import { match, when, otherwise } from 'match-iz'
+
+match('1 + 2')(
+  when(/(?<firstName>\w+) (?<lastName>\w+)/)(({ groups: { lastName } }) => {
+    return `Ahoy, Captain ${lastName}`
+  }),
+
+  when(/(?<left>\d+) \+ (?<right>\d+)/)(({ groups: { left, right } }) => {
+    return add(left, right)
+  }),
 
   otherwise("I couldn't parse that!")
 )
@@ -219,41 +218,28 @@ function add(left, right) {
 }
 ```
 
-### Reducer:
+</details>
 
-```js
-function todosReducer(state, action) {
-  return match(action)(
-    when({ type: 'set-visibility-filter' })
-      (({ payload: visFilter }) => ({
-        ...state,
-        visFilter
-      })),
-
-    when({ type: 'add-todo' })
-      (({ payload: text }) => ({
-        ...state,
-        todos: [...state.todos, { text, completed: false }]
-      })),
-
-    when({ type: 'toggle-todo' })
-      (({ payload: index }) => ({
-        ...state,
-        todos: state.todos.map((todo, i) =>
-          i !== index ? todo : { 
-            ...todo, completed: !todo.completed 
-          }
-        )
-      })),
-
-    otherwise(state)
-  )
-}
-```
+&nbsp;
 
 ### Overloading:
 
 ```js
+match(vector)(
+  when({ x, y, z })(({ x, y, z }) => Math.hypot(x, y, z)),
+  when({ x, y })(({ x, y }) => Math.hypot(x, y)),
+  otherwise(vector => vector.length)
+)
+// 3.14
+```
+
+<details>
+<summary>Full example</summary>
+
+```js
+import * as matchiz from 'match-iz'
+
+const { match, when, otherwise } = matchiz
 const { spread, defined } = matchiz
 
 function getLength(vector) {
@@ -267,17 +253,104 @@ function getLength(vector) {
 }
 ```
 
+</details>
+
+&nbsp;
+
 ### Matching array contents (since v1.5.0):
 
 ```js
+match(['', '2', undefined])(
+  when(['1', _, _])('one'),
+  when([_, '2', _, _])('two, with four items'),
+  when([_, '2', _])('two'),
+  otherwise('nope')
+)
+// "two"
+```
+
+<details>
+<summary>Full example</summary>
+
+```js
+import * as matchiz from 'match-iz'
+
+const { match, when, otherwise } = matchiz
 const { empty: _ } = matchiz
 
 match(['', '2', undefined])(
   when(['1', _, _])('one'),
+  when([_, '2', _, _])('two, with four items'),
   when([_, '2', _])('two'),
   otherwise('nope')
 )
 ```
+
+</details>
+
+&nbsp;
+
+### Also provides `against(...)(value)`:
+
+```js
+lines.filter(
+  against(
+    when(/remove-this-one/)(false),
+    when(/and-this-one-too/)(false),
+    when(endsWith('-and-another'))(false),
+    otherwise(true)
+  )
+)
+```
+
+<details>
+<summary>See a couple more:</summary>
+
+```js
+import { against, when, otherwise } from 'match-iz'
+
+// Fibonnacci
+
+const fib = memoize(
+  against(
+    when(lte(0))(0),
+    when(1)(1),
+    otherwise(x => fib(x - 1) + fib(x - 2))
+  )
+)
+
+fib(35)
+
+function memoize(fn, cache = new Map()) {
+  return x => (cache.has(x) ? cache.get(x) : cache.set(x, fn(x)).get(x))
+}
+```
+
+```js
+import { against, when, otherwise } from 'match-iz'
+
+// Sorting
+
+numbers.sort(
+  nargs(
+    against(
+      when(([a, b]) => a < b)(-1),
+      when(([a, b]) => a === b)(0),
+      when(([a, b]) => a > b)(1)
+    )
+  )
+)
+
+function nargs() {
+  return fn =>
+    (...args) =>
+      fn(args)
+}
+```
+
+</details>
+
+&nbsp;
 
 # Documentation
 
@@ -333,9 +406,7 @@ match({ message: 'hello wrrld!', number: 42 })(
 // "ok!"
 
 // 1 OR 2 OR 'chili dogs'
-match(2)(
-  when([1, 2, 'chili dogs'])('ok!')
-)
+match(2)(when([1, 2, 'chili dogs'])('ok!'))
 // "ok!"
 ```
 
@@ -417,16 +488,24 @@ Here's the full list:
 ```js
 const {
   // numbers
-  gt, lt, gte, lte, inRange,
+  gt,
+  lt,
+  gte,
+  lte,
+  inRange,
 
   // strings
-  startsWith, endsWith,
+  startsWith,
+  endsWith,
 
   // strings + arrays
   includes,
 
   // truthiness
-  empty, falsy, defined, truthy
+  empty,
+  falsy,
+  defined,
+  truthy
 } = matchiz
 ```
 
@@ -460,7 +539,7 @@ const {
   isNumber,
   isRegExp,
   isString,
-  isPojo,    // https://google.com/search?q=javascript+pojo
+  isPojo // https://google.com/search?q=javascript+pojo
 } = matchiz
 ```
 
@@ -549,9 +628,7 @@ const fontSize = memoize(
   )
 )
 
-;[100, 200, 300, 400, 500, 
-  600, 700, 800, 900, 901
-].forEach(size => {
+;[100, 200, 300, 400, 500, 600, 700, 800, 900, 901].forEach(size => {
   console.log(`${size} = `, fontSize(size))
 })
 ```
@@ -560,12 +637,14 @@ const fontSize = memoize(
 
 ```js
 const html = lines
-  .filter(against(
-    when(/remove-this-one/)(false), 
-    when(/and-this-one-too/)(false), 
-    when(endsWith('-and-another'))(false), 
-    otherwise(true)
-  ))
+  .filter(
+    against(
+      when(/remove-this-one/)(false),
+      when(/and-this-one-too/)(false),
+      when(endsWith('-and-another'))(false),
+      otherwise(true)
+    )
+  )
   .join('\n')
 ```
 
