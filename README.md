@@ -160,7 +160,7 @@ async function getJsonLength() {
       return 'Server error!'
     }),
 
-    // Literal return instead of "handler" predicate
+    // Can return a literal as well as using a "handler" function
     when({ status: 404 })('JSON not found'),
 
     // when res.status >= 400...
