@@ -2,14 +2,14 @@ lockfileVersion: 5.3
 
 specifiers:
   compose-paths: ^1.1.0
-  esbuild: ^0.12.20
+  esbuild: ^0.12.23
   eslint: ^7.32.0
   rimraf: ^3.0.2
   typescript: ^4.3.5
 
 devDependencies:
   compose-paths: 1.1.0
-  esbuild: 0.12.20
+  esbuild: 0.12.23
   eslint: 7.32.0
   rimraf: 3.0.2
   typescript: 4.3.5
@@ -241,8 +241,8 @@ packages:
       ansi-colors: 4.1.1
     dev: true
 
-  /esbuild/0.12.20:
-    resolution: {integrity: sha512-u7+0qTo9Z64MD9PhooEngCmzyEYJ6ovFhPp8PLNh3UasR5Ihjv6HWVXqm8uHmasdQlpsAf0IsY4U0YVUfCpt4Q==}
+  /esbuild/0.12.23:
+    resolution: {integrity: sha512-qvS4aKnmKikoWGscd5lVAzgobMovlH/JhaWitRiQ8xJx0x1Fym0pqVjMFs43Nvff8WpibeWm+fWoLK88T1U0Xw==}
     hasBin: true
     requiresBuild: true
     dev: true
