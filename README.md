@@ -1,3 +1,5 @@
+<center>
+
 # match-iz
 
 <p>
@@ -19,6 +21,8 @@
 </p>
 
 Functional, declarative `pattern-matching` inspired by the [spec proposed by TC39](https://github.com/tc39/proposal-pattern-matching).
+
+</center>
 
 ```js
 import { match, when, against, otherwise } from 'match-iz'
