@@ -1,8 +1,6 @@
-<center>
+<h1 align="center">match-iz</h1>
 
-# match-iz
-
-<p>
+<p align="center">
   <a href="https://github.com/shuckster/match-iz/blob/master/LICENSE">
     <img
       alt="MIT license"
@@ -21,8 +19,6 @@
 </p>
 
 Functional, declarative `pattern-matching` inspired by the [spec proposed by TC39](https://github.com/tc39/proposal-pattern-matching).
-
-</center>
 
 ```js
 import { match, when, against, otherwise } from 'match-iz'
