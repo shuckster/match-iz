@@ -543,6 +543,17 @@ const {
 } = matchiz
 ```
 
+Since `1.7.0`, `not()` will negate the output of a function:
+
+```js
+const { not } = matchiz
+
+match(literal)(
+  when(not(inRange(100, 200)))( ... ),
+  when({ number: not(42) })( ... )
+)
+```
+
 Equality is achieved with literals:
 
 ```js

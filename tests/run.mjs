@@ -5,6 +5,7 @@ import * as lib from '../src/match-iz.mjs'
 
 const { match, against, when, otherwise, spread } = lib
 const {
+  not,
   defined,
   empty,
   gt,
@@ -492,6 +493,29 @@ const testCases = [
           match(input)(
             when({ message: endsWith('world!'), number: 42 })("that's no good"),
             when([{ message: endsWith('world!') }, { number: 42 }])('ok!')
+          )
+        )
+      }
+    }
+  ],
+  [
+    'not()',
+    {
+      cases: [
+        { input: 0, expecting: 'a' },
+        { input: 10, expecting: 'b' },
+        { input: 20, expecting: 'c' },
+        { input: 30, expecting: 'd' },
+        { input: 40, expecting: 'e' }
+      ],
+      run: (assertCase, input) => {
+        assertCase(
+          match(input)(
+            when(not(gte(10)))('a'),
+            when(not(gte(20)))('b'),
+            when(not(gte(30)))('c'),
+            when(not(40))('d'),
+            when(40)('e')
           )
         )
       }

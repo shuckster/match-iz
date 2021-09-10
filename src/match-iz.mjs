@@ -84,6 +84,11 @@ const includes = o => ifArrayOrString(value => value.includes(o))
 const truthy = value => !!value
 const falsy = value => !value
 
+const not = fnOrLiteral =>
+  isFunction(fnOrLiteral)
+    ? value => !fnOrLiteral(value)
+    : value => !Object.is(value, fnOrLiteral)
+
 //
 // Helpers
 //
@@ -113,6 +118,7 @@ export {
   //
   // matching helpers
   //
+  not,
   defined,
   empty,
   gt,
