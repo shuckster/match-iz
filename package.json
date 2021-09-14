@@ -48,9 +48,9 @@
   },
   "devDependencies": {
     "compose-paths": "^1.1.0",
-    "esbuild": "^0.12.26",
+    "esbuild": "^0.12.28",
     "eslint": "^7.32.0",
     "rimraf": "^3.0.2",
-    "typescript": "^4.4.2"
+    "typescript": "^4.4.3"
   }
 }
