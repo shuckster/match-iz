@@ -44,17 +44,12 @@ const when = needle => handler => haystack => ({
 
 const found = (needle, haystack) =>
   isPojo(needle)
-    ? Object.keys(needle).every(key => isEqual(needle[key], haystack?.[key]))
+    ? Object.keys(needle).every(key => found(needle[key], haystack?.[key]))
     : isArray(needle)
     ? isArray(haystack)
       ? needle.length === haystack.length &&
-        needle.every((one, index) => isEqual(one, haystack?.[index]))
+        needle.every((one, index) => found(one, haystack?.[index]))
       : needle.some(thread => found(thread, haystack))
-    : isEqual(needle, haystack)
-
-const isEqual = (needle, haystack) =>
-  isPojo(needle) || isArray(needle)
-    ? found(needle, haystack)
     : isFunction(needle)
     ? needle(haystack)
     : isString(haystack) && isRegExp(needle)
@@ -84,10 +79,7 @@ const includes = o => ifArrayOrString(value => value.includes(o))
 const truthy = value => !!value
 const falsy = value => !value
 
-const not = needle =>
-  isFunction(needle)
-    ? haystack => !needle(haystack)
-    : haystack => !found(needle, haystack)
+const not = needle => haystack => !found(needle, haystack)
 
 //
 // Helpers
