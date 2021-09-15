@@ -60,6 +60,8 @@ const found = (needle, haystack) =>
 // Matchers
 //
 
+const not = needle => haystack => !found(needle, haystack)
+
 const empty = value =>
   value !== value ||
   (!value && value !== 0 && value !== false) ||
@@ -78,8 +80,6 @@ const endsWith = s => ifString(value => value.endsWith(s))
 const includes = o => ifArrayOrString(value => value.includes(o))
 const truthy = value => !!value
 const falsy = value => !value
-
-const not = needle => haystack => !found(needle, haystack)
 
 //
 // Helpers
