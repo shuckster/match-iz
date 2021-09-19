@@ -59,7 +59,11 @@ declare module 'match-iz' {
   export function startsWith(text: string): TPredicate
   export function endsWith(text: string): TPredicate
   export function includes(content: any): TPredicate
+
   export function not(value: any): TPredicate
+  export function allOf(...these: any): TPredicate
+  export function anyOf(...these: any): array
+  export function includedIn(...these: any): array
 
   export function isArray(value: any): boolean
   export function isFunction(value: any): boolean

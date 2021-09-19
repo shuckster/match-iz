@@ -5,6 +5,8 @@ import * as lib from '../src/match-iz.mjs'
 
 const { match, against, when, otherwise, spread } = lib
 const {
+  allOf,
+  anyOf,
   not,
   defined,
   empty,
@@ -15,7 +17,8 @@ const {
   inRange,
   startsWith,
   endsWith,
-  includes
+  includes,
+  includedIn
 } = lib
 
 const testCases = [
@@ -476,7 +479,7 @@ const testCases = [
     }
   ],
   [
-    'Logical OR',
+    'anyOf() / OR',
     {
       cases: [
         {
@@ -492,7 +495,30 @@ const testCases = [
         assertCase(
           match(input)(
             when({ message: endsWith('world!'), number: 42 })("that's no good"),
-            when([{ message: endsWith('world!') }, { number: 42 }])('ok!')
+            when(anyOf({ message: endsWith('world!') }, { number: 42 }))('ok!')
+          )
+        )
+      }
+    }
+  ],
+  [
+    'allOf() / AND',
+    {
+      cases: [
+        { input: { option: 'yes', quantity: 1 }, expecting: '1' },
+        { input: { option: 'yes', quantity: 2 }, expecting: '2' },
+        { input: { option: 'yes', quantity: 3 }, expecting: '3' },
+        { input: { array: [1, 2, 3, 4] }, expecting: '4' }
+      ],
+      run: (assertCase, input) => {
+        assertCase(
+          match(input)(
+            when(allOf(isPojo, { option: 'yes' }, { quantity: 1 }))('1'),
+            when(allOf(isPojo, { option: 'yes', quantity: 2 }))('2'),
+            when(allOf(isPojo, { quantity: 3 }, { option: 'yes' }))('3'),
+            when({
+              array: allOf(not(isPojo), Array.isArray, x => x.length === 4)
+            })('4')
           )
         )
       }
@@ -516,6 +542,25 @@ const testCases = [
             when(not(gte(30)))('c'),
             when(not(40))('d'),
             when(40)('e')
+          )
+        )
+      }
+    }
+  ],
+  [
+    'includedIn()',
+    {
+      cases: [
+        { input: 0, expecting: 'a' },
+        { input: 10, expecting: 'b' },
+        { input: 20, expecting: 'c' }
+      ],
+      run: (assertCase, input) => {
+        assertCase(
+          match(input)(
+            when(includedIn([1, 2, 3, 0, 4, 5]))('a'),
+            when(includedIn([1, 2, 3, 10, 4, 5]))('b'),
+            when(includedIn([1, 2, 3, 20, 4, 5]))('c')
           )
         )
       }

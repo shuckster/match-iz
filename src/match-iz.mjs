@@ -61,6 +61,11 @@ const found = (needle, haystack) =>
 //
 
 const not = needle => haystack => !found(needle, haystack)
+const anyOf = (...these) => these.flat()
+const allOf =
+  (...these) =>
+  haystack =>
+    these.flat().every(needle => found(needle, haystack))
 
 const empty = value =>
   value !== value ||
@@ -78,6 +83,8 @@ const inRange = (min, max) => ifNumber(value => value >= min && value <= max)
 const startsWith = s => ifString(value => value.startsWith(s))
 const endsWith = s => ifString(value => value.endsWith(s))
 const includes = o => ifArrayOrString(value => value.includes(o))
+const includedIn = anyOf
+
 const truthy = value => !!value
 const falsy = value => !value
 
@@ -111,6 +118,8 @@ export {
   // matching helpers
   //
   not,
+  anyOf,
+  allOf,
   defined,
   empty,
   gt,
@@ -121,6 +130,7 @@ export {
   startsWith,
   endsWith,
   includes,
+  includedIn,
   truthy,
   falsy,
   spread,

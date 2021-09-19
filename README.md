@@ -554,6 +554,18 @@ match(literal)(
 )
 ```
 
+Since `1.8.0`, `allOf()`, `anyOf()`, `includedIn()`:
+
+```js
+const { allOf, anyOf, includedIn } = matchiz
+
+match(literal)(
+  when(allOf(isNumber, x => x > 10))( ... ),
+  when({ number: not(anyOf(20, 30)) })( ... )
+  when(includedIn([40, 50]))( ... )
+)
+```
+
 Equality is achieved with literals:
 
 ```js
