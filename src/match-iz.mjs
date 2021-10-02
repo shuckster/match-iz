@@ -15,7 +15,7 @@ function match(haystack) {
   return (...needles) => against(...needles)(haystack)
 }
 
-function against(...needles) {
+const against = (...needles) => {
   let result
   return haystack =>
     needles.find(needle => {
@@ -94,17 +94,10 @@ const falsy = value => !value
 
 const spread = fn => new Proxy({}, { get: () => fn })
 
-function ifString(fn) {
-  return value => isString(value) && fn(value)
-}
-
-function ifArrayOrString(fn) {
-  return value => (isArray(value) || isString(value)) && fn(value)
-}
-
-function ifNumber(fn) {
-  return value => isNumber(value) && fn(value)
-}
+const ifString = fn => value => isString(value) && fn(value)
+const ifNumber = fn => value => isNumber(value) && fn(value)
+const ifArrayOrString = fn => value =>
+  (isArray(value) || isString(value)) && fn(value)
 
 export {
   //

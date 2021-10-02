@@ -1,13 +1,13 @@
 const objectPrototype = Object.prototype
 const toString = objectPrototype.toString
-const typeOf = obj => typeof obj
+const typeOf = type => obj => typeof obj === type
 const isArguments = obj => toString.call(obj) === '[object Arguments]'
-const isArray = obj => Array.isArray(obj)
-const isFunction = obj => typeOf(obj) === 'function'
-const isNumber = obj => typeOf(obj) === 'number'
-const isObject = obj => typeOf(obj) === 'object' && obj !== null
+const isArray = Array.isArray
+const isFunction = typeOf('function')
+const isNumber = typeOf('number')
+const isString = typeOf('string')
+const isObject = obj => obj !== null && typeOf('object')(obj)
 const isRegExp = obj => obj instanceof RegExp
-const isString = obj => typeOf(obj) === 'string'
 const isPojo = obj =>
   obj === null || !isObject(obj) || isArguments(obj)
     ? false
