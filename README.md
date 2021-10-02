@@ -354,7 +354,104 @@ function nargs() {
 
 # Documentation
 
-## Core: match / when / otherwise
+## Helpers
+
+You can use these in your `when()`'s:
+
+```js
+match(literal)(
+  when(inRange(100, 200))( ... ),
+  when(startsWith('hello'))( ... ),
+  when(includes('batman'))( ... ),
+  when(includedIn('one', 'two'))( ... ),
+  when(lte(80))( ... ),
+  when(empty)( ... ),
+  when(defined)( ... ),
+)
+
+match(object)(
+  when({ status: inRange(100, 200) })( ... ),
+  when({ text: startsWith('hello') })( ... ),
+  when({ array: includes('batman') })( ... ),
+  when({ string: includedIn('one', 'two') })( ... ),
+  when({ length: lte(80) })( ... ),
+  when({ cup: empty })( ... ),
+  when({ pencil: defined })( ... ),
+)
+```
+
+Here's the full list:
+
+| Numbers | Strings    | Strings/Arrays | Truthiness | Types                                                 | Negate | Combinators |
+| ------- | ---------- | -------------- | ---------- | ----------------------------------------------------- | ------ | ----------- |
+| gt      | startsWith | includes       | empty      | isArray                                               | not    | allOf       |
+| lt      | endsWith   | -              | falsy      | isFunction                                            | -      | anyOf       |
+| gte     | -          | -              | defined    | isNumber                                              | -      | includedIn  |
+| lte     | -          | -              | truthy     | isRegExp                                              | -      | -           |
+| inRange | -          | -              | -          | isString                                              | -      | -           |
+| -       | -          | -              | -          | [isPojo](https://google.com/search?q=javascript+pojo) | -      | -           |
+
+```js
+const { gt, lt, etc... } = matchiz
+```
+
+| Helper                             | Meaning                                        |
+| ---------------------------------- | ---------------------------------------------- |
+| `gt(0)`                            | greater than                                   |
+| `lt(0)`                            | less than                                      |
+| `gte(0)`                           | greater than or equal                          |
+| `lte(0)`                           | less than or equal                             |
+| `inRange(0, 10)`                   | within min ... max                             |
+| `startsWith('hello ...')`          | -                                              |
+| `endsWith('... world!')`           | -                                              |
+| `includes(item)`                   | for arrays and strings                         |
+| `includedIn([these, things, ...])` | -                                              |
+| `empty(var)`                       | null, undefined, NaN, [], or {}                |
+| `defined(var)`                     | negates empty, but `false` counts as "defined" |
+| `truthy(var)`                      | a !! check                                     |
+| `falsy(var)`                       | a ! check                                      |
+
+You can make your own:
+
+```js
+const isInteger = Number.isInteger
+
+match(status)(
+  when({ status: isInteger })('status is an integer'),
+  otherwise('nope')
+)
+```
+
+Examples:
+
+```js
+const { not } = matchiz
+
+match(literal)(
+  when(not(inRange(100, 200)))( ... ),
+  when({ number: not(42) })( ... )
+)
+
+const { allOf, anyOf, includedIn } = matchiz
+
+match(literal)(
+  when(allOf(isNumber, x => x > 10))( ... ),
+  when({ number: not(anyOf(20, 30)) })( ... )
+  when(includedIn([40, 50]))( ... )
+)
+```
+
+Equality is achieved with literals:
+
+```js
+when({ number: 42 })( ... )
+when('hello, world!')( ... )
+when(3)( ... )
+when(false)( ... )
+when(null)( ... )
+```
+
+## match / when / otherwise
 
 ### `match()`
 
@@ -410,7 +507,7 @@ match(2)(when([1, 2, 'chili dogs'])('ok!'))
 // "ok!"
 ```
 
-Since v1.5.0: If both `match` and `when` values are arrays, the contents will be compared (applying any predicates in the `when`):
+If both `match` and `when` values are arrays, the contents will be compared (applying any predicates in the `when`):
 
 ```js
 const { empty: _ } = matchiz
@@ -456,125 +553,6 @@ otherwise(handler)
 Always wins, so put it at the end to deal with fallbacks.
 
 `handler` can be a function or a literal.
-
-## Helpers
-
-You can use these in your `when()` `pattern`'s:
-
-```js
-match(literal)(
-  when(inRange(100, 200))( ... ),
-  when(startsWith('hello'))( ... ),
-  when(includes('batman'))( ... ),
-  when(includes('robin'))( ... ),
-  when(lte(80))( ... ),
-  when(empty)( ... ),
-  when(defined)( ... ),
-)
-
-match(object)(
-  when({ status: inRange(100, 200) })( ... ),
-  when({ text: startsWith('hello') })( ... ),
-  when({ array: includes('batman') })( ... ),
-  when({ string: includes('robin') })( ... ),
-  when({ length: lte(80) })( ... ),
-  when({ cup: empty })( ... ),
-  when({ pencil: defined })( ... ),
-)
-```
-
-Here's the full list:
-
-```js
-const {
-  // numbers
-  gt,
-  lt,
-  gte,
-  lte,
-  inRange,
-
-  // strings
-  startsWith,
-  endsWith,
-
-  // strings + arrays
-  includes,
-
-  // truthiness
-  empty,
-  falsy,
-  defined,
-  truthy
-} = matchiz
-```
-
-- `gt` = greater than
-- `lt` = less than
-- `gte` = greater than or equal
-- `lte` = less than or equal
-- `inRange` = within min ... max
-- `startsWith` = 'hello ...'
-- `endsWith` = '... world!'
-- `includes` = for arrays and strings
-- `empty` = true for null, undefined, NaN, [], and {}
-- `defined` = negates empty, but `false` counts as "defined"
-- `truthy` = a !! check
-- `falsy` = a ! check
-
-You can make your own:
-
-```js
-const isInteger = Number.isInteger
-
-when({ status: isInteger })('Status is an integer')
-```
-
-Since `1.4.0`, you can also use these:
-
-```js
-const {
-  isArray,
-  isFunction,
-  isNumber,
-  isRegExp,
-  isString,
-  isPojo // https://google.com/search?q=javascript+pojo
-} = matchiz
-```
-
-Since `1.7.0`, `not()` will negate the output of a function:
-
-```js
-const { not } = matchiz
-
-match(literal)(
-  when(not(inRange(100, 200)))( ... ),
-  when({ number: not(42) })( ... )
-)
-```
-
-Since `1.8.0`, `allOf()`, `anyOf()`, `includedIn()`:
-
-```js
-const { allOf, anyOf, includedIn } = matchiz
-
-match(literal)(
-  when(allOf(isNumber, x => x > 10))( ... ),
-  when({ number: not(anyOf(20, 30)) })( ... )
-  when(includedIn([40, 50]))( ... )
-)
-```
-
-Equality is achieved with literals:
-
-```js
-when({ number: 42 })( ... )
-when('hello, world!')( ... )
-when(3)( ... )
-when(false)( ... )
-when(null)( ... )
-```
 
 ## What is `spread(defined)`?
 
@@ -643,10 +621,10 @@ That makes it easier to pass into a memoizer:
 const fontSize = memoize(
   against(
     when([100, 200])('Super Thin'),
-    when(300)('Thin'),
+    when([300])('Thin'),
     when([400, 500])('Normal'),
     when([600, 700, 800])('Bold'),
-    when(900)('Heavy'),
+    when([900])('Heavy'),
     otherwise('Not valid')
   )
 )
