@@ -1,6 +1,6 @@
 import { strict } from 'assert'
 
-import { isPojo, isArray } from '../src/types.mjs'
+import { isPojo, isArray, isNumber } from '../src/types.mjs'
 import * as lib from '../src/match-iz.mjs'
 
 const { match, against, when, otherwise, spread } = lib
@@ -449,6 +449,25 @@ const testCases = [
             when([_, '2'])('two, two items'),
             when([_, '2', _])('two, three items'),
             otherwise('nope')
+          )
+        )
+      }
+    }
+  ],
+  [
+    'isNumber(NaN) should return false',
+    {
+      cases: [
+        { input: NaN, expecting: 'NaN' },
+        { input: 1, expecting: '1' },
+        { input: 2, expecting: '2' }
+      ],
+      run: (assertCase, input) => {
+        assertCase(
+          match(input)(
+            when(2)('2'),
+            when(isNumber)('1'),
+            when(not(isNumber))('NaN')
           )
         )
       }
