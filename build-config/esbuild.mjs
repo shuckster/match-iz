@@ -8,24 +8,28 @@ import esbuild from 'esbuild'
 const pkg = JSON.parse(fs.readFileSync('./package.json'))
 
 import { paths, banner, outputs } from './common.mjs'
+import { match, when, otherwise } from '../src/match-iz.mjs'
 
 function main() {
   Promise.all(outputs.map(buildMatches))
 }
 
 function buildMatches({ file, format, define }) {
+  const buildOptions = {
+    entryPoints: [paths.SRC],
+    define,
+    format,
+    ...match(format)(
+      when('iife')({ platform: 'browser', globalName: 'matchiz' }),
+      otherwise({ platform: 'node' })
+    ),
+    target: ['es6'],
+    minify: true,
+    bundle: true,
+    write: false
+  }
   return esbuild
-    .build({
-      entryPoints: [paths.SRC],
-      define: define,
-      format: format,
-      ...(format === 'iife' && { globalName: 'matchiz' }),
-      platform: 'node',
-      target: ['es6'],
-      minify: true,
-      bundle: true,
-      write: false
-    })
+    .build(buildOptions)
     .then(getConcatenatedEsbuildContent)
     .then($ => new TextDecoder().decode($))
     .then(text => banner(pkg, text))
