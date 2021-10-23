@@ -18,7 +18,8 @@ const {
   startsWith,
   endsWith,
   includes,
-  includedIn
+  includedIn,
+  hasOwn
 } = lib
 
 const testCases = [
@@ -580,6 +581,27 @@ const testCases = [
             when(includedIn([1, 2, 3, 0, 4, 5]))('a'),
             when(includedIn([1, 2, 3, 10, 4, 5]))('b'),
             when(includedIn([1, 2, 3, 20, 4, 5]))('c')
+          )
+        )
+      }
+    }
+  ],
+  [
+    'hasOwn()',
+    {
+      cases: [
+        { input: { pages: 1, data: { body: 'text' } }, expecting: 'a' },
+        { input: { pages: 2, data: { body: 'text' } }, expecting: 'b' },
+        { input: { data: { body: 'text' } }, expecting: 'c' },
+        { input: { pages: 0, data: { body: 'text' } }, expecting: 'd' }
+      ],
+      run: (assertCase, input) => {
+        assertCase(
+          match(input)(
+            when(not(hasOwn('pages', 'data')))('c'),
+            when({ pages: gt(1) })(() => 'b'),
+            when({ pages: 1 })('a'),
+            otherwise(() => 'd')
           )
         )
       }

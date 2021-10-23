@@ -85,6 +85,16 @@ const endsWith = s => ifString(value => value.endsWith(s))
 const includes = o => ifArrayOrString(value => value.includes(o))
 const includedIn = anyOf
 
+const hasOwn =
+  (...props) =>
+  haystack =>
+    isPojo(haystack) &&
+    (([props, keysInHaystack]) =>
+      props.length && props.every(prop => keysInHaystack.includes(prop)))([
+      props.flat(),
+      Object.keys(haystack)
+    ])
+
 const truthy = value => !!value
 const falsy = value => !value
 
@@ -124,6 +134,7 @@ export {
   endsWith,
   includes,
   includedIn,
+  hasOwn,
   truthy,
   falsy,
   spread,

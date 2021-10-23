@@ -64,6 +64,7 @@ declare module 'match-iz' {
   export function allOf(...these: any): TPredicate
   export function anyOf(...these: any): array
   export function includedIn(...these: any): array
+  export function hasOwn(...props: string): TPredicate
 
   export function isArray(value: any): boolean
   export function isFunction(value: any): boolean
