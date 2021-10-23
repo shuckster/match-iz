@@ -10,13 +10,7 @@ const pkg = JSON.parse(fs.readFileSync('./package.json'))
 import { paths, banner, outputs } from './common.mjs'
 
 function main() {
-  Promise.all(
-    outputs.map(output =>
-      buildMatches({
-        ...output
-      })
-    )
-  )
+  Promise.all(outputs.map(buildMatches))
 }
 
 function buildMatches({ file, format, define }) {
