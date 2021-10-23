@@ -255,7 +255,7 @@ function getLength(vector) {
 
 &nbsp;
 
-### Matching array contents (since v1.5.0):
+### Matching array contents:
 
 ```js
 match(['', '2', undefined])(
