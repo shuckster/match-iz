@@ -106,12 +106,10 @@ const todosReducer = (state, action) =>
     when({ type: 'toggle-todo' })(({ payload: index }) => ({
       ...state,
       todos: state.todos.map((todo, i) =>
-        i !== index
-          ? todo
-          : {
-              ...todo,
-              completed: !todo.completed
-            }
+        match(i)(
+          when(index)({ ...todo, completed: !todo.completed }),
+          otherwise(todo)
+        )
       )
     })),
 
