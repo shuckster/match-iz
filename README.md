@@ -385,7 +385,7 @@ Here's the full list:
 | gt      | startsWith | includes       | empty      | isArray                                               | not    | allOf       |
 | lt      | endsWith   | -              | falsy      | isFunction                                            | -      | anyOf       |
 | gte     | -          | -              | defined    | isNumber                                              | -      | includedIn  |
-| lte     | -          | -              | truthy     | isRegExp                                              | -      | -           |
+| lte     | -          | -              | truthy     | isRegExp                                              | -      | hasOwn      |
 | inRange | -          | -              | -          | isString                                              | -      | -           |
 | -       | -          | -              | -          | [isPojo](https://google.com/search?q=javascript+pojo) | -      | -           |
 
@@ -404,6 +404,7 @@ const { gt, lt, etc... } = matchiz
 | `endsWith('... world!')`           | -                                              |
 | `includes(item)`                   | for arrays and strings                         |
 | `includedIn([these, things, ...])` | -                                              |
+| `hasOwn(prop1, prop2...)`          | Check for existence of object keys/props       |
 | `empty(var)`                       | null, undefined, NaN, [], or {}                |
 | `defined(var)`                     | negates empty, but `false` counts as "defined" |
 | `truthy(var)`                      | a !! check                                     |
