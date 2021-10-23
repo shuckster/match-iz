@@ -14,7 +14,6 @@ function main() {
 }
 
 function buildMatches({ file, format, define }) {
-  const decoder = new TextDecoder()
   return esbuild
     .build({
       entryPoints: [paths.SRC],
@@ -28,7 +27,7 @@ function buildMatches({ file, format, define }) {
       write: false
     })
     .then(getConcatenatedEsbuildContent)
-    .then(buffer => decoder.decode(buffer))
+    .then($ => new TextDecoder().decode($))
     .then(text => banner(pkg, text))
     .then(writeTextFile(file))
 }
