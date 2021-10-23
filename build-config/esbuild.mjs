@@ -59,21 +59,8 @@ const mergeTypedArrays = (arrays, type = Uint8Array) => {
 }
 
 function writeTextFile(path) {
-  return textContent => {
-    const [promise, resolve, reject] = makePromise()
-    fs.writeFile(path, textContent, err => (err ? reject(err) : resolve()))
-    return promise
-  }
-}
-
-function makePromise() {
-  let _resolve
-  let _reject
-  const promise = new Promise((resolve, reject) => {
-    _resolve = resolve
-    _reject = reject
-  })
-  return [promise, _resolve, _reject]
+  return textContent =>
+    Promise.resolve(path).then($ => fs.writeFileSync($, textContent))
 }
 
 //
