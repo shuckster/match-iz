@@ -4,7 +4,8 @@ import {
   isNumber,
   isRegExp,
   isString,
-  isPojo
+  isPojo,
+  instanceOf
 } from './types.mjs'
 
 //
@@ -134,6 +135,7 @@ export {
   endsWith,
   includes,
   includedIn,
+  instanceOf,
   hasOwn,
   truthy,
   falsy,

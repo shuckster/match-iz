@@ -388,6 +388,7 @@ Here's the full list:
 | lte     | -          | -              | truthy     | isRegExp                                              | -      | hasOwn      |
 | inRange | -          | -              | -          | isString                                              | -      | -           |
 | -       | -          | -              | -          | [isPojo](https://google.com/search?q=javascript+pojo) | -      | -           |
+| -       | -          | -              | -          | instanceOf                                            | -      | -           |
 
 ```js
 const { gt, lt, etc... } = matchiz
@@ -404,7 +405,8 @@ const { gt, lt, etc... } = matchiz
 | `endsWith('... world!')`           | -                                              |
 | `includes(item)`                   | for arrays and strings                         |
 | `includedIn([these, things, ...])` | -                                              |
-| `hasOwn(prop1, prop2...)`          | Check for existence of object keys/props       |
+| `instanceOf(constructor)`          | for class instances                            |
+| `hasOwn('prop1', 'prop2'...)`      | check for existence of object keys/props       |
 | `empty(var)`                       | null, undefined, NaN, [], or {}                |
 | `defined(var)`                     | negates empty, but `false` counts as "defined" |
 | `truthy(var)`                      | a !! check                                     |
