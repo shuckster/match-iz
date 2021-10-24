@@ -3,7 +3,7 @@ import { strict } from 'assert'
 import { isPojo, isArray, isNumber } from '../src/types.mjs'
 import * as lib from '../src/match-iz.mjs'
 
-const { match, against, when, otherwise, spread } = lib
+const { match, against, when, otherwise, spread, pluck: $ } = lib
 const {
   allOf,
   anyOf,
@@ -120,8 +120,8 @@ const testCases = [
           expecting: 'This is fine'
         },
         {
-          input: { status: 400 },
-          expecting: 'Flagrant error!'
+          input: { status: 401 },
+          expecting: 'Flagrant error! 401'
         },
         {
           input: { status: 404 },
@@ -160,7 +160,9 @@ const testCases = [
             when(({ status }) => status >= 500)('Server error!'),
 
             // Object prop w/ greater-than-or-equal matcher
-            when({ status: gte(400) })('Flagrant error!'),
+            when({ status: $(gte(400)) })(
+              status => `Flagrant error! ${status}`
+            ),
 
             // Object prop w/ range matcher
             when({ status: inRange(300, 399) })('This is fine'),
@@ -207,26 +209,27 @@ const testCases = [
       run: (assertCase, [state, action]) => {
         assertCase(
           match(action)(
-            when({ type: 'set-visibility-filter' })(
-              ({ payload: visFilter }) => ({
+            when({ type: 'set-visibility-filter', payload: $() })(
+              visFilter => ({
                 ...state,
                 visFilter
               })
             ),
 
-            when({ type: 'add-todo' })(({ payload: text }) => ({
+            when({ type: 'add-todo', payload: $() })(text => ({
               ...state,
               todos: [...state.todos, { text, completed: false }]
             })),
 
-            when({ type: 'toggle-todo' })(({ payload: index }) => {
-              return {
-                ...state,
-                todos: state.todos.map((todo, i) =>
-                  i !== index ? todo : { ...todo, completed: !todo.completed }
+            when({ type: 'toggle-todo', payload: $() })(index => ({
+              ...state,
+              todos: state.todos.map((todo, i) =>
+                match(i)(
+                  when(index)({ ...todo, completed: !todo.completed }),
+                  otherwise(todo)
                 )
-              }
-            }),
+              )
+            })),
 
             otherwise(state)
           )

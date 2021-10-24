@@ -67,6 +67,22 @@ declare module 'match-iz' {
   export function hasOwn(...props: string): TPredicate
   export function instanceOf(constructor: any): TPredicate
 
+  /**
+   * @example
+   * match({ key: 'value', payload: 123 })(
+   *   when({ key: 'value', payload: pluck() })(payload => {
+   *     payload === 123
+   *   })
+   * )
+   *
+   * match({ key: 'value', payload: 123 })(
+   *   when({ payload: pluck(isInteger) })(payload => {
+   *     payload === 123 // true
+   *   })
+   * )
+   */
+  export function pluck(predicate?: TPredicate): TPredicate
+
   export function isArray(value: any): boolean
   export function isFunction(value: any): boolean
   export function isNumber(value: any): boolean

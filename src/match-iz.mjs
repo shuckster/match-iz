@@ -34,7 +34,7 @@ const otherwise = handler => haystack => ({
 })
 
 const when = needle => handler => haystack => ({
-  matched: () => found(needle, haystack),
+  matched: () => found(needle, haystack, value => (haystack = value)),
   value: () =>
     !isFunction(handler)
       ? handler
@@ -43,30 +43,40 @@ const when = needle => handler => haystack => ({
       : handler(haystack)
 })
 
-const found = (needle, haystack) =>
+const found = (needle, haystack, pick) =>
   isPojo(needle)
-    ? Object.keys(needle).every(key => found(needle[key], haystack?.[key]))
+    ? Object.keys(needle).every(key =>
+        found(needle[key], haystack?.[key], pick)
+      )
     : isArray(needle)
     ? isArray(haystack)
       ? needle.length === haystack.length &&
-        needle.every((one, index) => found(one, haystack?.[index]))
-      : needle.some(thread => found(thread, haystack))
+        needle.every((one, index) => found(one, haystack?.[index], pick))
+      : needle.some(thread => found(thread, haystack, pick))
     : isFunction(needle)
-    ? needle(haystack)
+    ? needle(haystack, pick)
     : isString(haystack) && isRegExp(needle)
     ? needle.test(haystack)
     : needle === haystack || [needle, haystack].every(Number.isNaN)
+
+const pluck =
+  (...A) =>
+  (value, pick) =>
+    A.length === 0 ||
+    (isFunction(A[0]) ? A[0](value) : found(A[0], value, pick))
+      ? (pick(value), true)
+      : false
 
 //
 // Matchers
 //
 
-const not = needle => haystack => !found(needle, haystack)
+const not = needle => (haystack, pick) => !found(needle, haystack, pick)
 const anyOf = (...these) => these.flat()
 const allOf =
   (...these) =>
-  haystack =>
-    these.flat().every(needle => found(needle, haystack))
+  (haystack, pick) =>
+    these.flat().every(needle => found(needle, haystack, pick))
 
 const empty = value =>
   value !== value ||
@@ -118,6 +128,7 @@ export {
   match,
   when,
   otherwise,
+  pluck,
   //
   // matching helpers
   //
