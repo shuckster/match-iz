@@ -21,13 +21,13 @@
 Functional, declarative `pattern-matching` inspired by the [spec proposed by TC39](https://github.com/tc39/proposal-pattern-matching).
 
 ```js
-import { match, when, against, otherwise } from 'match-iz'
+import { match, when, against, otherwise, pluck } from 'match-iz'
 ```
 
 ```html
 <script src="https://unpkg.com/match-iz/dist/match-iz.browser.js"></script>
 <script>
-  const { match, when, against, otherwise } = matchiz
+  const { match, when, against, otherwise, pluck } = matchiz
 </script>
 ```
 
@@ -76,7 +76,28 @@ function AccountPage(props) {
 
 ```js
 match(action)(
-  when({ type: 'add-todo' })(({ payload: text }) => ({
+  when({ type: 'add-todo' })(({ payload: { text } }) => ({
+    ...state,
+    todos: [...state.todos, { text, completed: false }]
+  })),
+
+  otherwise(state)
+)
+
+// Since 1.10.0: pluck() can extract part of the
+// haystack before it gets passed into the handler:
+match(action)(
+  when({ type: 'add-todo', payload: pluck() })(payload => ({
+    ...state,
+    todos: [...state.todos, { text: payload, completed: false }]
+  })),
+
+  otherwise(state)
+)
+
+// ...and you can use a predicate in it, too:
+match(action)(
+  when({ type: 'add-todo', payload: pluck(isString) })(text => ({
     ...state,
     todos: [...state.todos, { text, completed: false }]
   })),
@@ -89,21 +110,21 @@ match(action)(
 <summary>Full example</summary>
 
 ```js
-import { match, when, otherwise } from 'match-iz'
+import { match, when, otherwise, pluck: $ } from 'match-iz'
 
 const todosReducer = (state, action) =>
   match(action)(
-    when({ type: 'set-visibility-filter' })(({ payload: visFilter }) => ({
+    when({ type: 'set-visibility-filter', payload: $() })(visFilter => ({
       ...state,
       visFilter
     })),
 
-    when({ type: 'add-todo' })(({ payload: text }) => ({
+    when({ type: 'add-todo', payload: $() })(text => ({
       ...state,
       todos: [...state.todos, { text, completed: false }]
     })),
 
-    when({ type: 'toggle-todo' })(({ payload: index }) => ({
+    when({ type: 'toggle-todo', payload: $() })(index => ({
       ...state,
       todos: state.todos.map((todo, i) =>
         match(i)(
@@ -125,10 +146,8 @@ const todosReducer = (state, action) =>
 
 ```js
 match(res)(
-  when({ status: 200, headers: { 'Content-Length': isInteger } })(
-    ({ headers: { 'Content-Length': size } }) => {
-      return `size is ${size}`
-    }
+  when({ status: 200, headers: { 'Content-Length': pluck(isInteger) } })(
+    size => `size is ${size}`
   ),
 
   when({ status: 404 })('JSON not found')
@@ -142,7 +161,7 @@ match(res)(
 ```js
 import * as matchiz from 'match-iz'
 
-const { match, when, otherwise } = matchiz
+const { match, when, otherwise, pluck } = matchiz
 const { gte, inRange } = matchiz
 
 async function getJsonLength() {
@@ -162,8 +181,8 @@ async function getJsonLength() {
     when({ status: 404 })('JSON not found'),
 
     // when res.status >= 400...
-    when({ status: gte(400) })(() => {
-      return 'Flagrant error!'
+    when({ status: pluck(gte(400)) })(status => {
+      return `Flagrant error! ${status}`
     }),
 
     // when res.status >= 300 && res.status <= 399

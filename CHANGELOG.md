@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [1.10.0] - 2021-10-24
+
 ### Added
 
 - pluck(predicate?) helper to extract a part of the haystack

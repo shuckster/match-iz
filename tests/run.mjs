@@ -179,14 +179,18 @@ const testCases = [
       cases: [
         {
           input: [{ todos: [] }, { type: 'unknown' }],
-          expecting: { todos: [] }
+          expecting: {
+            todos: []
+          }
         },
         {
           input: [
             { todos: [] },
             { type: 'add-todo', payload: 'Do the dishes' }
           ],
-          expecting: { todos: [{ text: 'Do the dishes', completed: false }] }
+          expecting: {
+            todos: [{ text: 'Do the dishes', completed: false }]
+          }
         },
         {
           input: [
@@ -203,7 +207,9 @@ const testCases = [
             { todos: [{ text: 'Do the dishes', completed: false }] },
             { type: 'toggle-todo', payload: 0 }
           ],
-          expecting: { todos: [{ text: 'Do the dishes', completed: true }] }
+          expecting: {
+            todos: [{ text: 'Do the dishes', completed: true }]
+          }
         }
       ],
       run: (assertCase, [state, action]) => {

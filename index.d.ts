@@ -71,7 +71,7 @@ declare module 'match-iz' {
    * @example
    * match({ key: 'value', payload: 123 })(
    *   when({ key: 'value', payload: pluck() })(payload => {
-   *     payload === 123
+   *     payload === 123 // true
    *   })
    * )
    *
