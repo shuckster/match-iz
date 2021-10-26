@@ -76,7 +76,7 @@ function AccountPage(props) {
 
 ```js
 match(action)(
-  when({ type: 'add-todo' })(({ payload: { text } }) => ({
+  when({ type: 'add-todo' })(({ payload: text }) => ({
     ...state,
     todos: [...state.todos, { text, completed: false }]
   })),
