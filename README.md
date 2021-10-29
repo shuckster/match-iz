@@ -42,14 +42,14 @@ const getJsonLength = async () =>
     when({ status: 200, headers: { 'Content-Length': pluck() } })(
       contentLength => `size is ${contentLength}`
     ),
+    when(function ({ status }) {
+      return status >= 500
+    })('Server error!'),
     when({ status: 404 })('JSON not found'),
     when({ status: pluck(gte(400)) })(status => `Flagrant error! ${status}`),
     when({ status: inRange(300, 399) })(() => {
       return 'This is fine...'
     }),
-    when(function ({ status }) {
-      return status >= 500
-    })('Server error!'),
 
     otherwise("I didn't understand that...")
   )

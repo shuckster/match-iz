@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [1.10.2] - 2021-10-29
+
+### Fixed
+
+- Whoops, README example condition for >=500 will not run
+
 ## [1.10.1] - 2021-10-29
 
 ### Updated
