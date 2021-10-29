@@ -18,20 +18,51 @@
     /></a>
 </p>
 
-Functional, declarative `pattern-matching` inspired by the [spec proposed by TC39](https://github.com/tc39/proposal-pattern-matching).
+Functional, declarative [pattern-matching](https://github.com/tc39/proposal-pattern-matching) in ~150 SLOC.
 
 ```js
-import { match, when, against, otherwise, pluck } from 'match-iz'
+match(haystack)(
+  when(needle / predicate)(result / handler),
+  when(needle / predicate)(result / handler),
+  when(needle / predicate)(result / handler),
+  otherwise(result / handler)
+)
 ```
+
+ESM:
+
+```js
+import * as matchiz from 'match-iz'
+
+const { match, when, otherwise, pluck } = matchiz
+const { gte, inRange } = matchiz
+
+const getJsonLength = async () =>
+  match(await fetch('/json'))(
+    when({ status: 200, headers: { 'Content-Length': pluck() } })(
+      contentLength => `size is ${contentLength}`
+    ),
+    when({ status: 404 })('JSON not found'),
+    when({ status: pluck(gte(400)) })(status => `Flagrant error! ${status}`),
+    when({ status: inRange(300, 399) })(() => {
+      return 'This is fine...'
+    }),
+    when(function ({ status }) {
+      return status >= 500
+    })('Server error!'),
+
+    otherwise("I didn't understand that...")
+  )
+```
+
+UMD:
 
 ```html
 <script src="https://unpkg.com/match-iz/dist/match-iz.browser.js"></script>
 <script>
-  const { match, when, against, otherwise, pluck } = matchiz
+  const { match, when, against, otherwise, pluck, ...etc } = matchiz
 </script>
 ```
-
-The library is about 100 SLOC, just over 1.7K minified.
 
 Examples:
 
@@ -76,27 +107,6 @@ function AccountPage(props) {
 
 ```js
 match(action)(
-  when({ type: 'add-todo' })(({ payload: text }) => ({
-    ...state,
-    todos: [...state.todos, { text, completed: false }]
-  })),
-
-  otherwise(state)
-)
-
-// Since 1.10.0: pluck() can extract part of the
-// haystack before it gets passed into the handler:
-match(action)(
-  when({ type: 'add-todo', payload: pluck() })(payload => ({
-    ...state,
-    todos: [...state.todos, { text: payload, completed: false }]
-  })),
-
-  otherwise(state)
-)
-
-// ...and you can use a predicate in it, too:
-match(action)(
   when({ type: 'add-todo', payload: pluck(isString) })(text => ({
     ...state,
     todos: [...state.todos, { text, completed: false }]
@@ -136,63 +146,6 @@ const todosReducer = (state, action) =>
 
     otherwise(state)
   )
-```
-
-</details>
-
-&nbsp;
-
-### Fetching:
-
-```js
-match(res)(
-  when({ status: 200, headers: { 'Content-Length': pluck(isInteger) } })(
-    size => `size is ${size}`
-  ),
-
-  when({ status: 404 })('JSON not found')
-)
-// size is 42
-```
-
-<details>
-<summary>Full example</summary>
-
-```js
-import * as matchiz from 'match-iz'
-
-const { match, when, otherwise, pluck } = matchiz
-const { gte, inRange } = matchiz
-
-async function getJsonLength() {
-  const res = await fetch('/json')
-  return match(res)(
-    // when res.status === 200, get res.headers."Content-Length"
-    when({ status: 200 })(({ headers: { 'Content-Length': s } = {} }) => {
-      return `size is ${s}`
-    }),
-
-    // Custom "pattern" predicate
-    when(({ status }) => status >= 500)(() => {
-      return 'Server error!'
-    }),
-
-    // Can return a literal as well as using a "handler" function
-    when({ status: 404 })('JSON not found'),
-
-    // when res.status >= 400...
-    when({ status: pluck(gte(400)) })(status => {
-      return `Flagrant error! ${status}`
-    }),
-
-    // when res.status >= 300 && res.status <= 399
-    when({ status: inRange(300, 399) })(() => {
-      return 'This is fine...'
-    }),
-
-    otherwise("I didn't understand that...")
-  )
-}
 ```
 
 </details>
