@@ -29,31 +29,34 @@ match(haystack)(
 )
 ```
 
-ESM:
+`when` is curried, so you can write:
 
 ```js
-import * as matchiz from 'match-iz'
+const whenString = when(x => typeof x === 'string')
+const whenNumber = when(x => typeof x === 'number')
 
-const { match, when, otherwise, pluck } = matchiz
-const { gte, inRange } = matchiz
-
-const getJsonLength = async () =>
-  match(await fetch('/json'))(
-    when({ status: 200, headers: { 'Content-Length': pluck() } })(
-      contentLength => `size is ${contentLength}`
-    ),
-    when(function ({ status }) {
-      return status >= 500
-    })('Server error!'),
-    when({ status: 404 })('JSON not found'),
-    when({ status: pluck(gte(400)) })(status => `Flagrant error! ${status}`),
-    when({ status: inRange(300, 399) })(() => {
-      return 'This is fine...'
-    }),
-
-    otherwise("I didn't understand that...")
-  )
+const result = match(42)(
+  whenString("it's a string!"),
+  whenNumber("it's a number!"),
+  otherwise("sorry, it's neither of those!")
+)
+// "it's a number!"
 ```
+
+`match` is curried too, but the data-last version `against` is probably more useful:
+
+```js
+const stringOrNumber = against(
+  whenString("it's a string!"),
+  whenNumber("it's a number!"),
+  otherwise("sorry, it's neither of those!")
+)
+
+const result = stringOrNumber(42)
+// "it's a number!"
+```
+
+## Install / Use:
 
 UMD:
 
@@ -64,7 +67,40 @@ UMD:
 </script>
 ```
 
-Examples:
+ESM:
+
+```js
+import * as matchiz from 'match-iz'
+
+const { match, when, otherwise, pluck } = matchiz
+const { gte, inRange } = matchiz
+
+// Example using gte/inRange helpers (documented below)
+const getJsonLength = async (url = '/json') =>
+  match(await fetch(url))(
+    when({ status: 200, headers: { 'Content-Length': pluck() } })(
+      contentLength => `size is ${contentLength}`
+    ),
+
+    when(function ({ status }) {
+      return status >= 500
+    })('Server error!'),
+
+    when({ status: 404 })('JSON not found'),
+
+    when({ status: pluck(gte(400)) })(
+      status => `Error! We plucked the >=400 code and it is: ${status}`
+    ),
+
+    when({ status: inRange(300, 399) })(() => {
+      return 'This is fine...'
+    }),
+
+    otherwise("I didn't understand that...")
+  )
+```
+
+## A Few Examples:
 
 ### Front-end component:
 
