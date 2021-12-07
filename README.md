@@ -415,10 +415,10 @@ const { gt, lt, etc... } = matchiz
 | `includedIn([these, things, ...])` | -                                              |
 | `instanceOf(constructor)`          | for class instances                            |
 | `hasOwn('prop1', 'prop2'...)`      | check for existence of object keys/props       |
-| `empty(var)`                       | null, undefined, NaN, [], or {}                |
-| `defined(var)`                     | negates empty, but `false` counts as "defined" |
-| `truthy(var)`                      | a !! check                                     |
-| `falsy(var)`                       | a ! check                                      |
+| `empty`                            | null, undefined, NaN, [], or {}                |
+| `defined`                          | negates empty, but `false` counts as "defined" |
+| `truthy`                           | a !! check                                     |
+| `falsy`                            | a ! check                                      |
 
 You can make your own:
 
@@ -499,20 +499,22 @@ If `match` sees such an object return from a predicate:
 If the match `value` is NOT an array, using an array within a `when` will perform a logical `OR` against the contained values:
 
 ```js
-// if message ends with "world!" AND number === 42
 match({ message: 'hello wrrld!', number: 42 })(
+  // if message ends with "world!" AND number === 42
   when({ message: endsWith('world!'), number: 42 })('ok!')
 )
 // undefined
 
-// if message ends with "world!" OR number === 42
 match({ message: 'hello wrrld!', number: 42 })(
+  // if message ends with "world!" OR number === 42
   when([{ message: endsWith('world!') }, { number: 42 }])('ok!')
 )
 // "ok!"
 
-// 1 OR 2 OR 'chili dogs'
-match(2)(when([1, 2, 'chili dogs'])('ok!'))
+match(2)(
+  // 1 OR 2 OR 'chili dogs'
+  when([1, 2, 'chili dogs'])('ok!')
+)
 // "ok!"
 ```
 
