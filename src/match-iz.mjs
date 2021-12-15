@@ -120,44 +120,13 @@ const ifNumber = fn => value => isNumber(value) && fn(value)
 const ifArrayOrString = fn => value =>
   (isArray(value) || isString(value)) && fn(value)
 
-export {
-  //
-  // match-iz
-  //
-  against,
-  match,
-  when,
-  otherwise,
-  pluck,
-  //
-  // matching helpers
-  //
-  not,
-  anyOf,
-  allOf,
-  defined,
-  empty,
-  gt,
-  lt,
-  gte,
-  lte,
-  inRange,
-  startsWith,
-  endsWith,
-  includes,
-  includedIn,
-  instanceOf,
-  hasOwn,
-  truthy,
-  falsy,
-  spread,
-  //
-  // types
-  //
-  isArray,
-  isFunction,
-  isNumber,
-  isRegExp,
-  isString,
-  isPojo
-}
+//
+// Expose
+//
+export { against, match, when, otherwise, pluck }
+export { not, anyOf, allOf, spread }
+export { instanceOf, hasOwn }
+export { defined, empty, truthy, falsy }
+export { isArray, isFunction, isNumber, isRegExp, isString, isPojo }
+export { startsWith, endsWith, includes, includedIn }
+export { gt, lt, gte, lte, inRange }
