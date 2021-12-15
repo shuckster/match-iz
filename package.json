@@ -51,6 +51,6 @@
     "esbuild": "^0.13.15",
     "eslint": "^8.4.1",
     "rimraf": "^3.0.2",
-    "typescript": "^4.5.2"
+    "typescript": "^4.5.4"
   }
 }

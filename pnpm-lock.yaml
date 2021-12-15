@@ -5,14 +5,14 @@ specifiers:
   esbuild: ^0.13.15
   eslint: ^8.4.1
   rimraf: ^3.0.2
-  typescript: ^4.5.2
+  typescript: ^4.5.4
 
 devDependencies:
   compose-paths: 1.1.1
   esbuild: 0.13.15
   eslint: 8.4.1
   rimraf: 3.0.2
-  typescript: 4.5.2
+  typescript: 4.5.4
 
 packages:
 
@@ -732,8 +732,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /typescript/4.5.2:
-    resolution: {integrity: sha512-5BlMof9H1yGt0P8/WF+wPNw6GfctgGjXp5hkblpyT+8rkASSmkUKMXrxR0Xg8ThVCi/JnHQiKXeBaEwCeQwMFw==}
+  /typescript/4.5.4:
+    resolution: {integrity: sha512-VgYs2A2QIRuGphtzFV7aQJduJ2gyfTljngLzjpfW9FoYZF6xuw1W0vW9ghCKLfcWrCFxK81CSGRAvS1pn4fIUg==}
     engines: {node: '>=4.2.0'}
     hasBin: true
     dev: true
