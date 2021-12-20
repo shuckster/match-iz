@@ -500,22 +500,27 @@ If the match `value` is NOT an array, using an array within a `when` will perfor
 
 ```js
 match({ message: 'hello wrrld!', number: 42 })(
-  // if message ends with "world!" AND number === 42
-  when({ message: endsWith('world!'), number: 42 })('ok!')
+  when({
+    // if message ends with "world!" AND number === 42
+    message: endsWith('world!'),
+    number: 42
+  })('ok!')
 )
 // undefined
 
 match({ message: 'hello wrrld!', number: 42 })(
-  // if message ends with "world!" OR number === 42
-  when([{ message: endsWith('world!') }, { number: 42 }])('ok!')
+  when([
+    // if message ends with "world!" OR number === 42
+    { message: endsWith('world!') },
+    { number: 42 }
+  ])('ok!')
 )
 // "ok!"
 
-match(2)(
-  // 1 OR 2 OR 'chili dogs'
-  when([1, 2, 'chili dogs'])('ok!')
-)
-// "ok!"
+// Alternatively, you can use `allOf` and `anyOf`:
+when(allOf({ message: endsWith('world!') }, { number: 42 }))('ok!')
+when(anyOf({ message: endsWith('world!') }, { number: 42 }))('ok!')
+when(anyOf(1, 2, 'chili dogs'))('ok!')
 ```
 
 If both `match` and `when` values are arrays, the contents will be compared (applying any predicates in the `when`):
