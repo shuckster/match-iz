@@ -3,14 +3,14 @@ lockfileVersion: 5.3
 specifiers:
   compose-paths: ^1.1.1
   esbuild: ^0.13.15
-  eslint: ^8.4.1
+  eslint: ^8.5.0
   rimraf: ^3.0.2
   typescript: ^4.5.4
 
 devDependencies:
   compose-paths: 1.1.1
   esbuild: 0.13.15
-  eslint: 8.4.1
+  eslint: 8.5.0
   rimraf: 3.0.2
   typescript: 4.5.4
 
@@ -348,13 +348,13 @@ packages:
       estraverse: 5.3.0
     dev: true
 
-  /eslint-utils/3.0.0_eslint@8.4.1:
+  /eslint-utils/3.0.0_eslint@8.5.0:
     resolution: {integrity: sha512-uuQC43IGctw68pJA1RgbQS8/NP7rch6Cwd4j3ZBtgo4/8Flj4eGE7ZYSZRN3iq5pVUv6GPdW5Z1RFleo84uLDA==}
     engines: {node: ^10.0.0 || ^12.0.0 || >= 14.0.0}
     peerDependencies:
       eslint: '>=5'
     dependencies:
-      eslint: 8.4.1
+      eslint: 8.5.0
       eslint-visitor-keys: 2.1.0
     dev: true
 
@@ -368,8 +368,8 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
-  /eslint/8.4.1:
-    resolution: {integrity: sha512-TxU/p7LB1KxQ6+7aztTnO7K0i+h0tDi81YRY9VzB6Id71kNz+fFYnf5HD5UOQmxkzcoa0TlVZf9dpMtUv0GpWg==}
+  /eslint/8.5.0:
+    resolution: {integrity: sha512-tVGSkgNbOfiHyVte8bCM8OmX+xG9PzVG/B4UCF60zx7j61WIVY/AqJECDgpLD4DbbESD0e174gOg3ZlrX15GDg==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     hasBin: true
     dependencies:
@@ -383,7 +383,7 @@ packages:
       enquirer: 2.3.6
       escape-string-regexp: 4.0.0
       eslint-scope: 7.1.0
-      eslint-utils: 3.0.0_eslint@8.4.1
+      eslint-utils: 3.0.0_eslint@8.5.0
       eslint-visitor-keys: 3.1.0
       espree: 9.2.0
       esquery: 1.4.0
