@@ -15,10 +15,10 @@
   "main": "./dist/match-iz.cjs.js",
   "module": "dist/match-iz.esm.js",
   "exports": {
-    "default": "./dist/match-iz.cjs.js",
     "import": "./dist/match-iz.esm.js",
     "browser": "./dist/match-iz.browser.js",
-    "require": "./dist/match-iz.cjs.js"
+    "require": "./dist/match-iz.cjs.js",
+    "default": "./dist/match-iz.cjs.js"
   },
   "files": [
     "dist/**/*.js",
