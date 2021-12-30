@@ -1,6 +1,6 @@
 {
   "name": "match-iz",
-  "version": "1.10.4",
+  "version": "1.11.0",
   "description": "A tiny pattern-matching library in the style of the TC39 proposal",
   "author": "Conan Theobald",
   "license": "MIT",
