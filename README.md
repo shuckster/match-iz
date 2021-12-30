@@ -43,7 +43,7 @@ const result = match(42)(
 // "it's a number!"
 ```
 
-`match` is curried too, but the data-last version `against` is probably more useful:
+`match` is curried too, but the data-last version `against` is probably what you want for a curried use-case:
 
 ```js
 const stringOrNumber = against(
@@ -391,11 +391,12 @@ Here's the full list:
 | Numbers | Strings    | Strings/Arrays | Truthiness | Types                                                 | Negate | Combinators |
 | ------- | ---------- | -------------- | ---------- | ----------------------------------------------------- | ------ | ----------- |
 | gt      | startsWith | includes       | empty      | isArray                                               | not    | allOf       |
-| lt      | endsWith   | -              | falsy      | isFunction                                            | -      | anyOf       |
-| gte     | -          | -              | defined    | isNumber                                              | -      | includedIn  |
-| lte     | -          | -              | truthy     | isRegExp                                              | -      | hasOwn      |
-| inRange | -          | -              | -          | isString                                              | -      | -           |
-| -       | -          | -              | -          | [isPojo](https://google.com/search?q=javascript+pojo) | -      | -           |
+| lt      | endsWith   | -              | falsy      | isDate                                                | -      | anyOf       |
+| gte     | -          | -              | defined    | isFunction                                            | -      | includedIn  |
+| lte     | -          | -              | truthy     | isNumber                                              | -      | hasOwn      |
+| inRange | -          | -              | -          | [isPojo](https://google.com/search?q=javascript+pojo) | -      | -           |
+| -       | -          | -              | -          | isRegExp                                              | -      | -           |
+| -       | -          | -              | -          | isString                                              | -      | -           |
 | -       | -          | -              | -          | instanceOf                                            | -      | -           |
 
 ```js

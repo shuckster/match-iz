@@ -1,10 +1,11 @@
 import {
   isArray,
+  isDate,
   isFunction,
   isNumber,
+  isPojo,
   isRegExp,
   isString,
-  isPojo,
   instanceOf
 } from './types.mjs'
 
@@ -123,10 +124,11 @@ const ifArrayOrString = fn => value =>
 //
 // Expose
 //
+
 export { against, match, when, otherwise, pluck }
 export { not, anyOf, allOf, spread }
 export { instanceOf, hasOwn }
 export { defined, empty, truthy, falsy }
-export { isArray, isFunction, isNumber, isRegExp, isString, isPojo }
 export { startsWith, endsWith, includes, includedIn }
 export { gt, lt, gte, lte, inRange }
+export { isArray, isDate, isFunction, isNumber, isRegExp, isString, isPojo }

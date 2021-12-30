@@ -2,8 +2,10 @@ const objectPrototype = Object.prototype
 const toString = objectPrototype.toString
 const typeOf = type => obj => typeof obj === type
 const instanceOf = constructor => obj => obj instanceof constructor
+
+const { isArray } = Array
 const isArguments = obj => toString.call(obj) === '[object Arguments]'
-const isArray = Array.isArray
+const isDate = x => instanceOf(Date)(x) && !isNaN(x)
 const isFunction = typeOf('function')
 const isString = typeOf('string')
 const isNumber = obj => obj === obj && typeOf('number')(obj)
@@ -18,10 +20,11 @@ export {
   instanceOf,
   isArguments,
   isArray,
+  isDate,
   isFunction,
   isNumber,
   isObject,
+  isPojo,
   isRegExp,
-  isString,
-  isPojo
+  isString
 }

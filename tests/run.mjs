@@ -1,6 +1,6 @@
 import { strict } from 'assert'
 
-import { isPojo, isArray, isNumber } from '../src/types.mjs'
+import { isArray, isDate, isNumber, isPojo } from '../src/types.mjs'
 import * as lib from '../src/match-iz.mjs'
 
 const { match, against, when, otherwise, spread, pluck: $ } = lib
@@ -459,6 +459,26 @@ const testCases = [
             when([_, '2'])('two, two items'),
             when([_, '2', _])('two, three items'),
             otherwise('nope')
+          )
+        )
+      }
+    }
+  ],
+  [
+    'Various isDate(Invalid Date)',
+    {
+      cases: [
+        { input: new Date(NaN), expecting: 'bad' },
+        { input: new Date(-Infinity), expecting: 'bad' },
+        { input: new Date(Infinity), expecting: 'bad' },
+        { input: new Date('Invalid Date'), expecting: 'bad' },
+        { input: new Date('1970-01-01'), expecting: 'ok' }
+      ],
+      run: (assertCase, input) => {
+        assertCase(
+          match(input)(
+            when(not(isDate))(() => 'bad'),
+            otherwise('ok')
           )
         )
       }
