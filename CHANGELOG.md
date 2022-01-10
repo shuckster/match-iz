@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [1.11.1] - 2022-01-10
+
+### Updated
+
+- esbuild output was different after deps-update for the browser-build
+
 ## [1.11.0] - 2021-12-28
 
 ### Added
