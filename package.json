@@ -41,6 +41,7 @@
   },
   "scripts": {
     "test": "node ./tests/run.mjs",
+    "lint": "pnpx eslint src/*.mjs tests/*.mjs",
     "build": "pnpm run build:esbuild",
     "build:clean": "rimraf dist/; mkdir -p dist/",
     "build:all": "pnpm run build:clean ; pnpm run build",
