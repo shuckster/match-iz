@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [1.11.2] - 2022-01-11
+
+### Fixed
+
+- Fix esbuild errors by re-ordering package.json exports
+
 ## [1.11.1] - 2022-01-10
 
 ### Updated
