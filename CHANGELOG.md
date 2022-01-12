@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [1.12.0] - 2022-01-12
+
+### Added
+
+- cata() helper for integration with ADTs/monads
+
 ## [1.11.2] - 2022-01-11
 
 ### Fixed

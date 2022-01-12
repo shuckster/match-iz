@@ -21,6 +21,8 @@
 Functional, declarative [pattern-matching](https://github.com/tc39/proposal-pattern-matching) in ~150 SLOC.
 
 ```js
+import { match, when, otherwise } from 'match-iz'
+
 match(haystack)(
   when(needle / predicate)(result / handler),
   when(needle / predicate)(result / handler),
@@ -46,14 +48,39 @@ const result = match(42)(
 `match` is curried too, but the data-last version `against` is probably what you want for a curried use-case:
 
 ```js
+import { against, isString, isNumber } from 'match-iz'
+
 const stringOrNumber = against(
-  whenString("it's a string!"),
-  whenNumber("it's a number!"),
+  when(isString)("it's a string!"),
+  when(isNumber)("it's a number!"),
   otherwise("sorry, it's neither of those!")
 )
 
 const result = stringOrNumber(42)
 // "it's a number!"
+```
+
+Use `cata` to integrate `match-iz` with your ADTs/monads:
+
+```js
+import { cata } from 'match-iz'
+
+// Specify how match-iz should detect Just/Nothing
+// monads and extract their values
+const { just, nothing } = cata({
+  just: m => m?.isJust,
+  nothing: m => m?.isNothing,
+  getValue: m => m?.valueOf()
+})
+
+match(maybeDate('2022-01-01'))(
+  just(dateObj => {
+    console.log('Parsed date: ', dateObj)
+  }),
+  nothing(() => {
+    console.log('Invalid date')
+  })
+)
 ```
 
 ## Install / Use:

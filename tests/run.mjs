@@ -3,24 +3,20 @@ import { strict } from 'assert'
 import { isArray, isDate, isNumber, isPojo } from '../src/types.mjs'
 import * as lib from '../src/match-iz.mjs'
 
+import { safe } from './maybe.mjs'
+
 const { match, against, when, otherwise, spread, pluck: $ } = lib
-const {
-  allOf,
-  anyOf,
-  not,
-  defined,
-  empty,
-  gt,
-  lt,
-  gte,
-  lte,
-  inRange,
-  startsWith,
-  endsWith,
-  includes,
-  includedIn,
-  hasOwn
-} = lib
+const { allOf, anyOf, not, defined, empty } = lib
+const { gt, lt, gte, lte, inRange, startsWith, endsWith } = lib
+const { includes, includedIn, hasOwn, cata } = lib
+
+const { just, nothing } = cata({
+  just: m => m?.isJust,
+  nothing: m => m?.isNothing,
+  getValue: m => m?.valueOf()
+})
+
+const maybeNumber = safe(isNumber)
 
 const testCases = [
   [
@@ -631,6 +627,25 @@ const testCases = [
             when({ pages: gt(1) })(() => 'b'),
             when({ pages: 1 })('a'),
             otherwise(() => 'd')
+          )
+        )
+      }
+    }
+  ],
+  [
+    'cata',
+    {
+      cases: [
+        { input: maybeNumber(42), expecting: 42 },
+        { input: maybeNumber('42'), expecting: 'empty' },
+        { input: '42', expecting: 'not a monad' }
+      ],
+      run: (assertCase, input) => {
+        assertCase(
+          match(input)(
+            just(x => x),
+            nothing('empty'),
+            otherwise('not a monad')
           )
         )
       }

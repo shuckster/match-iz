@@ -47,6 +47,26 @@ declare module 'match-iz' {
    */
   export function otherwise(handler: any): TMatchTester
 
+  /**
+   * Specify how match/against should detect ADTs/monads and extract their values
+   * @example
+   * const { just, nothing } = cata({
+   *   just: m => m?.isJust,
+   *   nothing: m => m?.isNothing,
+   *   getValue: m => m?.valueOf()
+   * })
+   *
+   * match(maybeDate('2022-01-01'))(
+   *   just(dateObj => {
+   *     console.log('Parsed date: ', dateObj)
+   *   }),
+   *   nothing(() => {
+   *     console.log('Invalid date')
+   *   })
+   * )
+   */
+  export function cata(catas: any): any
+
   export function defined(value: any): boolean
   export function empty(value: any): boolean
   export function truthy(value: any): boolean

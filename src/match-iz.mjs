@@ -107,6 +107,19 @@ const hasOwn =
       Object.keys(haystack)
     ])
 
+const cata = ({ getValue, ...catas }) =>
+  Object.entries(catas).reduce(
+    (acc, [type, cataFn]) =>
+      Object.assign(acc, {
+        [type]: handler => haystack => ({
+          matched: () => cataFn(haystack),
+          value: () =>
+            !isFunction(handler) ? handler : handler(getValue(haystack))
+        })
+      }),
+    {}
+  )
+
 const truthy = value => !!value
 const falsy = value => !value
 
@@ -127,7 +140,7 @@ const ifArrayOrString = fn => value =>
 
 export { against, match, when, otherwise, pluck }
 export { not, anyOf, allOf, spread }
-export { instanceOf, hasOwn }
+export { cata, instanceOf, hasOwn }
 export { defined, empty, truthy, falsy }
 export { startsWith, endsWith, includes, includedIn }
 export { gt, lt, gte, lte, inRange }
