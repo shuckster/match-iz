@@ -324,6 +324,10 @@ const testCases = [
           expecting: 'that was standard'
         },
         {
+          input: 'the five boxing wizards jump quickly',
+          expecting: 'boxing'
+        },
+        {
           input: false,
           expecting: 'Unknown field in CSV'
         }
@@ -333,23 +337,23 @@ const testCases = [
 
         assertCase(
           match(input)(
+            when(/(boxing)/)(([, firstMatch]) => {
+              return firstMatch
+            }),
+
             when(/(?<leadingZero>0?)(?<p1>\d{4,5})(?<p2>\d{3})(?<p3>\d{3})/)(
-              ({ groups: { leadingZero, p1, p2, p3 } }) => {
+              ({ leadingZero, p1, p2, p3 }) => {
                 return `+44(${leadingZero})${p1} ${p2} ${p3}`
               }
             ),
 
-            when(/(?<firstName>\w+) (?<lastName>\w+)/)(
-              ({ groups: { lastName } }) => {
-                return 'Mr ' + lastName
-              }
-            ),
+            when(/(?<firstName>\w+) (?<lastName>\w+)/)(({ lastName }) => {
+              return 'Mr ' + lastName
+            }),
 
-            when(/(?<left>\d+) \+ (?<right>\d+)/)(
-              ({ groups: { left, right } }) => {
-                return add(left, right)
-              }
-            ),
+            when(/(?<left>\d+) \+ (?<right>\d+)/)(({ left, right }) => {
+              return add(left, right)
+            }),
 
             when(/world/)('that was standard'),
 

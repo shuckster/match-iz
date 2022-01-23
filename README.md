@@ -219,9 +219,13 @@ const todosReducer = (state, action) =>
 
 ```js
 match('1 + 2')(
-  when(/(?<left>\d+) \+ (?<right>\d+)/)(({ groups: { left, right } }) =>
-    add(left, right)
-  ),
+  // Groups extracted automatically if specified
+  // (second argument will be the full-match)
+  //       /__\            /___\
+  when(/(?<left>\d+) \+ (?<right>\d+)/)
+    (({ left, right }, fullMatch) => {
+      return add(left, right)
+    }),
 
   otherwise("I couldn't parse that!")
 )
@@ -235,13 +239,15 @@ match('1 + 2')(
 import { match, when, otherwise } from 'match-iz'
 
 match('1 + 2')(
-  when(/(?<firstName>\w+) (?<lastName>\w+)/)(({ groups: { lastName } }) => {
-    return `Ahoy, Captain ${lastName}`
-  }),
+  when(/(?<firstName>\w+) (?<lastName>\w+)/)
+    (({ lastName }, fullMatch) => {
+      return `Ahoy, Captain ${lastName}`
+    }),
 
-  when(/(?<left>\d+) \+ (?<right>\d+)/)(({ groups: { left, right } }) => {
-    return add(left, right)
-  }),
+  when(/(?<left>\d+) \+ (?<right>\d+)/)
+    (({ left, right }, fullMatch) => {
+      return add(left, right)
+    }),
 
   otherwise("I couldn't parse that!")
 )

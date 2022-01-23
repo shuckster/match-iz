@@ -40,9 +40,14 @@ const when = needle => handler => haystack => ({
     !isFunction(handler)
       ? handler
       : isString(haystack) && isRegExp(needle)
-      ? handler(haystack.match(needle))
+      ? handler(...argsFrom(haystack.match(needle)))
       : handler(haystack)
 })
+
+const argsFrom = regExpMatchResult => {
+  const { groups } = regExpMatchResult
+  return groups ? [groups, regExpMatchResult] : [regExpMatchResult]
+}
 
 const found = (needle, haystack, pick) =>
   isPojo(needle)

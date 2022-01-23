@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [2.0.0] - 2022-01-23
+
+### Breaking Changes
+
+- If specified, named RegExp-groups will be passed-in to `when` handlers as the first argument, and the full-match the second.
+
+Before v2:
+
+```js
+when(/(?<foo>.*)/)(fullMatch => {
+  const foo = fullMatch.groups.foo
+  console.log(foo)
+})
+```
+
+After v2:
+
+```js
+when(/(?<foo>.*)/)(({ foo }, fullMatch) => {
+  console.log(foo)
+})
+```
+
+- RegExps without named-groups work as before, with the full-match being the first and only argument to the handler.
+
 ## [1.12.0] - 2022-01-12
 
 ### Added
