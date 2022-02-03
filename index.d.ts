@@ -104,11 +104,12 @@ declare module 'match-iz' {
   export function pluck(predicate?: TPredicate): TPredicate
 
   export function isArray(value: any): boolean
+  export function isDate(value: any): boolean
   export function isFunction(value: any): boolean
   export function isNumber(value: any): boolean
+  export function isPojo(value: any): boolean
   export function isRegExp(value: any): boolean
   export function isString(value: any): boolean
-  export function isPojo(value: any): boolean
 
   /**
    * @example

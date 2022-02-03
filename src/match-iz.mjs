@@ -149,4 +149,4 @@ export { cata, instanceOf, hasOwn }
 export { defined, empty, truthy, falsy }
 export { startsWith, endsWith, includes, includedIn }
 export { gt, lt, gte, lte, inRange }
-export { isArray, isDate, isFunction, isNumber, isRegExp, isString, isPojo }
+export { isArray, isDate, isFunction, isNumber, isPojo, isRegExp, isString }
