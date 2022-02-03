@@ -81,10 +81,10 @@ declare module 'match-iz' {
   export function includes(content: any): TPredicate
 
   export function not(value: any): TPredicate
-  export function allOf(...these: any): TPredicate
-  export function anyOf(...these: any): array
-  export function includedIn(...these: any): array
-  export function hasOwn(...props: string): TPredicate
+  export function allOf(...these: any[]): TPredicate
+  export function anyOf(...these: any[]): any[]
+  export function includedIn(...these: any): any[]
+  export function hasOwn(...props: string[]): TPredicate
   export function instanceOf(constructor: any): TPredicate
 
   /**
