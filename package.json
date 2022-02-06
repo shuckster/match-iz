@@ -23,6 +23,7 @@
   },
   "files": [
     "dist/**/*.js",
+    "dist/**/package.json",
     "CHANGELOG.md",
     "README.md",
     "LICENSE",
