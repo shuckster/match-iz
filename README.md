@@ -1,4 +1,4 @@
-<h1 align="center">match-iz</h1>
+<h1 align="center"><code>match-iz</code> 🔥</h1>
 
 <p align="center">
   <a href="https://github.com/shuckster/match-iz/blob/master/LICENSE">
