@@ -1,5 +1,6 @@
 {
   "name": "match-iz",
+  "browserGlobalName": "matchiz",
   "version": "2.0.2",
   "description": "A tiny pattern-matching library in the style of the TC39 proposal",
   "author": "Conan Theobald",
@@ -12,13 +13,13 @@
     "otherwise"
   ],
   "types": "index.d.ts",
-  "main": "./dist/match-iz.cjs.js",
-  "module": "dist/match-iz.esm.js",
+  "main": "./dist/cjs/match-iz.cjs.js",
+  "module": "dist/esm/match-iz.esm.js",
   "exports": {
-    "import": "./dist/match-iz.esm.js",
-    "require": "./dist/match-iz.cjs.js",
-    "browser": "./dist/match-iz.browser.js",
-    "default": "./dist/match-iz.cjs.js"
+    "import": "./dist/esm/match-iz.esm.js",
+    "require": "./dist/cjs/match-iz.cjs.js",
+    "browser": "./dist/browser/match-iz.browser.js",
+    "default": "./dist/cjs/match-iz.cjs.js"
   },
   "files": [
     "dist/**/*.js",
@@ -43,7 +44,7 @@
     "test": "node ./tests/run.mjs",
     "lint": "pnpx eslint src/*.mjs tests/*.mjs",
     "build": "pnpm run build:esbuild",
-    "build:clean": "rimraf dist/; mkdir -p dist/",
+    "build:clean": "rimraf dist/; mkdir -p dist/{esm,cjs,browser}",
     "build:all": "pnpm run build:clean ; pnpm run build",
     "build:esbuild": "node ./build-config/esbuild.mjs"
   },

@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [2.0.3] - 2022-02-06
+
+### Fixed
+
+- Another run at fixing import vs. require.
+
 ## [2.0.2] - 2022-02-03
 
 ### Fixed

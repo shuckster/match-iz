@@ -88,7 +88,7 @@ match(maybeDate('2022-01-01'))(
 UMD:
 
 ```html
-<script src="https://unpkg.com/match-iz/dist/match-iz.browser.js"></script>
+<script src="https://unpkg.com/match-iz/dist/browser/match-iz.browser.js"></script>
 <script>
   const { match, when, against, otherwise, pluck, ...etc } = matchiz
 </script>
