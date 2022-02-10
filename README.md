@@ -156,7 +156,7 @@ match(action)(
 <summary>Full example</summary>
 
 ```js
-import { match, when, otherwise, pluck: $ } from 'match-iz'
+import { match, when, otherwise, pluck as $ } from 'match-iz'
 
 const todosReducer = (state, action) =>
   match(action)(
