@@ -20,6 +20,14 @@
 
 Functional, declarative [pattern-matching](https://github.com/tc39/proposal-pattern-matching) in ~150 SLOC.
 
+- [Overview](#overview)
+- [Install](#install)
+- [Examples](#examples)
+- [Documentation](#documentation)
+- [Credits](#credits)
+
+## Overview:
+
 ```js
 import { match, when, otherwise } from 'match-iz'
 
@@ -31,21 +39,7 @@ match(haystack)(
 )
 ```
 
-`when` is curried, so you can write:
-
-```js
-const whenString = when(x => typeof x === 'string')
-const whenNumber = when(x => typeof x === 'number')
-
-const result = match(42)(
-  whenString("it's a string!"),
-  whenNumber("it's a number!"),
-  otherwise("sorry, it's neither of those!")
-)
-// "it's a number!"
-```
-
-`match` is curried too, but the data-last version `against` is probably what you want for a curried use-case:
+Data-last version:
 
 ```js
 import { against, isString, isNumber } from 'match-iz'
@@ -83,51 +77,30 @@ match(maybeDate('2022-01-01'))(
 )
 ```
 
-## Install / Use:
+## Install:
 
-UMD:
+```
+$ pnpm i match-iz
+```
+
+```js
+// ESM
+import { match, when, otherwise, pluck, ...etc } from 'match-iz'
+
+// CJS
+const { match, when, otherwise, pluck, ...etc } = require('match-iz')
+```
+
+Browser/UMD:
 
 ```html
 <script src="https://unpkg.com/match-iz/dist/browser/match-iz.browser.js"></script>
 <script>
-  const { match, when, against, otherwise, pluck, ...etc } = matchiz
+  const { match, when, otherwise, pluck, ...etc } = matchiz
 </script>
 ```
 
-ESM:
-
-```js
-import * as matchiz from 'match-iz'
-
-const { match, when, otherwise, pluck } = matchiz
-const { gte, inRange } = matchiz
-
-// Example using gte/inRange helpers (documented below)
-const getJsonLength = async (url = '/json') =>
-  match(await fetch(url))(
-    when({ status: 200, headers: { 'Content-Length': pluck() } })(
-      contentLength => `size is ${contentLength}`
-    ),
-
-    when(function ({ status }) {
-      return status >= 500
-    })('Server error!'),
-
-    when({ status: 404 })('JSON not found'),
-
-    when({ status: pluck(gte(400)) })(
-      status => `Error! We plucked the >=400 code and it is: ${status}`
-    ),
-
-    when({ status: inRange(300, 399) })(() => {
-      return 'This is fine...'
-    }),
-
-    otherwise("I didn't understand that...")
-  )
-```
-
-## A Few Examples:
+# Examples:
 
 ### Front-end component:
 
@@ -346,7 +319,7 @@ lines.filter(
 <summary>See a couple more:</summary>
 
 ```js
-import { against, when, otherwise } from 'match-iz'
+import { against, when, otherwise, lte } from 'match-iz'
 
 // Fibonnacci
 
@@ -381,9 +354,7 @@ numbers.sort(
 )
 
 function nargs() {
-  return fn =>
-    (...args) =>
-      fn(args)
+  return fn => (...args) => fn(args)
 }
 ```
 
@@ -393,9 +364,56 @@ function nargs() {
 
 # Documentation
 
+- [Helpers](#helpers)
+- [Core library](#core-library)
+
 ## Helpers
 
-You can use these in your `when()`'s:
+`match-iz` provides a number of composable helpers you can use to build patterns:
+
+| Numbers | Strings    | Strings/Arrays | Truthiness | Types                                                 | Negate | Combinators |
+| ------- | ---------- | -------------- | ---------- | ----------------------------------------------------- | ------ | ----------- |
+| gt      | startsWith | includes       | empty      | isArray                                               | not    | allOf       |
+| lt      | endsWith   | -              | falsy      | isDate                                                | -      | anyOf       |
+| gte     | -          | -              | defined    | isFunction                                            | -      | includedIn  |
+| lte     | -          | -              | truthy     | isNumber                                              | -      | hasOwn      |
+| inRange | -          | -              | -          | [isPojo](https://google.com/search?q=javascript+pojo) | -      | -           |
+| -       | -          | -              | -          | isRegExp                                              | -      | -           |
+| -       | -          | -              | -          | isString                                              | -      | -           |
+| -       | -          | -              | -          | instanceOf                                            | -      | -           |
+
+Just import them from `match-iz` as you do the core library:
+
+```js
+import { gt, lt, etc... } from 'match-iz'
+```
+
+Some detail:
+
+| Helper                             | Meaning                                        |
+| ---------------------------------- | ---------------------------------------------- |
+| `isArray/Date/Function/...etc`     | test for that type                             |
+| `gt(0)`                            | greater than                                   |
+| `lt(0)`                            | less than                                      |
+| `gte(0)`                           | greater than or equal                          |
+| `lte(0)`                           | less than or equal                             |
+| `inRange(0, 10)`                   | within min ... max                             |
+| `startsWith('hello ...')`          | string starts with "content"                   |
+| `endsWith('... world!')`           | string ends with "content"                     |
+| `includes(item)`                   | array/string contains item/"content"           |
+| `includedIn([these, things, ...])` | alias for `anyOf`                              |
+| `instanceOf(constructor)`          | for class instances                            |
+| `hasOwn('prop1', 'prop2'...)`      | check for existence of object keys/props       |
+| `empty`                            | null, undefined, NaN, [], or {}                |
+| `defined`                          | negates empty, but `false` counts as "defined" |
+| `truthy`                           | a !! check                                     |
+| `falsy`                            | a ! check                                      |
+| `not`                              | negate the result of the given pattern         |
+| `allOf`                            | AND                                            |
+| `anyOf`                            | OR                                             |
+| `hasOwn('list', 'of', 'props')`    | test for existence of prop(s)                  |
+
+Basic examples:
 
 ```js
 match(literal)(
@@ -419,42 +437,22 @@ match(object)(
 )
 ```
 
-Here's the full list:
-
-| Numbers | Strings    | Strings/Arrays | Truthiness | Types                                                 | Negate | Combinators |
-| ------- | ---------- | -------------- | ---------- | ----------------------------------------------------- | ------ | ----------- |
-| gt      | startsWith | includes       | empty      | isArray                                               | not    | allOf       |
-| lt      | endsWith   | -              | falsy      | isDate                                                | -      | anyOf       |
-| gte     | -          | -              | defined    | isFunction                                            | -      | includedIn  |
-| lte     | -          | -              | truthy     | isNumber                                              | -      | hasOwn      |
-| inRange | -          | -              | -          | [isPojo](https://google.com/search?q=javascript+pojo) | -      | -           |
-| -       | -          | -              | -          | isRegExp                                              | -      | -           |
-| -       | -          | -              | -          | isString                                              | -      | -           |
-| -       | -          | -              | -          | instanceOf                                            | -      | -           |
+A little more composition:
 
 ```js
-const { gt, lt, etc... } = matchiz
+match(literal)(
+  when(not(inRange(100, 200)))( ... ),
+  when({ number: not(42) })( ... )
+)
+
+match(literal)(
+  when(allOf(isNumber, x => x > 10))( ... ),
+  when({ number: not(anyOf(20, 30)) })( ... )
+  when(includedIn([40, 50]))( ... )
+)
 ```
 
-| Helper                             | Meaning                                        |
-| ---------------------------------- | ---------------------------------------------- |
-| `gt(0)`                            | greater than                                   |
-| `lt(0)`                            | less than                                      |
-| `gte(0)`                           | greater than or equal                          |
-| `lte(0)`                           | less than or equal                             |
-| `inRange(0, 10)`                   | within min ... max                             |
-| `startsWith('hello ...')`          | -                                              |
-| `endsWith('... world!')`           | -                                              |
-| `includes(item)`                   | for arrays and strings                         |
-| `includedIn([these, things, ...])` | -                                              |
-| `instanceOf(constructor)`          | for class instances                            |
-| `hasOwn('prop1', 'prop2'...)`      | check for existence of object keys/props       |
-| `empty`                            | null, undefined, NaN, [], or {}                |
-| `defined`                          | negates empty, but `false` counts as "defined" |
-| `truthy`                           | a !! check                                     |
-| `falsy`                            | a ! check                                      |
-
-You can make your own:
+You can use your own predicates:
 
 ```js
 const isInteger = Number.isInteger
@@ -465,36 +463,9 @@ match(status)(
 )
 ```
 
-Examples:
+## Core-library
 
-```js
-const { not } = matchiz
-
-match(literal)(
-  when(not(inRange(100, 200)))( ... ),
-  when({ number: not(42) })( ... )
-)
-
-const { allOf, anyOf, includedIn } = matchiz
-
-match(literal)(
-  when(allOf(isNumber, x => x > 10))( ... ),
-  when({ number: not(anyOf(20, 30)) })( ... )
-  when(includedIn([40, 50]))( ... )
-)
-```
-
-Equality is achieved with literals:
-
-```js
-when({ number: 42 })( ... )
-when('hello, world!')( ... )
-when(3)( ... )
-when(false)( ... )
-when(null)( ... )
-```
-
-## match / when / otherwise
+match / when / otherwise
 
 ### `match()`
 
@@ -550,8 +521,11 @@ match({ message: 'hello wrrld!', number: 42 })(
   ])('ok!')
 )
 // "ok!"
+```
 
-// Alternatively, you can use `allOf` and `anyOf`:
+Alternatively, you can use `allOf` and `anyOf`:
+
+```js
 when(allOf({ message: endsWith('world!') }, { number: 42 }))('ok!')
 when(anyOf({ message: endsWith('world!') }, { number: 42 }))('ok!')
 when(anyOf(1, 2, 'chili dogs'))('ok!')
@@ -560,7 +534,7 @@ when(anyOf(1, 2, 'chili dogs'))('ok!')
 If both `match` and `when` values are arrays, the contents will be compared (applying any predicates in the `when`):
 
 ```js
-const { empty: _ } = matchiz
+import { empty as _ } from 'match-iz'
 
 match(['', '2', undefined])(
   when(['1', _, _])('one'),
@@ -579,14 +553,14 @@ match('hello, world!')(
     return matches
   })
 )
-// ^ 1 :: [ 'world', index: 7, input: 'hello, world!', groups: undefined ]
+// [ 'world', index: 7, input: 'hello, world!', groups: undefined ]
 
 match({ text: 'hello, world!' })(
   when({ text: /world/ })(obj => {
     return obj
   })
 )
-// ^ 2 :: { text: 'hello, world!' }
+// { text: 'hello, world!' }
 ```
 
 1. Passing a `RegExp` literal to `when` will pass the match-array as the first argument to `handler` (if it's a function).
@@ -619,7 +593,7 @@ Very concise! Unfortunately, we can't do that with current syntax.
 But we can lean on [Object initializer notation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer) to get close:
 
 ```js
-const { defined } = matchiz
+import { defined } from 'match-iz'
 
 // without:
 when({ error: defined })(<Error {...props} />)
