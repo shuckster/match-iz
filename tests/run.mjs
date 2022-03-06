@@ -53,7 +53,8 @@ const testCases = [
         { input: 10, expecting: 'gte' },
         { input: 1, expecting: 'gt' },
         { input: -1, expecting: 'lt' },
-        { input: 35, expecting: 'inRange' },
+        { input: 35, expecting: 'inRange1' },
+        { input: 55, expecting: 'inRange2' },
         { input: 'hello, world!', expecting: 'startsWith' },
         { input: 'ahoyhoy, world!', expecting: 'endsWith' },
         { input: ['ignatius', 'cheese'], expecting: 'includesArray' },
@@ -64,7 +65,8 @@ const testCases = [
       run: (assertCase, input) => {
         assertCase(
           match(input)(
-            when(inRange(30, 40))('inRange'),
+            when(inRange(30, 40))('inRange1'),
+            when(inRange(60, 50))('inRange2'),
             when(gte(10))('gte'),
             when(gt(0))('gt'),
             when(lt(0))('lt'),

@@ -96,7 +96,9 @@ const gt = n => ifNumber(value => value > n)
 const lt = n => ifNumber(value => value < n)
 const gte = n => ifNumber(value => value >= n)
 const lte = n => ifNumber(value => value <= n)
-const inRange = (min, max) => ifNumber(value => value >= min && value <= max)
+const inRange = (x, y) =>
+  ifNumber(v => v >= Math.min(x, y) && v <= Math.max(x, y))
+
 const startsWith = s => ifString(value => value.startsWith(s))
 const endsWith = s => ifString(value => value.endsWith(s))
 const includes = o => ifArrayOrString(value => value.includes(o))
