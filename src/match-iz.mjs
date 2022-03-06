@@ -1,13 +1,7 @@
-import {
-  isArray,
-  isDate,
-  isFunction,
-  isNumber,
-  isPojo,
-  isRegExp,
-  isString,
-  instanceOf
-} from './types.mjs'
+import * as lib from './types.mjs'
+
+const { isArray, isDate, isFunction, isNumber } = lib
+const { isPojo, isRegExp, isString, instanceOf } = lib
 
 //
 // match-iz
