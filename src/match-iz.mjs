@@ -72,7 +72,12 @@ const pluck =
 //
 
 const not = needle => (haystack, pick) => !found(needle, haystack, pick)
-const anyOf = (...these) => these.flat()
+
+const anyOf =
+  (...these) =>
+  (haystack, pick) =>
+    these.flat().some(needle => found(needle, haystack, pick))
+
 const allOf =
   (...these) =>
   (haystack, pick) =>

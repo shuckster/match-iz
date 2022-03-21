@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [2.2.0] - 2022-03-21
+
+### Updated
+
+- Permit use of anyOf() as standalone function instead of just match-iz pattern, eg:
+
+```js
+// Before 2.2.0
+const isStringOrRegExp = anyOf(isString, isRegExp)
+// [isString, isRegExp]
+
+// After 2.2.0
+const isStringOrRegExp = anyOf(isString, isRegExp)
+// <Function>
+
+isStringOrRegExp('foo') // true
+isStringOrRegExp(/foo/) // true
+```
+
 ## [2.1.0] - 2022-03-06
 
 ### Updated
