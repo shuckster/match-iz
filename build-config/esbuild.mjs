@@ -17,7 +17,10 @@ function main() {
 
 function buildModule({ file, format, module, define }) {
   const buildOptions = {
-    entryPoints: [paths.SRC],
+    entryPoints: match(format)(
+      when('iife')([paths.BROWSER_SRC]),
+      otherwise([paths.SRC])
+    ),
     define,
     format,
     ...match(format)(

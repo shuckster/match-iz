@@ -188,6 +188,54 @@ const todosReducer = (state, action) =>
 
 &nbsp;
 
+### Dates:
+
+```js
+match(new Date())(
+  when(allOf(nthSun(-1), isMar))(dateObj => {
+    return 'Last Sunday of March: Clocks go forward'
+  }),
+
+  when(allOf(nthSun(-1), isOct))(dateObj => {
+    return 'Last Sunday of October: Clocks go back'
+  }),
+
+  otherwise('The clock is ticking')
+)
+// "The clock is ticking"
+```
+
+<details>
+<summary>Full example</summary>
+
+```js
+import { match, when, otherwise, allOf, inRange } from 'match-iz'
+import { nthSun, isMar, isOct, isDay } from 'match-iz/dates'
+
+match(new Date())(
+  when(allOf(nthSun(-1), isMar))(dateObj => {
+    return 'Last Sunday of March: Clocks go forward'
+  }),
+
+  when(allOf(nthSun(-1), isOct))(dateObj => {
+    return 'Last Sunday of October: Clocks go back'
+  }),
+
+  when(isDay(1))(dateObj => {
+    return 'Pinch punch, first day of the month!'
+  }),
+
+  when(isDay(inRange(30, 31)))(dateObj => {
+    return "It's probably not February..."
+  }),
+
+  otherwise('The clock is ticking')
+)
+```
+
+</details>
+&nbsp;
+
 ### Regular Expressions:
 
 ```js
@@ -365,6 +413,7 @@ function nargs() {
 # Documentation
 
 - [Helpers](#helpers)
+- [Dates](#dates)
 - [Core library](#core-library)
 
 ## Helpers
@@ -460,6 +509,68 @@ const isInteger = Number.isInteger
 match(status)(
   when({ status: isInteger })('status is an integer'),
   otherwise('nope')
+)
+```
+
+## Dates
+
+Since 2.3.0, the following date helpers are available from `match-iz/dates` (or directly from the `matchiz` global variable if you're using the browser-build.)
+
+```js
+import { isSun, isMar, isYear, ...etc } from 'match-iz/dates'
+```
+
+| Helpers                                                             | Meaning                            |
+| ------------------------------------------------------------------- | ---------------------------------- |
+| `isSun` / `isMon` / `isTue` / `isWed` / `isThu` / `isFri` / `isSat` | is that particular day of the week |
+
+```js
+match(new Date())(
+  when(isMon)("I don't like them"),
+  when(allOf(isSat, isSun))('Weekend!'),
+  otherwise('Back to the grind')
+)
+```
+
+| Helpers                                                                    | Meaning                                                              |
+| -------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `nthSun` / `nthMon` / `nthTue` / `nthWed` / `nthThu` / `nthFri` / `nthSat` | the nth \*day of the month. Negatives allowed to search from the end |
+
+```js
+match(new Date())(
+  when(nthSun(2))('Second Sunday of the month'),
+  when(nthFri(-1))('Last Friday of the month'),
+  when(anyOf(nthMon(1), nthFri(1)))('First Monday or Friday of the month')
+)
+```
+
+| Helpers                                                                                                               | Meaning                  |
+| --------------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| `isJan` / `isFeb` / `isMar` / `isApr` / `isMay` / `isJun` / `isJul` / `isAug` / `isSep` / `isOct` / `isNov` / `isDec` | is that particular month |
+
+```js
+match(new Date())(
+  when(isJan)("It's January"),
+  when(anyOf(isFeb, isMar))('Is it February or March?'),
+  when(allOf(isDec, isDay(24)))('Christmas already?')
+)
+```
+
+| Helpers                                                         | Meaning                                                                                                                            |
+| --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `isDay` / `isMonth` / `isYear` / `isDayOfWeek` / `isWeekNumber` | is the specified day, month, year, DoW, or week-number. isDay accepts negative numbers to work backwards from the end of the month |
+
+```js
+match(new Date())(
+  when(isDay(1))('First day of the month'),
+  when(isDay(-1))('Last day of the month'),
+  when(isMonth(1))("It's January, of course"),
+  when(allOf(isYear(2019), isMar))('Better forgotten'),
+  when(isDayOfWeek(0))('Sunday'),
+  when(isDayOfWeek(6))('Saturday'),
+  when(isWeekNumber(1))('First week of the year'),
+  when(isWeekNumber(52))('Last week of the year'),
+  when(not(isWeekNumber(13)))('Not the 13th week of the year')
 )
 ```
 

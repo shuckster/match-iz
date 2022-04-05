@@ -11,7 +11,8 @@ function optionsFrom(pkg) {
     ${process.env.PWD}/
 
       /src
-        /${pkg.name}.mjs            = SRC
+        /${pkg.name}.mjs                    = SRC
+        /browser.mjs                        = BROWSER_SRC
 
       /dist
         /esm/${pkg.name}.esm.js             = DIST_ESM
