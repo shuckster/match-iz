@@ -106,9 +106,9 @@ Browser/UMD:
 
 ```jsx
 match(props)(
-  when({ loading })(<Loading />),
-  when({ error })(<Error {...props} />),
-  when({ data })(<Page {...props} />),
+  when({ loading: defined })(<Loading />),
+  when({ error: defined })(<Error {...props} />),
+  when({ data: defined })(<Page {...props} />),
   otherwise(<Logout />)
 )
 // <Loading />
@@ -242,11 +242,12 @@ match(new Date())(
 match('1 + 2')(
   // Groups extracted automatically if specified
   // (second argument will be the full-match)
-  //       /__\            /___\
-  when(/(?<left>\d+) \+ (?<right>\d+)/)
-    (({ left, right }, fullMatch) => {
+  //       ____            _____
+  when(/(?<left>\d+) \+ (?<right>\d+)/)(
+    ({ left, right }, fullRegExpMatchArray) => {
       return add(left, right)
-    }),
+    }
+  ),
 
   otherwise("I couldn't parse that!")
 )
@@ -260,15 +261,17 @@ match('1 + 2')(
 import { match, when, otherwise } from 'match-iz'
 
 match('1 + 2')(
-  when(/(?<firstName>\w+) (?<lastName>\w+)/)
-    (({ lastName }, fullMatch) => {
+  when(/(?<firstName>\w+) (?<lastName>\w+)/)(
+    ({ lastName }, fullRegExpMatchArray) => {
       return `Ahoy, Captain ${lastName}`
-    }),
+    }
+  ),
 
-  when(/(?<left>\d+) \+ (?<right>\d+)/)
-    (({ left, right }, fullMatch) => {
+  when(/(?<left>\d+) \+ (?<right>\d+)/)(
+    ({ left, right }, fullRegExpMatchArray) => {
       return add(left, right)
-    }),
+    }
+  ),
 
   otherwise("I couldn't parse that!")
 )
@@ -434,7 +437,7 @@ function nargs() {
 Just import them from `match-iz` as you do the core library:
 
 ```js
-import { gt, lt, etc... } from 'match-iz'
+import { gt, lt, ...etc } from 'match-iz'
 ```
 
 Some detail:
@@ -453,14 +456,13 @@ Some detail:
 | `includedIn([these, things, ...])` | alias for `anyOf`                              |
 | `instanceOf(constructor)`          | for class instances                            |
 | `hasOwn('prop1', 'prop2'...)`      | check for existence of object keys/props       |
-| `empty`                            | null, undefined, NaN, [], or {}                |
+| `empty`                            | null, undefined, NaN, '', [], or {}            |
 | `defined`                          | negates empty, but `false` counts as "defined" |
 | `truthy`                           | a !! check                                     |
 | `falsy`                            | a ! check                                      |
 | `not`                              | negate the result of the given pattern         |
 | `allOf`                            | AND                                            |
 | `anyOf`                            | OR                                             |
-| `hasOwn('list', 'of', 'props')`    | test for existence of prop(s)                  |
 
 Basic examples:
 
