@@ -1,21 +1,6 @@
-import * as lib from '../src/match-iz.mjs'
-
-const { against, when, allOf } = lib
-const { isDate, isFunction, isNumber } = lib
-
-const ifDate = fn => value => isDate(value) && fn(value)
-const byIndex = idx => (_, i) => i === idx
-const byLastIndex = idx => (_, i, arr) => i === arr.length + idx
-
-function* range(start, end) {
-  for (let i = start; i <= end; i++) yield i
-}
-
-const dateSet =
-  date =>
-  fnName =>
-  (...args) =>
-    new Date(new Date(date)[`set${fnName}`](...args))
+import { against, when, allOf } from '../src/match-iz.mjs'
+import { isFunction, isNumber } from '../src/match-iz.mjs'
+import { dateSet, range, ifDate, byLastIndex, byIndex } from './utils.mjs'
 
 const endOfMonth = date =>
   dateSet(date)('Month')(date.getMonth() + 1, 0).getDate()
