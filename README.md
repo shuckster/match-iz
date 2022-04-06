@@ -18,12 +18,22 @@
     /></a>
 </p>
 
-Functional, declarative [pattern-matching](https://github.com/tc39/proposal-pattern-matching) in ~150 SLOC.
+A tiny functional, declarative [pattern-matching](https://github.com/tc39/proposal-pattern-matching) library.
 
 - [Overview](#overview)
 - [Install](#install)
 - [Examples](#examples)
+  - [Front-end Component](#front-end-component)
+  - [Reducer](#reducer)
+  - [Dates](#dates)
+  - [Overloading](#overloading)
+  - [Matching array contents](#matching-array-contents)
 - [Documentation](#documentation)
+  - [Core library](#core-library)
+  - [Helpers](#helpers)
+  - [Date helpers](#date-helpers)
+  - [What is spread()?](#what-is-spreaddefined)
+  - [What about against()?](#what-about-against)
 - [Credits](#credits)
 
 ## Overview:
@@ -34,7 +44,6 @@ import { match, when, otherwise } from 'match-iz'
 match(haystack)(
   when(needle / predicate)(result / handler),
   when(needle / predicate)(result / handler),
-  when(needle / predicate)(result / handler),
   otherwise(result / handler)
 )
 ```
@@ -42,16 +51,64 @@ match(haystack)(
 Data-last version:
 
 ```js
-import { against, isString, isNumber } from 'match-iz'
+against(
+  when(needle / predicate)(result / handler),
+  when(needle / predicate)(result / handler),
+  otherwise(result / handler)
+)(haystack)
+```
 
-const stringOrNumber = against(
-  when(isString)("it's a string!"),
-  when(isNumber)("it's a number!"),
-  otherwise("sorry, it's neither of those!")
+Use `pluck` to extract values of interest when matching against array/object haystacks:
+
+```js
+import { pluck } from 'match-iz'
+
+const willDoThis = match(action)(
+  when({ type: 'add-todo', payload: pluck() })(payload => {
+    return `Adding todo: ${payload}`
+  })
 )
 
-const result = stringOrNumber(42)
-// "it's a number!"
+// `pluck` accepts patterns, too:
+const atIndex2 = match([1, 2, 3])(
+  when([1, 2, pluck(3)])(three => {
+    return '[2] is the number 3!'
+  }),
+
+  when([1, 2, pluck(isNumber)])(num => {
+    return `[2] is a number: ${num}`
+  })
+)
+```
+
+Capture groups are extracted automatically from regular-expressions if they're specified (with the second argument of the `when`-handler being the full-match if you need it):
+
+```js
+match('1 + 2')(
+  when(/(?<left>\d+) \+ (?<right>\d+)/)(
+    ({ left, right }, fullRegExpMatchArray) => {
+      return add(left, right)
+    }
+  ),
+
+  otherwise("I couldn't parse that!")
+)
+// 3
+```
+
+Since 2.3.0: Basic local + UTC [date helpers](#date-helpers):
+
+```js
+import * as local from 'match-iz/dates'
+// import * as utc from 'match-iz/dates/utc'
+
+const { nthSun, isMar, isSat, isSun } = local
+
+match(new Date())(
+  when(allOf(nthSun(-1), isMar))(dateObj => {
+    return 'Last Sunday of March: Clocks go forward'
+  })
+)
 ```
 
 Use `cata` to integrate `match-iz` with your ADTs/monads:
@@ -59,7 +116,7 @@ Use `cata` to integrate `match-iz` with your ADTs/monads:
 ```js
 import { cata } from 'match-iz'
 
-// Specify how match-iz should detect Just/Nothing
+// Specify how match-iz can detect
 // monads and extract their values
 const { just, nothing } = cata({
   just: m => m?.isJust,
@@ -85,10 +142,13 @@ $ pnpm i match-iz
 
 ```js
 // ESM
-import { match, when, otherwise, pluck, ...etc } from 'match-iz'
+import { match, ...etc } from 'match-iz'
+import { isSat, ...etc } from 'match-iz/dates'
+import { isSat, ...etc } from 'match-iz/dates/utc'
 
 // CJS
-const { match, when, otherwise, pluck, ...etc } = require('match-iz')
+const { match, ...etc } = require('match-iz')
+// etc...
 ```
 
 Browser/UMD:
@@ -96,11 +156,15 @@ Browser/UMD:
 ```html
 <script src="https://unpkg.com/match-iz/dist/browser/match-iz.browser.js"></script>
 <script>
-  const { match, when, otherwise, pluck, ...etc } = matchiz
+  const { match, ...etc } = matchiz
+  const { isSat, ...etc } = matchiz
+  const { isSat, ...etc } = matchiz.utc
 </script>
 ```
 
 # Examples:
+
+In addition to the examples below, I've used `match-iz` myself in the following libraries: [sift-r](https://github.com/shuckster/sift-r) and [viddy](https://github.com/shuckster/viddy).
 
 ### Front-end component:
 
@@ -143,9 +207,9 @@ function AccountPage(props) {
 
 ```js
 match(action)(
-  when({ type: 'add-todo', payload: pluck(isString) })(text => ({
+  when({ type: 'add-todo', payload: pluck(isString) })(payload => ({
     ...state,
-    todos: [...state.todos, { text, completed: false }]
+    todos: [...state.todos, { text: payload, completed: false }]
   })),
 
   otherwise(state)
@@ -196,13 +260,12 @@ match(new Date())(
     return 'Last Sunday of March: Clocks go forward'
   }),
 
-  when(allOf(nthSun(-1), isOct))(dateObj => {
-    return 'Last Sunday of October: Clocks go back'
+  when(anyOf(isSat, isSun))(() => {
+    return 'Ladies and Gentlemen; The Weekend'
   }),
 
   otherwise('The clock is ticking')
 )
-// "The clock is ticking"
 ```
 
 <details>
@@ -234,52 +297,6 @@ match(new Date())(
 ```
 
 </details>
-&nbsp;
-
-### Regular Expressions:
-
-```js
-match('1 + 2')(
-  // Groups extracted automatically if specified
-  // (second argument will be the full-match)
-  //       ____            _____
-  when(/(?<left>\d+) \+ (?<right>\d+)/)(
-    ({ left, right }, fullRegExpMatchArray) => {
-      return add(left, right)
-    }
-  ),
-
-  otherwise("I couldn't parse that!")
-)
-// 3
-```
-
-<details>
-<summary>Full example</summary>
-
-```js
-import { match, when, otherwise } from 'match-iz'
-
-match('1 + 2')(
-  when(/(?<firstName>\w+) (?<lastName>\w+)/)(
-    ({ lastName }, fullRegExpMatchArray) => {
-      return `Ahoy, Captain ${lastName}`
-    }
-  ),
-
-  when(/(?<left>\d+) \+ (?<right>\d+)/)(
-    ({ left, right }, fullRegExpMatchArray) => {
-      return add(left, right)
-    }
-  ),
-
-  otherwise("I couldn't parse that!")
-)
-
-function add(left, right) {
-  return parseInt(left, 10) + parseInt(right, 10)
-}
-```
 
 </details>
 
@@ -353,7 +370,7 @@ match(['', '2', undefined])(
 
 &nbsp;
 
-### Also provides `against(...)(value)`:
+### Data-last `against` can be useful for `map`/`filter`:
 
 ```js
 lines.filter(
@@ -405,7 +422,9 @@ numbers.sort(
 )
 
 function nargs() {
-  return fn => (...args) => fn(args)
+  return fn =>
+    (...args) =>
+      fn(args)
 }
 ```
 
@@ -415,179 +434,27 @@ function nargs() {
 
 # Documentation
 
-- [Helpers](#helpers)
-- [Dates](#dates)
 - [Core library](#core-library)
-
-## Helpers
-
-`match-iz` provides a number of composable helpers you can use to build patterns:
-
-| Numbers | Strings    | Strings/Arrays | Truthiness | Types                                                 | Negate | Combinators |
-| ------- | ---------- | -------------- | ---------- | ----------------------------------------------------- | ------ | ----------- |
-| gt      | startsWith | includes       | empty      | isArray                                               | not    | allOf       |
-| lt      | endsWith   | -              | falsy      | isDate                                                | -      | anyOf       |
-| gte     | -          | -              | defined    | isFunction                                            | -      | includedIn  |
-| lte     | -          | -              | truthy     | isNumber                                              | -      | hasOwn      |
-| inRange | -          | -              | -          | [isPojo](https://google.com/search?q=javascript+pojo) | -      | -           |
-| -       | -          | -              | -          | isRegExp                                              | -      | -           |
-| -       | -          | -              | -          | isString                                              | -      | -           |
-| -       | -          | -              | -          | instanceOf                                            | -      | -           |
-
-Just import them from `match-iz` as you do the core library:
-
-```js
-import { gt, lt, ...etc } from 'match-iz'
-```
-
-Some detail:
-
-| Helper                             | Meaning                                        |
-| ---------------------------------- | ---------------------------------------------- |
-| `isArray/Date/Function/...etc`     | test for that type                             |
-| `gt(0)`                            | greater than                                   |
-| `lt(0)`                            | less than                                      |
-| `gte(0)`                           | greater than or equal                          |
-| `lte(0)`                           | less than or equal                             |
-| `inRange(0, 10)`                   | within min ... max                             |
-| `startsWith('hello ...')`          | string starts with "content"                   |
-| `endsWith('... world!')`           | string ends with "content"                     |
-| `includes(item)`                   | array/string contains item/"content"           |
-| `includedIn([these, things, ...])` | alias for `anyOf`                              |
-| `instanceOf(constructor)`          | for class instances                            |
-| `hasOwn('prop1', 'prop2'...)`      | check for existence of object keys/props       |
-| `empty`                            | null, undefined, NaN, '', [], or {}            |
-| `defined`                          | negates empty, but `false` counts as "defined" |
-| `truthy`                           | a !! check                                     |
-| `falsy`                            | a ! check                                      |
-| `not`                              | negate the result of the given pattern         |
-| `allOf`                            | AND                                            |
-| `anyOf`                            | OR                                             |
-
-Basic examples:
-
-```js
-match(literal)(
-  when(inRange(100, 200))( ... ),
-  when(startsWith('hello'))( ... ),
-  when(includes('batman'))( ... ),
-  when(includedIn('one', 'two'))( ... ),
-  when(lte(80))( ... ),
-  when(empty)( ... ),
-  when(defined)( ... ),
-)
-
-match(object)(
-  when({ status: inRange(100, 200) })( ... ),
-  when({ text: startsWith('hello') })( ... ),
-  when({ array: includes('batman') })( ... ),
-  when({ string: includedIn('one', 'two') })( ... ),
-  when({ length: lte(80) })( ... ),
-  when({ cup: empty })( ... ),
-  when({ pencil: defined })( ... ),
-)
-```
-
-A little more composition:
-
-```js
-match(literal)(
-  when(not(inRange(100, 200)))( ... ),
-  when({ number: not(42) })( ... )
-)
-
-match(literal)(
-  when(allOf(isNumber, x => x > 10))( ... ),
-  when({ number: not(anyOf(20, 30)) })( ... )
-  when(includedIn([40, 50]))( ... )
-)
-```
-
-You can use your own predicates:
-
-```js
-const isInteger = Number.isInteger
-
-match(status)(
-  when({ status: isInteger })('status is an integer'),
-  otherwise('nope')
-)
-```
-
-## Dates
-
-Since 2.3.0, the following date helpers are available from `match-iz/dates` (or directly from the `matchiz` global variable if you're using the browser-build.)
-
-```js
-import { isSun, isMar, isYear, ...etc } from 'match-iz/dates'
-```
-
-| Helpers                                                             | Meaning                            |
-| ------------------------------------------------------------------- | ---------------------------------- |
-| `isSun` / `isMon` / `isTue` / `isWed` / `isThu` / `isFri` / `isSat` | is that particular day of the week |
-
-```js
-match(new Date())(
-  when(isMon)("I don't like them"),
-  when(allOf(isSat, isSun))('Weekend!'),
-  otherwise('Back to the grind')
-)
-```
-
-| Helpers                                                                    | Meaning                                                              |
-| -------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| `nthSun` / `nthMon` / `nthTue` / `nthWed` / `nthThu` / `nthFri` / `nthSat` | the nth \*day of the month. Negatives allowed to search from the end |
-
-```js
-match(new Date())(
-  when(nthSun(2))('Second Sunday of the month'),
-  when(nthFri(-1))('Last Friday of the month'),
-  when(anyOf(nthMon(1), nthFri(1)))('First Monday or Friday of the month')
-)
-```
-
-| Helpers                                                                                                               | Meaning                  |
-| --------------------------------------------------------------------------------------------------------------------- | ------------------------ |
-| `isJan` / `isFeb` / `isMar` / `isApr` / `isMay` / `isJun` / `isJul` / `isAug` / `isSep` / `isOct` / `isNov` / `isDec` | is that particular month |
-
-```js
-match(new Date())(
-  when(isJan)("It's January"),
-  when(anyOf(isFeb, isMar))('Is it February or March?'),
-  when(allOf(isDec, isDay(24)))('Christmas already?')
-)
-```
-
-| Helpers                                                         | Meaning                                                                                                                            |
-| --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `isDay` / `isMonth` / `isYear` / `isDayOfWeek` / `isWeekNumber` | is the specified day, month, year, DoW, or week-number. isDay accepts negative numbers to work backwards from the end of the month |
-
-```js
-match(new Date())(
-  when(isDay(1))('First day of the month'),
-  when(isDay(-1))('Last day of the month'),
-  when(isMonth(1))("It's January, of course"),
-  when(allOf(isYear(2019), isMar))('Better forgotten'),
-  when(isDayOfWeek(0))('Sunday'),
-  when(isDayOfWeek(6))('Saturday'),
-  when(isWeekNumber(1))('First week of the year'),
-  when(isWeekNumber(52))('Last week of the year'),
-  when(not(isWeekNumber(13)))('Not the 13th week of the year')
-)
-```
+- [Helpers](#helpers)
+- [Date helpers](#date-helpers)
+- [What is spread()?](#what-is-spreaddefined)
+- [What about against()?](#what-about-against)
 
 ## Core-library
 
-match / when / otherwise
+match / against / when / otherwise
 
-### `match()`
+### `match()` / `against()`
 
 ```js
 match(value)(...predicates)
 // returns: winning value
+
+against(...predicates)(value)
+// returns: winning value
 ```
 
-Each predicate receives the `value` passed to `match()`.
+Each predicate receives the `value` passed to `match` (or `against`, but we'll just talk about `match`).
 
 The first one to return a truthy value wins, and `match` returns it.
 
@@ -595,8 +462,10 @@ The first one to return a truthy value wins, and `match` returns it.
 
 ```js
 when(pattern)(handler)
-// returns: value => object
+// returns: value => { matched, value }
 ```
+
+`handler` can be a function or a literal. `pattern` is described by example throughout this page.
 
 `when` builds special predicates that return objects like this:
 
@@ -617,6 +486,7 @@ If `match` sees such an object return from a predicate:
 If the match `value` is NOT an array, using an array within a `when` will perform a logical `OR` against the contained values:
 
 ```js
+// AND example:
 match({ message: 'hello wrrld!', number: 42 })(
   when({
     // if message ends with "world!" AND number === 42
@@ -626,6 +496,7 @@ match({ message: 'hello wrrld!', number: 42 })(
 )
 // undefined
 
+// OR example:
 match({ message: 'hello wrrld!', number: 42 })(
   when([
     // if message ends with "world!" OR number === 42
@@ -636,11 +507,11 @@ match({ message: 'hello wrrld!', number: 42 })(
 // "ok!"
 ```
 
-Alternatively, you can use `allOf` and `anyOf`:
+Alternatively you can use `allOf` and `anyOf`, which are more descriptive:
 
 ```js
-when(allOf({ message: endsWith('world!') }, { number: 42 }))('ok!')
-when(anyOf({ message: endsWith('world!') }, { number: 42 }))('ok!')
+when(allOf({ msg: endsWith('world!') }, { num: 42 }))('ok!')
+when(anyOf({ msg: endsWith('world!') }, { num: 42 }))('ok!')
 when(anyOf(1, 2, 'chili dogs'))('ok!')
 ```
 
@@ -691,6 +562,222 @@ Always wins, so put it at the end to deal with fallbacks.
 
 `handler` can be a function or a literal.
 
+## Helpers
+
+`match-iz` provides a number of composable helpers you can use to build patterns:
+
+| Numbers         | Strings           | Strings/Arrays | Truthiness | Primitives                                              | Negate     | Combinators       |
+| --------------- | ----------------- | -------------- | ---------- | ------------------------------------------------------- | ---------- | ----------------- |
+| `gt(n)`         | `startsWith('s')` | `includes(o)`  | `empty`    | `isArray`                                               | `not(...)` | `allOf(...)`      |
+| `lt(n)`         | `endsWith('s')`   | -              | `falsy`    | `isDate`                                                | -          | `anyOf(...)`      |
+| `gte(n)`        | -                 | -              | `defined`  | `isFunction`                                            | -          | `includedIn(...)` |
+| `lte(n)`        | -                 | -              | `truthy`   | `isNumber`                                              | -          | `hasOwn(...)`     |
+| `inRange(x, y)` | -                 | -              | -          | [`isPojo`](https://google.com/search?q=javascript+pojo) | -          | -                 |
+| -               | -                 | -              | -          | `isRegExp`                                              | -          | -                 |
+| -               | -                 | -              | -          | `isString`                                              | -          | -                 |
+| -               | -                 | -              | -          | `instanceOf`                                            | -          | -                 |
+
+Just import them from `match-iz` as you do the core library:
+
+```js
+import { gt, lt, ...etc } from 'match-iz'
+```
+
+Some detail:
+
+| Helpers                                 | Meaning            |
+| --------------------------------------- | ------------------ |
+| `gt` / `lt` / `gte` / `lte` / `inRange` | number comparisons |
+
+```js
+match(5)(
+  when(3)('Exactly 3'),
+  when(gt(0))('Greater than 0'),
+  when(gte(4))('Greater than or equal to 4'),
+  when(lt(10))('Less than 10'),
+  when(lte(9))('Less than or equal to 9'),
+  when(inRange(5, 10))('Between 5 and 10 inclusive')
+)
+```
+
+| Helpers                   | Meaning            |
+| ------------------------- | ------------------ |
+| `startsWith` / `endsWith` | string comparisons |
+
+```js
+match('lorem ipsum')(
+  when('lipsum')('Exactly "lipsum"'),
+  when(startsWith('ip'))('Starts with "ip"'),
+  when(endsWith('um'))('Ends with "um"')
+)
+```
+
+| Helper     | Meaning                  |
+| ---------- | ------------------------ |
+| `includes` | string/array comparisons |
+
+```js
+match('lorem ipsum')(
+  when(includes('em'))('Got "em"'),
+  when(includes('zap'))('Found "zap"')
+)
+
+match([1, 2, 3, 4])(
+  when(includes(5))('Array has a 5'),
+  when([1, 2, 3, gt(3)])('Array is [1, 2, 3, >3]')
+)
+```
+
+| Helpers                                  | Meaning                  |
+| ---------------------------------------- | ------------------------ |
+| `empty` / `defined` / `falsy` / `truthy` | bottom-value comparisons |
+
+```js
+match('')(
+  when(empty)(() => {
+    return "It's '', {}, [], null, undefined, or NaN"
+  }),
+  when(defined)('Opposite of empty'),
+  when(falsy)("It's falsy"),
+  when(truthy)("It's truthy")
+)
+```
+
+| Helpers                                                                                              | Meaning               |
+| ---------------------------------------------------------------------------------------------------- | --------------------- |
+| `isArray` / `isDate` / `isFunction` / `isNumber` / `isPojo` / `isRegExp` / `isString` / `instanceOf` | primitive comparisons |
+
+```js
+match([1, 2, 3])(
+  when(isArray)('Looks like an array, eh?'),
+  when(instanceOf(Component))('A nice component')
+)
+```
+
+| Helper | Meaning  |
+| ------ | -------- |
+| `not`  | negation |
+
+```js
+match(5)(
+  when(not(5))('Not a 5'),
+  when(not(gte(4)))('Less than 4'),
+  when(not(inRange(100, 0)))(() => {
+    return 'Less than 0 or greater than 100'
+  })
+)
+```
+
+| Helpers                                     | Meaning            |
+| ------------------------------------------- | ------------------ |
+| `allOf` / `anyOf` / `includedIn` / `hasOwn` | number comparisons |
+
+```js
+match({ one: 1, two: 2 })(
+  when(allOf(isPojo, hasOwn('one')))(() => {
+    return 'Has "one"'
+  }),
+  when({ one: anyOf(1, 2, 3) })(() => {
+    return 'Has "one" of 1, 2, or 3'
+  }),
+  when({ two: includedIn(1, gt(3)) })(() => {
+    return 'Has "two" with a value of 1 or >3'
+  })
+)
+```
+
+## Date helpers
+
+Since 2.3.0, the following date helpers are available from `match-iz/dates` (or directly from the `matchiz` global variable if you're using the browser-build.)
+
+| Days of the week    | Weeks of the month | Months           | Years                 |
+| ------------------- | ------------------ | ---------------- | --------------------- |
+| `isDay(-31..31)`    | `nthSun(-5..5)`    | `isMonth(1..12)` | `isYear(n)`           |
+| `isDayOfWeek(0..6)` | `nthMon(-5..5)`    | `isJan`          | `isWeekNumber(1..52)` |
+| `isSun`             | `nthTue(-5..5)`    | `isFeb`          | -                     |
+| `isMon`             | `nthWed(-5..5)`    | `isMar`          | -                     |
+| `isTue`             | `nthThu(-5..5)`    | `isApr`          | -                     |
+| `isWed`             | `nthFri(-5..5)`    | `isMay`          | -                     |
+| `isThu`             | `nthSat(-5..5)`    | `isJun`          | -                     |
+| `isFri`             | -                  | `isJul`          | -                     |
+| `isSat`             | -                  | `isAug`          | -                     |
+| -                   | -                  | `isSep`          | -                     |
+| -                   | -                  | `isOct`          | -                     |
+| -                   | -                  | `isNov`          | -                     |
+| -                   | -                  | `isDec`          | -                     |
+
+```js
+import { isSun, ...etc } from 'match-iz/dates'
+
+// UTC versions:
+import { isSun, ...etc } from 'match-iz/dates/utc'
+```
+
+Some detail:
+
+| Helpers                                                             | Meaning                            |
+| ------------------------------------------------------------------- | ---------------------------------- |
+| `isSun` / `isMon` / `isTue` / `isWed` / `isThu` / `isFri` / `isSat` | is that particular day of the week |
+
+```js
+match(new Date())(
+  when(isMon)("I don't like them"),
+  when(anyOf(isSat, isSun))('Weekend!'),
+  otherwise('Back to the grind')
+)
+```
+
+| Helpers                                                                    | Meaning                                                              |
+| -------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `nthSun` / `nthMon` / `nthTue` / `nthWed` / `nthThu` / `nthFri` / `nthSat` | the nth \*day of the month. Negatives allowed to search from the end |
+
+```js
+match(new Date())(
+  when(nthSun(2))('Second Sunday of the month'),
+  when(nthFri(-1))('Last Friday of the month'),
+  when(anyOf(nthMon(1), nthFri(1)))('1st Monday/Friday of the month')
+)
+```
+
+| Helpers                                                                                                               | Meaning                  |
+| --------------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| `isJan` / `isFeb` / `isMar` / `isApr` / `isMay` / `isJun` / `isJul` / `isAug` / `isSep` / `isOct` / `isNov` / `isDec` | is that particular month |
+
+```js
+match(new Date())(
+  when(isJan)("It's January"),
+  when(anyOf(isFeb, isMar))('Is it February or March?'),
+  when(allOf(isDec, isDay(24)))('Christmas already?')
+)
+```
+
+| Helpers                                                         | Meaning                                                                                                                                                                                                          |
+| --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `isDay` / `isMonth` / `isYear` / `isDayOfWeek` / `isWeekNumber` | is the specified day, month, year, DoW, or week-number. All accept a predicate function instead of a number for finer control. `isDay` also accepts negative numbers to work backwards from the end of the month |
+
+```js
+match(new Date())(
+  when(isDay(1))('First day of the month'),
+  when(isDay(-1))('Last day of the month'),
+  when(isMonth(1))("It's January, of course"),
+  when(isMonth(x => [4, 5].includes(x)))(() => {
+    return 'April or May'
+  }),
+  when(isYear(2015))('Flying cars and skateboards'),
+  when(isYear(x => x % 2 === 0))(
+    date => `An even numbered year: ${date.toString()}`
+  ),
+  when(allOf(isYear(2019), isMar))('Better forgotten'),
+  when(isDayOfWeek(0))('Sunday'),
+  when(isDayOfWeek(6))('Saturday'),
+  when(isWeekNumber(1))('First week of the year'),
+  when(isWeekNumber(52))('Last week of the year'),
+  when(not(isWeekNumber(13)))(() => {
+    return 'Not the 13th week of the year'
+  })
+)
+```
+
 ## What is `spread(defined)`?
 
 The [TC39 spec](https://github.com/tc39/proposal-pattern-matching) proposes both conditional _and_ destructuring behaviour within the same syntax:
@@ -739,7 +826,7 @@ It uses [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Referenc
 
 It's the same as `match()`, but the order of currying is reversed.
 
-For example, the previous `getLength` example could be:
+So the previous `getLength` example could be:
 
 ```js
 const { against, spread, defined } = matchiz
