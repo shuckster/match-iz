@@ -21,9 +21,6 @@
 A tiny functional, declarative [pattern-matching](https://github.com/tc39/proposal-pattern-matching) library.
 
 - [Overview](#overview)
-  - [pluck](#pluck)
-  - [RegExp capture groups](#regexp-capture-groups)
-  - [cata for ADTs/monads](#cata-for-adtsmonads)
 - [Install](#install)
 - [Examples](#examples)
   - [Front-end Component](#front-end-component)
@@ -33,7 +30,10 @@ A tiny functional, declarative [pattern-matching](https://github.com/tc39/propos
   - [Matching array contents](#matching-array-contents)
 - [Documentation](#documentation)
   - [Core library](#core-library)
-  - [Matchers](#matchers)
+    - [pluck() for extracting values](#pluck)
+    - [Regular expressions](#regular-expressions)
+    - [cata for ADTs/monads](#cata-for-adtsmonads)
+  - [Core matchers](#core-matchers)
   - [Date matchers](#date-matchers)
   - [What is spread()?](#what-is-spreaddefined)
 - [Credits](#credits)
@@ -112,89 +112,18 @@ match(response)(
 )
 ```
 
-### pluck()
-
-Use `pluck` to extract values of interest when matching against array/object haystacks:
-
-```js
-import { pluck } from 'match-iz'
-
-match(action)(
-  when({ type: 'add-todo', payload: pluck() })(payload => {
-    return `Adding todo: ${payload}`
-  })
-)
-
-// `pluck` accepts patterns, so you
-// can guard before extracting values:
-match([1, 2, 3])(
-  when([1, 2, pluck(3)])(three => {
-    return '[2] is the number 3!'
-  }),
-
-  when([1, 2, pluck(isNumber)])(num => {
-    return `[2] is a number: ${num}`
-  })
-)
-```
-
-### RegExp capture-groups
-
-If specified, capture groups are extracted automatically from regular-expressions (with the second argument of the `when`-handler being the full-match if you need it):
-
-```js
-match('1 + 2')(
-  when(/(?<left>\d+) \+ (?<right>\d+)/)(
-    ({ left, right }, fullRegExpMatchArray) => {
-      return add(left, right)
-    }
-  ),
-
-  when(/no capture groups/)(fullRegExpMatchArray => {
-    return 'so we get the full match array only'
-  }),
-
-  otherwise("I couldn't parse that!")
-)
-// 3
-```
-
 Since 2.3.0: Basic local + UTC [date matchers](#date-matchers):
 
 ```js
 import * as local from 'match-iz/dates'
-// import * as utc from 'match-iz/dates/utc'
-
 const { nthSun, isMar, isSat, isSun } = local
+
+// For UTC:
+// import * as utc from 'match-iz/dates/utc'
 
 match(new Date())(
   when(allOf(nthSun(-1), isMar))(dateObj => {
     return 'Last Sunday of March: Clocks go forward'
-  })
-)
-```
-
-### cata() for ADTs/monads
-
-Use `cata` to integrate `match-iz` with your ADTs/monads:
-
-```js
-import { cata } from 'match-iz'
-
-// Specify how match-iz can detect
-// monads and extract their values
-const { just, nothing } = cata({
-  just: m => m?.isJust,
-  nothing: m => m?.isNothing,
-  getValue: m => m?.valueOf()
-})
-
-match(maybeDate('2022-01-01'))(
-  just(dateObj => {
-    console.log('Parsed date: ', dateObj)
-  }),
-  nothing(() => {
-    console.log('Invalid date')
   })
 )
 ```
@@ -516,9 +445,12 @@ function nargs() {
 # Documentation
 
 - [Core library](#core-library)
-- [Matchers](#matchers)
+  - [pluck() for extracting values](#pluck)
+  - [Regular expressions](#regular-expressions)
+  - [cata for ADTs/monads](#cata-for-adtsmonads)
+- [Core matchers](#core-matchers)
 - [Date matchers](#date-matchers)
-- [What is spread()?](#what-is-spread)
+- [What is spread()?](#what-is-spreaddefined)
 
 ## Core-library
 
@@ -627,7 +559,33 @@ match({ message: 'hello wrrld!', number: 42 })(
 
 This behaviour is deprecated and will be removed in the next major version.
 
-#### Regular Expressions
+### pluck()
+
+Use `pluck` to extract values of interest when matching against array/object haystacks:
+
+```js
+import { pluck } from 'match-iz'
+
+match(action)(
+  when({ type: 'add-todo', payload: pluck() })(payload => {
+    return `Adding todo: ${payload}`
+  })
+)
+
+// `pluck` accepts patterns, so you
+// can guard before extracting values:
+match([1, 2, 3])(
+  when([1, 2, pluck(3)])(three => {
+    return '[2] is the number 3!'
+  }),
+
+  when([1, 2, pluck(isNumber)])(num => {
+    return `[2] is a number: ${num}`
+  })
+)
+```
+
+### Regular Expressions
 
 ```js
 match('hello, world!')(
@@ -659,6 +617,52 @@ otherwise(handler)
 Always wins, so put it at the end to deal with fallbacks.
 
 `handler` can be a function or a literal.
+
+#### Capture-groups
+
+If specified, capture groups are extracted automatically from regular-expressions (with the second argument of the `when`-handler being the full-match if you need it):
+
+```js
+match('1 + 2')(
+  when(/(?<left>\d+) \+ (?<right>\d+)/)(
+    ({ left, right }, fullRegExpMatchArray) => {
+      return add(left, right)
+    }
+  ),
+
+  when(/no capture groups/)(fullRegExpMatchArray => {
+    return 'so we get the full match array only'
+  }),
+
+  otherwise("I couldn't parse that!")
+)
+// 3
+```
+
+### cata() for ADTs/monads
+
+Use `cata` to integrate `match-iz` with your ADTs/monads:
+
+```js
+import { cata } from 'match-iz'
+
+// Specify how match-iz can detect
+// monads and extract their values
+const { just, nothing } = cata({
+  just: m => m?.isJust,
+  nothing: m => m?.isNothing,
+  getValue: m => m?.valueOf()
+})
+
+match(maybeDate('2022-01-01'))(
+  just(dateObj => {
+    console.log('Parsed date: ', dateObj)
+  }),
+  nothing(() => {
+    console.log('Invalid date')
+  })
+)
+```
 
 ## Matchers
 
