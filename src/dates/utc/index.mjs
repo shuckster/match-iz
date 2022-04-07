@@ -68,6 +68,16 @@ const isYear = ifDate(
   )
 )
 
+const isLeapYear = ifDate(
+  anyOf(
+    allOf(
+      isYear(x => x % 4 === 0),
+      isYear(x => x % 100 !== 0)
+    ),
+    isYear(x => x % 400 === 0)
+  )
+)
+
 const isDayOfWeek = ifDate(
   against(
     when(isFunction)(pred => date => pred(date.getUTCDay())),
@@ -98,4 +108,4 @@ export { isSun, isMon, isTue, isWed, isThu, isFri, isSat }
 export { nthSun, nthMon, nthTue, nthWed, nthThu, nthFri, nthSat }
 export { isJan, isFeb, isMar, isApr, isMay, isJun }
 export { isJul, isAug, isSep, isOct, isNov, isDec }
-export { isDay, isMonth, isYear, isDayOfWeek, isWeekNumber }
+export { isDay, isMonth, isYear, isLeapYear, isDayOfWeek, isWeekNumber }
