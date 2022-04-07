@@ -525,6 +525,17 @@ match(haystack)(
 )
 ```
 
+### `otherwise()`
+
+```js
+otherwise(handler)
+// returns: winning value
+```
+
+Always wins, so put it at the end to deal with fallbacks.
+
+`handler` can be a function or a literal.
+
 #### AND / OR / NOT conditions in your `when`'s
 
 You can use `allOf` (AND) `anyOf` (OR) and `not` (NOT) to build more complex conditions:
@@ -606,17 +617,6 @@ match({ text: 'hello, world!' })(
 1. Passing a `RegExp` literal to `when` will pass the match-array as the first argument to `handler` (if it's a function).
 
 2. Using a `RegExp` on an object-prop passes the `value` from `match()`, as usual.
-
-### `otherwise()`
-
-```js
-otherwise(handler)
-// returns: winning value
-```
-
-Always wins, so put it at the end to deal with fallbacks.
-
-`handler` can be a function or a literal.
 
 #### Capture-groups
 
