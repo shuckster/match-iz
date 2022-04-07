@@ -5,7 +5,7 @@ import { safe } from './maybe.mjs'
 
 import * as lib from 'match-iz'
 import * as local from 'match-iz/dates'
-import * as utc from 'match-iz/dates/utc'
+// import * as utc from 'match-iz/dates/utc'
 
 const { match, against, when, otherwise, spread, pluck: $ } = lib
 const { allOf, anyOf, not, defined, empty } = lib
