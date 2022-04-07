@@ -52,14 +52,34 @@ const isDay = ifDate(
   )
 )
 
-const isMonth = against(
-  when(isFunction)(pred => ifDate(date => pred(date.getMonth() + 1))),
-  when(isNumber)(nth => ifDate(date => date.getMonth() === nth - 1))
+const isMonth = ifDate(
+  against(
+    when(isFunction)(pred => date => pred(date.getMonth() + 1)),
+    when(isNumber)(nth => date => date.getMonth() === nth - 1)
+  )
 )
 
-const isYear = against(
-  when(isFunction)(pred => ifDate(date => pred(date.getFullYear()))),
-  when(isNumber)(nth => ifDate(date => date.getFullYear() === nth))
+const isYear = ifDate(
+  against(
+    when(isFunction)(pred => date => pred(date.getFullYear())),
+    when(isNumber)(nth => date => date.getFullYear() === nth)
+  )
+)
+
+const isDayOfWeek = ifDate(
+  against(
+    when(isFunction)(pred => date => pred(date.getDay())),
+    when(isNumber)(nth => date => date.getDay() === nth)
+  )
+)
+
+const isWeekNumber = ifDate(
+  against(
+    when(isFunction)(pred => date => pred(getWeekNumber(date))),
+    when(isNumber)(nth => date => getWeekNumber(date) === nth)
+  )
+)
+
 )
 
 const isDayOfWeek = against(
