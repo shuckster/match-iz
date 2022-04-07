@@ -27,15 +27,15 @@ A tiny functional, declarative [pattern-matching](https://github.com/tc39/propos
   - [Reducer](#reducer)
   - [Dates](#dates)
   - [Overloading](#overloading)
-  - [Matching array contents](#matching-array-contents)
+  - [Matching array shape](#matching-array-shape)
 - [Documentation](#documentation)
   - [Core library](#core-library)
     - [pluck() for extracting values](#pluck)
-    - [Regular expressions](#regular-expressions)
-    - [cata for ADTs/monads](#cata-for-adtsmonads)
+    - [Regular Expressions](#regular-expressions)
+    - [cata() for ADTs/monads](#cata-for-adtsmonads)
   - [Core matchers](#core-matchers)
   - [Date matchers](#date-matchers)
-  - [What is spread()?](#what-is-spreaddefined)
+  - [What is spread()?](#what-is-spread)
 - [Credits](#credits)
 
 ## Overview:
@@ -446,11 +446,11 @@ function nargs() {
 
 - [Core library](#core-library)
   - [pluck() for extracting values](#pluck)
-  - [Regular expressions](#regular-expressions)
-  - [cata for ADTs/monads](#cata-for-adtsmonads)
+  - [Regular Expressions](#regular-expressions)
+  - [cata() for ADTs/monads](#cata-for-adtsmonads)
 - [Core matchers](#core-matchers)
 - [Date matchers](#date-matchers)
-- [What is spread()?](#what-is-spreaddefined)
+- [What is spread()?](#what-is-spread)
 
 ## Core-library
 
@@ -664,7 +664,7 @@ match(maybeDate('2022-01-01'))(
 )
 ```
 
-## Matchers
+## Core matchers
 
 `match-iz` provides a number of composable matchers you can use to build patterns:
 
