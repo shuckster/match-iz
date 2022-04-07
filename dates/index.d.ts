@@ -46,4 +46,10 @@ declare module 'match-iz/dates' {
   export function isYear(yrOrFn: TPredicateOrNumber): TPredicate
   export function isDayOfWeek(dowOrFn: TPredicateOrNumber): TPredicate
   export function isWeekNumber(wkNumOrFn: TPredicateOrNumber): TPredicate
+
+  export function isDate(fn: TPredicate): TPredicate
+  export function isDate(year: number, month?: number, day?: number): TPredicate
+
+  export function isTime(fn: TPredicate): TPredicate
+  export function isTime(hour: number, min?: number, sec?: number): TPredicate
 }

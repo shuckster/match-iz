@@ -1,4 +1,5 @@
 import {
+  match,
   against,
   when,
   allOf,
@@ -109,6 +110,38 @@ const isMorning = isAM
 const isAfternoon = isHour(inRange(12, 17))
 const isEvening = isHour(inRange(18, 23))
 
+const isDate = (...args) =>
+  match(args)(
+    when([isFunction])(pred =>
+      ifDate(date =>
+        pred(date.getFullYear(), date.getMonth() + 1, date.getDate())
+      )
+    ),
+    when([isNumber, isNumber, isNumber])(([year, month, day]) =>
+      allOf(isYear(year), isMonth(month), isDay(day))
+    ),
+    when([isNumber, isNumber])(([year, month]) =>
+      allOf(isYear(year), isMonth(month))
+    ),
+    when([isNumber])(([year]) => isYear(year))
+  )
+
+const isTime = (...args) =>
+  match(args)(
+    when([isFunction])(pred =>
+      ifDate(date =>
+        pred(date.getHours(), date.getMinutes(), date.getSeconds())
+      )
+    ),
+    when([isNumber, isNumber, isNumber])(([hour, minute, second]) =>
+      allOf(isHour(hour), isMinute(minute), isSecond(second))
+    ),
+    when([isNumber, isNumber])(([hour, minute]) =>
+      allOf(isHour(hour), isMinute(minute))
+    ),
+    when([isNumber])(([hour]) => isHour(hour))
+  )
+
 export { isSun, isMon, isTue, isWed, isThu, isFri, isSat }
 export { nthSun, nthMon, nthTue, nthWed, nthThu, nthFri, nthSat }
 export { isJan, isFeb, isMar, isApr, isMay, isJun }
@@ -116,3 +149,4 @@ export { isJul, isAug, isSep, isOct, isNov, isDec }
 export { isDay, isMonth, isYear, isLeapYear, isDayOfWeek, isWeekNumber }
 export { isHour, isMinute, isSecond, isAM, isPM }
 export { isMorning, isAfternoon, isEvening }
+export { isDate, isTime }
