@@ -12,30 +12,31 @@
     "match-when",
     "otherwise"
   ],
-  "types": "index.d.ts",
-  "main": "./dist/cjs/index.js",
-  "module": "dist/esm/index.js",
+  "types": "./index.d.ts",
+  "main": "./dist/index.js",
+  "module": "dist/index.mjs",
   "exports": {
     ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js",
-      "browser": "./dist/browser/match-iz.browser.js",
-      "default": "./dist/cjs/index.js"
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "browser": "./dist/match-iz.browser.js",
+      "default": "./dist/index.js"
     },
     "./dates": {
-      "import": "./dist/esm/dates/index.js",
-      "require": "./dist/cjs/dates/index.js",
-      "default": "./dist/cjs/dates/index.js"
+      "import": "./dates/index.mjs",
+      "require": "./dates/index.js",
+      "default": "./dates/index.js"
     },
     "./dates/utc": {
-      "import": "./dist/esm/dates/utc/index.js",
-      "require": "./dist/cjs/dates/utc/index.js",
-      "default": "./dist/cjs/dates/utc/index.js"
-    }
+      "import": "./dates/utc/index.mjs",
+      "require": "./dates/utc/index.js",
+      "default": "./dates/utc/index.js"
+    },
+    "./package.json": "./package.json"
   },
   "files": [
-    "dist/**/*.js",
-    "dist/**/package.json",
+    "dist",
+    "dates",
     "CHANGELOG.md",
     "README.md",
     "LICENSE",
@@ -55,9 +56,9 @@
   },
   "scripts": {
     "test": "node ./tests/run.mjs",
-    "lint": "pnpx eslint src/*.mjs tests/*.mjs",
+    "lint": "pnpx eslint src/*.mjs dates/**/*.mjs tests/*.mjs",
     "build": "pnpm run build:esbuild",
-    "build:clean": "rimraf dist/; mkdir -p dist/{esm,cjs,browser}; mkdir -p dist/{esm,cjs}/dates/utc",
+    "build:clean": "rimraf dist/ dates/index.js dates/utc/index.js; mkdir -p dist/",
     "build:all": "pnpm run build:clean ; pnpm run build",
     "build:esbuild": "node ./build-config/esbuild.mjs"
   },

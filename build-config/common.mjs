@@ -11,68 +11,49 @@ function optionsFrom(pkg) {
     ${process.env.PWD}/
 
       /src
-        /${pkg.name}.mjs                    = SRC_CORE
-        /dates
-          /index.mjs                        = SRC_DATES
-          /utc/index.mjs                    = SRC_DATES_UTC
-
-        /browser.mjs                        = SRC_BROWSER
+        /${pkg.name}.mjs                  = ESM_SRC_CORE
+        /browser.mjs                      = ESM_SRC_BROWSER
 
       /dist
-        /esm
-          /index.js                         = DIST_ESM
-          /dates
-            /index.js                       = DIST_ESM_DATES
-            /utc/index.js                   = DIST_ESM_DATES_UTC
-          /package.json                     = DIST_ESM_PACKAGE_JSON
+        /index.mjs                        = ESM_DIST
+        /index.js                         = CJS_DIST
+        /${pkg.name}.browser.js           = IIFE_DIST
 
-        /cjs                                = DIST_CJS_DIR
-          /index.js                         = DIST_CJS
-          /dates
-            /index.js                       = DIST_CJS_DATES
-            /utc/index.js                   = DIST_CJS_DATES_UTC
-          /package.json                     = DIST_CJS_PACKAGE_JSON
-
-        /browser/${pkg.name}.browser.js     = DIST_IIFE
+      /dates
+        /index.mjs                        = ESM_SRC_DATES
+        /index.js                         = CJS_DIST_DATES
+        /utc/index.mjs                    = ESM_SRC_DATES_UTC
+        /utc/index.js                     = CJS_DIST_DATES_UTC
 
   `)
 
   const outputs = [
+    // CORE
     {
-      src: paths.SRC_CORE,
-      dist: paths.DIST_ESM,
-      module: paths.DIST_ESM_PACKAGE_JSON,
+      src: paths.ESM_SRC_CORE,
+      dist: paths.ESM_DIST,
       format: 'esm'
     },
     {
-      src: paths.SRC_DATES,
-      dist: paths.DIST_ESM_DATES,
-      format: 'esm'
+      src: paths.ESM_SRC_CORE,
+      dist: paths.CJS_DIST,
+      format: 'cjs'
     },
+    // CJS DATES
     {
-      src: paths.SRC_DATES_UTC,
-      dist: paths.DIST_ESM_DATES_UTC,
-      format: 'esm'
-    },
-    {
-      src: paths.SRC_CORE,
-      dist: paths.DIST_CJS,
-      module: paths.DIST_CJS_PACKAGE_JSON,
+      src: paths.ESM_SRC_DATES,
+      dist: paths.CJS_DIST_DATES,
       format: 'cjs'
     },
     {
-      src: paths.SRC_DATES,
-      dist: paths.DIST_CJS_DATES,
+      src: paths.ESM_SRC_DATES_UTC,
+      dist: paths.CJS_DIST_DATES_UTC,
       format: 'cjs'
     },
+    // BROWSER BUILD
     {
-      src: paths.SRC_DATES_UTC,
-      dist: paths.DIST_CJS_DATES_UTC,
-      format: 'cjs'
-    },
-    {
-      src: paths.SRC_BROWSER,
-      dist: paths.DIST_IIFE,
+      src: paths.ESM_SRC_BROWSER,
+      dist: paths.IIFE_DIST,
       format: 'iife'
     }
   ]
