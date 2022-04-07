@@ -67,10 +67,11 @@ declare module 'match-iz' {
    */
   export function cata(catas: any): any
 
-  export function defined(value: any): boolean
-  export function empty(value: any): boolean
-  export function truthy(value: any): boolean
-  export function falsy(value: any): boolean
+  export const defined: TPredicate
+  export const empty: TPredicate
+  export const truthy: TPredicate
+  export const falsy: TPredicate
+
   export function gt(greaterThan: number): TPredicate
   export function lt(lessThan: number): TPredicate
   export function gte(greaterThanOrEqualTo: number): TPredicate
@@ -103,13 +104,13 @@ declare module 'match-iz' {
    */
   export function pluck(predicate?: TPredicate): TPredicate
 
-  export function isArray(value: any): boolean
-  export function isDate(value: any): boolean
-  export function isFunction(value: any): boolean
-  export function isNumber(value: any): boolean
-  export function isPojo(value: any): boolean
-  export function isRegExp(value: any): boolean
-  export function isString(value: any): boolean
+  export const isArray: TPredicate
+  export const isDate: TPredicate
+  export const isFunction: TPredicate
+  export const isNumber: TPredicate
+  export const isPojo: TPredicate
+  export const isRegExp: TPredicate
+  export const isString: TPredicate
 
   /**
    * @example
