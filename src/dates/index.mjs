@@ -41,12 +41,14 @@ const nMonth = nth => ifDate(date => date.getMonth() === nth)
 const [isJan, isFeb, isMar, isApr, isMay, isJun] = [...range(0, 5)].map(nMonth)
 const [isJul, isAug, isSep, isOct, isNov, isDec] = [...range(6, 11)].map(nMonth)
 
-const isDay = against(
-  when(isFunction)(pred => ifDate(date => pred(date.getDate()))),
-  when(isNumber)(nth =>
-    nth < 0
-      ? ifDate(date => date.getDate() === endOfMonth(date) + nth + 1)
-      : ifDate(date => date.getDate() === nth)
+const isDay = ifDate(
+  against(
+    when(isFunction)(pred => date => pred(date.getDate())),
+    when(isNumber)(nth =>
+      nth < 0
+        ? ifDate(date => date.getDate() === endOfMonth(date) + nth + 1)
+        : ifDate(date => date.getDate() === nth)
+    )
   )
 )
 
