@@ -1,5 +1,13 @@
-import { against, when, allOf, inRange, anyOf } from '../../match-iz.mjs'
-import { isFunction, isNumber } from '../../match-iz.mjs'
+import {
+  against,
+  when,
+  allOf,
+  inRange,
+  anyOf,
+  isFunction,
+  isNumber
+} from 'match-iz'
+
 import { dateSet, range, ifDate, byLastIndex, byIndex } from '../utils.mjs'
 
 const endOfMonth = date =>
@@ -43,74 +51,58 @@ const nMonth = nth => ifDate(date => date.getUTCMonth() === nth)
 const [isJan, isFeb, isMar, isApr, isMay, isJun] = [...range(0, 5)].map(nMonth)
 const [isJul, isAug, isSep, isOct, isNov, isDec] = [...range(6, 11)].map(nMonth)
 
-const isDay = ifDate(
-  against(
-    when(isFunction)(pred => date => pred(date.getUTCDate())),
-    when(isNumber)(nth =>
-      nth < 0
-        ? ifDate(date => date.getUTCDate() === endOfMonth(date) + nth + 1)
-        : ifDate(date => date.getUTCDate() === nth)
-    )
+const isDay = against(
+  when(isFunction)(pred => ifDate(date => pred(date.getUTCDate()))),
+  when(isNumber)(nth =>
+    nth < 0
+      ? ifDate(date => date.getUTCDate() === endOfMonth(date) + nth + 1)
+      : ifDate(date => date.getUTCDate() === nth)
   )
 )
 
-const isMonth = ifDate(
-  against(
-    when(isFunction)(pred => date => pred(date.getUTCMonth() + 1)),
-    when(isNumber)(nth => date => date.getUTCMonth() === nth - 1)
-  )
+const isMonth = against(
+  when(isFunction)(pred => ifDate(date => pred(date.getUTCMonth() + 1))),
+  when(isNumber)(nth => ifDate(date => date.getUTCMonth() === nth - 1))
 )
 
-const isYear = ifDate(
-  against(
-    when(isFunction)(pred => date => pred(date.getUTCFullYear())),
-    when(isNumber)(nth => date => date.getUTCFullYear() === nth)
-  )
+const isYear = against(
+  when(isFunction)(pred => ifDate(date => pred(date.getUTCFullYear()))),
+  when(isNumber)(nth => ifDate(date => date.getUTCFullYear() === nth))
 )
 
 const isLeapYear = ifDate(
   anyOf(
+    isYear(x => x % 400 === 0),
     allOf(
       isYear(x => x % 4 === 0),
       isYear(x => x % 100 !== 0)
-    ),
-    isYear(x => x % 400 === 0)
+    )
   )
 )
 
-const isDayOfWeek = ifDate(
-  against(
-    when(isFunction)(pred => date => pred(date.getUTCDay())),
-    when(isNumber)(nth => date => date.getUTCDay() === nth)
-  )
+const isDayOfWeek = against(
+  when(isFunction)(pred => ifDate(date => pred(date.getUTCDay()))),
+  when(isNumber)(nth => ifDate(date => date.getUTCDay() === nth))
 )
 
-const isWeekNumber = ifDate(
-  against(
-    when(isFunction)(pred => date => pred(getUTCWeekNumber(date))),
-    when(isNumber)(nth => date => getUTCWeekNumber(date) === nth)
-  )
+const isWeekNumber = against(
+  when(isFunction)(pred => ifDate(date => pred(getUTCWeekNumber(date)))),
+  when(isNumber)(nth => ifDate(date => getUTCWeekNumber(date) === nth))
 )
 
-const isHour = ifDate(
-  against(
-    when(isFunction)(pred => date => pred(date.getUTCHours())),
-    when(isNumber)(nth => date => date.getUTCHours() === nth)
-  )
+const isHour = against(
+  when(isFunction)(pred => ifDate(date => pred(date.getUTCHours()))),
+  when(isNumber)(nth => ifDate(date => date.getUTCHours() === nth))
 )
 
-const isMinute = ifDate(
-  against(
-    when(isFunction)(pred => date => pred(date.getUTCMinutes())),
-    when(isNumber)(nth => date => date.getUTCMinutes() === nth)
-  )
+const isMinute = against(
+  when(isFunction)(pred => ifDate(date => pred(date.getUTCMinutes()))),
+  when(isNumber)(nth => ifDate(date => date.getUTCMinutes() === nth))
 )
 
-const isSecond = ifDate(
-  against(
-    when(isFunction)(pred => date => pred(date.getUTCSeconds())),
-    when(isNumber)(nth => date => date.getUTCSeconds() === nth)
-  )
+const isSecond = against(
+  when(isFunction)(pred => ifDate(date => pred(date.getUTCSeconds()))),
+  when(isNumber)(nth => ifDate(date => date.getUTCSeconds() === nth))
 )
 
 const isAM = isHour(inRange(0, 11))
@@ -118,7 +110,7 @@ const isPM = isHour(inRange(12, 23))
 const isMorning = isAM
 const isAfternoon = isHour(inRange(12, 17))
 const isEvening = isHour(inRange(18, 23))
-const isNight = isHour(inRange(0, 7))
+const isNight = isHour(inRange(0, 5))
 
 export { isSun, isMon, isTue, isWed, isThu, isFri, isSat }
 export { nthSun, nthMon, nthTue, nthWed, nthThu, nthFri, nthSat }

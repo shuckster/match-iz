@@ -1,4 +1,4 @@
-import { isDate } from '../match-iz.mjs'
+import { isDate } from 'match-iz'
 
 export const ifDate = fn => value => isDate(value) && fn(value)
 export const byIndex = idx => (_, i) => i === idx

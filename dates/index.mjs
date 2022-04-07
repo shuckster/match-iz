@@ -1,5 +1,13 @@
-import { against, when, allOf, inRange, anyOf } from '../match-iz.mjs'
-import { isFunction, isNumber } from '../match-iz.mjs'
+import {
+  against,
+  when,
+  allOf,
+  inRange,
+  anyOf,
+  isFunction,
+  isNumber
+} from 'match-iz'
+
 import { dateSet, range, ifDate, byLastIndex, byIndex } from './utils.mjs'
 
 const endOfMonth = date =>
@@ -41,74 +49,58 @@ const nMonth = nth => ifDate(date => date.getMonth() === nth)
 const [isJan, isFeb, isMar, isApr, isMay, isJun] = [...range(0, 5)].map(nMonth)
 const [isJul, isAug, isSep, isOct, isNov, isDec] = [...range(6, 11)].map(nMonth)
 
-const isDay = ifDate(
-  against(
-    when(isFunction)(pred => date => pred(date.getDate())),
-    when(isNumber)(nth =>
-      nth < 0
-        ? ifDate(date => date.getDate() === endOfMonth(date) + nth + 1)
-        : ifDate(date => date.getDate() === nth)
-    )
+const isDay = against(
+  when(isFunction)(pred => ifDate(date => pred(date.getDate()))),
+  when(isNumber)(nth =>
+    nth < 0
+      ? ifDate(date => date.getDate() === endOfMonth(date) + nth + 1)
+      : ifDate(date => date.getDate() === nth)
   )
 )
 
-const isMonth = ifDate(
-  against(
-    when(isFunction)(pred => date => pred(date.getMonth() + 1)),
-    when(isNumber)(nth => date => date.getMonth() === nth - 1)
-  )
+const isMonth = against(
+  when(isFunction)(pred => ifDate(date => pred(date.getMonth() + 1))),
+  when(isNumber)(nth => ifDate(date => date.getMonth() === nth - 1))
 )
 
-const isYear = ifDate(
-  against(
-    when(isFunction)(pred => date => pred(date.getFullYear())),
-    when(isNumber)(nth => date => date.getFullYear() === nth)
-  )
+const isYear = against(
+  when(isFunction)(pred => ifDate(date => pred(date.getFullYear()))),
+  when(isNumber)(nth => ifDate(date => date.getFullYear() === nth))
 )
 
 const isLeapYear = ifDate(
   anyOf(
+    isYear(x => x % 400 === 0),
     allOf(
       isYear(x => x % 4 === 0),
       isYear(x => x % 100 !== 0)
-    ),
-    isYear(x => x % 400 === 0)
+    )
   )
 )
 
-const isDayOfWeek = ifDate(
-  against(
-    when(isFunction)(pred => date => pred(date.getDay())),
-    when(isNumber)(nth => date => date.getDay() === nth)
-  )
+const isDayOfWeek = against(
+  when(isFunction)(pred => ifDate(date => pred(date.getDay()))),
+  when(isNumber)(nth => ifDate(date => date.getDay() === nth))
 )
 
-const isWeekNumber = ifDate(
-  against(
-    when(isFunction)(pred => date => pred(getWeekNumber(date))),
-    when(isNumber)(nth => date => getWeekNumber(date) === nth)
-  )
+const isWeekNumber = against(
+  when(isFunction)(pred => ifDate(date => pred(getWeekNumber(date)))),
+  when(isNumber)(nth => ifDate(date => getWeekNumber(date) === nth))
 )
 
-const isHour = ifDate(
-  against(
-    when(isFunction)(pred => date => pred(date.getHours())),
-    when(isNumber)(nth => date => date.getHours() === nth)
-  )
+const isHour = against(
+  when(isFunction)(pred => ifDate(date => pred(date.getHours()))),
+  when(isNumber)(nth => ifDate(date => date.getHours() === nth))
 )
 
-const isMinute = ifDate(
-  against(
-    when(isFunction)(pred => date => pred(date.getMinutes())),
-    when(isNumber)(nth => date => date.getMinutes() === nth)
-  )
+const isMinute = against(
+  when(isFunction)(pred => ifDate(date => pred(date.getMinutes()))),
+  when(isNumber)(nth => ifDate(date => date.getMinutes() === nth))
 )
 
-const isSecond = ifDate(
-  against(
-    when(isFunction)(pred => date => pred(date.getSeconds())),
-    when(isNumber)(nth => date => date.getSeconds() === nth)
-  )
+const isSecond = against(
+  when(isFunction)(pred => ifDate(date => pred(date.getSeconds()))),
+  when(isNumber)(nth => ifDate(date => date.getSeconds() === nth))
 )
 
 const isAM = isHour(inRange(0, 11))
@@ -116,7 +108,7 @@ const isPM = isHour(inRange(12, 23))
 const isMorning = isAM
 const isAfternoon = isHour(inRange(12, 17))
 const isEvening = isHour(inRange(18, 23))
-const isNight = isHour(inRange(0, 7))
+const isNight = isHour(inRange(0, 5))
 
 export { isSun, isMon, isTue, isWed, isThu, isFri, isSat }
 export { nthSun, nthMon, nthTue, nthWed, nthThu, nthFri, nthSat }
