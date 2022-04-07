@@ -658,6 +658,15 @@ const testCases = [
     }
   ],
   [
+    'empty() === ""',
+    {
+      cases: [{ input: '', expecting: 'empty' }],
+      run: (assertCase, input) => {
+        assertCase(match(input)(when(empty)('empty')))
+      }
+    }
+  ],
+  [
     'empty() === undefined',
     {
       cases: [{ input: undefined, expecting: 'empty' }],
