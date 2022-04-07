@@ -41,7 +41,7 @@ A tiny functional, declarative [pattern-matching](https://github.com/tc39/propos
 ```js
 import { match, when, otherwise } from 'match-iz'
 
-match(haystack)(
+let result = match(haystack)(
   when(needle / predicate)(result / handler),
   when(needle / predicate)(result / handler),
   otherwise(result / handler)
@@ -51,11 +51,63 @@ match(haystack)(
 Data-last version:
 
 ```js
-against(
+import { against } from 'match-iz'
+
+let result = against(
   when(needle / predicate)(result / handler),
   when(needle / predicate)(result / handler),
   otherwise(result / handler)
 )(haystack)
+```
+
+Basic examples (see [documentation](#documentation) for more):
+
+```js
+match(literal)(
+  when(inRange(100, 200))( ... ),
+  when(startsWith('hello'))( ... ),
+  when(includes('batman'))( ... ),
+  when(includedIn('one', 'two'))( ... ),
+  when(lte(80))( ... ),
+  when(empty)( ... ),
+  when(defined)( ... ),
+)
+
+match(object)(
+  when({ status: inRange(100, 200) })( ... ),
+  when({ text: startsWith('hello') })( ... ),
+  when({ array: includes('batman') })( ... ),
+  when({ string: includedIn('one', 'two') })( ... ),
+  when({ length: lte(80) })( ... ),
+  when({ cup: empty })( ... ),
+  when({ pencil: defined })( ... ),
+)
+```
+
+A little more composition:
+
+```js
+match(haystack)(
+  when(not(inRange(100, 200)))( ... ),
+  when({ number: not(42) })( ... )
+)
+
+match(haystack)(
+  when(allOf(isNumber, x => x > 10))( ... ),
+  when({ number: not(anyOf(20, 30)) })( ... )
+  when(includedIn([40, 50]))( ... )
+)
+```
+
+You can use your own predicates:
+
+```js
+const isInteger = Number.isInteger
+
+match(response)(
+  when({ status: isInteger })('status is an integer'),
+  otherwise('nope')
+)
 ```
 
 Use `pluck` to extract values of interest when matching against array/object haystacks:
@@ -63,14 +115,15 @@ Use `pluck` to extract values of interest when matching against array/object hay
 ```js
 import { pluck } from 'match-iz'
 
-const willDoThis = match(action)(
+match(action)(
   when({ type: 'add-todo', payload: pluck() })(payload => {
     return `Adding todo: ${payload}`
   })
 )
 
-// `pluck` accepts patterns, too:
-const atIndex2 = match([1, 2, 3])(
+// `pluck` accepts patterns, so you
+// can guard before extracting values:
+match([1, 2, 3])(
   when([1, 2, pluck(3)])(three => {
     return '[2] is the number 3!'
   }),
@@ -81,7 +134,7 @@ const atIndex2 = match([1, 2, 3])(
 )
 ```
 
-Capture groups are extracted automatically from regular-expressions if they're specified (with the second argument of the `when`-handler being the full-match if you need it):
+If specified, capture groups are extracted automatically from regular-expressions (with the second argument of the `when`-handler being the full-match if you need it):
 
 ```js
 match('1 + 2')(
@@ -90,6 +143,10 @@ match('1 + 2')(
       return add(left, right)
     }
   ),
+
+  when(/no capture groups/)(fullRegExpMatchArray => {
+    return 'so we get the full match array only'
+  }),
 
   otherwise("I couldn't parse that!")
 )
@@ -148,13 +205,12 @@ import { isSat, ...etc } from 'match-iz/dates/utc'
 
 // CJS
 const { match, ...etc } = require('match-iz')
-// etc...
 ```
 
 Browser/UMD:
 
 ```html
-<script src="https://unpkg.com/match-iz/dist/browser/match-iz.browser.js"></script>
+<script src="https://unpkg.com/match-iz/dist/match-iz.browser.js"></script>
 <script>
   const { match, ...etc } = matchiz
   const { isSat, ...etc } = matchiz
@@ -337,7 +393,7 @@ function getLength(vector) {
 
 &nbsp;
 
-### Matching array contents:
+### Matching array shape:
 
 ```js
 match(['', '2', undefined])(
@@ -384,10 +440,14 @@ lines.filter(
 ```
 
 <details>
-<summary>See a couple more:</summary>
+<summary>See a few more:</summary>
 
 ```js
 import { against, when, otherwise, lte } from 'match-iz'
+
+function memoize(fn, cache = new Map()) {
+  return x => (cache.has(x) ? cache.get(x) : cache.set(x, fn(x)).get(x))
+}
 
 // Fibonnacci
 
@@ -401,9 +461,22 @@ const fib = memoize(
 
 fib(35)
 
-function memoize(fn, cache = new Map()) {
-  return x => (cache.has(x) ? cache.get(x) : cache.set(x, fn(x)).get(x))
-}
+// Font sizes
+
+const fontSize = memoize(
+  against(
+    when([100, 200])('Super Thin'),
+    when([300])('Thin'),
+    when([400, 500])('Normal'),
+    when([600, 700, 800])('Bold'),
+    when([900])('Heavy'),
+    otherwise('Not valid')
+  )
+)
+
+;[100, 200, 300, 400, 500, 600, 700, 800, 900, 901].forEach(size => {
+  console.log(`${size} = `, fontSize(size))
+})
 ```
 
 ```js
@@ -437,8 +510,7 @@ function nargs() {
 - [Core library](#core-library)
 - [Helpers](#helpers)
 - [Date helpers](#date-helpers)
-- [What is spread()?](#what-is-spreaddefined)
-- [What about against()?](#what-about-against)
+- [What is spread()?](#what-is-spread)
 
 ## Core-library
 
@@ -454,9 +526,20 @@ against(...predicates)(value)
 // returns: winning value
 ```
 
-Each predicate receives the `value` passed to `match` (or `against`, but we'll just talk about `match`).
+Each predicate receives the `value` passed to `match` (or `against`, but we'll just talk about `match`). The first one to return a truthy value wins, and `match` returns it.
 
-The first one to return a truthy value wins, and `match` returns it.
+So you could just use `match` like this:
+
+```js
+match(haystack)(
+  () => undefined,
+  () => null,
+  () => 'hi'
+)
+// "hi"
+```
+
+However, using `when` makes `match` more powerful:
 
 ### `when()`
 
@@ -467,7 +550,7 @@ when(pattern)(handler)
 
 `handler` can be a function or a literal. `pattern` is described by example throughout this page.
 
-`when` builds special predicates that return objects like this:
+`when` builds predicates that return objects like this:
 
 ```js
 {
@@ -481,21 +564,48 @@ If `match` sees such an object return from a predicate:
 - `matched()` is run to determine the win-state
 - `value()` retrieves the winning value
 
-#### AND / OR
-
-If the match `value` is NOT an array, using an array within a `when` will perform a logical `OR` against the contained values:
+So without `when`, you could do this to emulate it:
 
 ```js
-// AND example:
-match({ message: 'hello wrrld!', number: 42 })(
-  when({
-    // if message ends with "world!" AND number === 42
-    message: endsWith('world!'),
-    number: 42
-  })('ok!')
+match(haystack)(
+  haystack => ({
+    matched: () => haystack.length > 0,
+    value: () => 'haystack has length'
+  }),
+  haystack => ({
+    matched: () => !haystack,
+    value: () => 'haystack is falsy'
+  })
 )
-// undefined
 
+// The `when` equivalent of the above:
+match(haystack)(
+  when(hs => hs.length > 0)(hs => 'haystack has length'),
+  when(hs => !hs)(hs => 'haystack is falsy')
+)
+```
+
+#### AND / OR / NOT conditions in your `when`'s
+
+You can use `allOf` (AND) `anyOf` (OR) and `not` (NOT) to build more complex conditions:
+
+```js
+match(haystack)(
+  when(allOf({ msg: endsWith('world!') }, { num: not(42) }))(() => {
+    return 'A'
+  }),
+  when(anyOf({ msg: not(startsWith('hello')) }, { num: 42 }))(() => {
+    return 'B'
+  }),
+  when(anyOf(1, 2, not('chili dogs')))(() => {
+    return 'C'
+  })
+)
+```
+
+**Deprecated behaviour**: OR can also be achieved by using an array in your `when`, so long as the haystack is not an array itself:
+
+```js
 // OR example:
 match({ message: 'hello wrrld!', number: 42 })(
   when([
@@ -507,27 +617,7 @@ match({ message: 'hello wrrld!', number: 42 })(
 // "ok!"
 ```
 
-Alternatively you can use `allOf` and `anyOf`, which are more descriptive:
-
-```js
-when(allOf({ msg: endsWith('world!') }, { num: 42 }))('ok!')
-when(anyOf({ msg: endsWith('world!') }, { num: 42 }))('ok!')
-when(anyOf(1, 2, 'chili dogs'))('ok!')
-```
-
-If both `match` and `when` values are arrays, the contents will be compared (applying any predicates in the `when`):
-
-```js
-import { empty as _ } from 'match-iz'
-
-match(['', '2', undefined])(
-  when(['1', _, _])('one'),
-  when([_, '2', _, _])('two, with four items'),
-  when([_, '2', _])('two'),
-  otherwise('nope')
-)
-// "two"
-```
+This behaviour is deprecated and will be removed in the next major version.
 
 #### Regular Expressions
 
@@ -690,21 +780,21 @@ match({ one: 1, two: 2 })(
 
 Since 2.3.0, the following date helpers are available from `match-iz/dates` (or directly from the `matchiz` global variable if you're using the browser-build.)
 
-| Days of the week    | Weeks of the month | Months           | Years                 |
-| ------------------- | ------------------ | ---------------- | --------------------- |
-| `isDay(-31..31)`    | `nthSun(-5..5)`    | `isMonth(1..12)` | `isYear(n)`           |
-| `isDayOfWeek(0..6)` | `nthMon(-5..5)`    | `isJan`          | `isWeekNumber(1..52)` |
-| `isSun`             | `nthTue(-5..5)`    | `isFeb`          | -                     |
-| `isMon`             | `nthWed(-5..5)`    | `isMar`          | -                     |
-| `isTue`             | `nthThu(-5..5)`    | `isApr`          | -                     |
-| `isWed`             | `nthFri(-5..5)`    | `isMay`          | -                     |
-| `isThu`             | `nthSat(-5..5)`    | `isJun`          | -                     |
-| `isFri`             | -                  | `isJul`          | -                     |
-| `isSat`             | -                  | `isAug`          | -                     |
-| -                   | -                  | `isSep`          | -                     |
-| -                   | -                  | `isOct`          | -                     |
-| -                   | -                  | `isNov`          | -                     |
-| -                   | -                  | `isDec`          | -                     |
+| Time              | Days of the week    | Weeks of the month | Months           | Years                 |
+| ----------------- | ------------------- | ------------------ | ---------------- | --------------------- |
+| `isHour(0..23)`   | `isDay(-31..31)`    | `nthSun(-5..5)`    | `isMonth(1..12)` | `isYear(n)`           |
+| `isMinute(0..59)` | `isDayOfWeek(0..6)` | `nthMon(-5..5)`    | `isJan`          | `isWeekNumber(1..52)` |
+| `isSecond(0..59)` | `isSun`             | `nthTue(-5..5)`    | `isFeb`          | `isLeapYear`          |
+| `isAM`            | `isMon`             | `nthWed(-5..5)`    | `isMar`          | -                     |
+| `isPM`            | `isTue`             | `nthThu(-5..5)`    | `isApr`          | -                     |
+| `isMorning`       | `isWed`             | `nthFri(-5..5)`    | `isMay`          | -                     |
+| `isAfternoon`     | `isThu`             | `nthSat(-5..5)`    | `isJun`          | -                     |
+| `isEvening`       | `isFri`             | -                  | `isJul`          | -                     |
+|                   | `isSat`             | -                  | `isAug`          | -                     |
+|                   | -                   | -                  | `isSep`          | -                     |
+|                   | -                   | -                  | `isOct`          | -                     |
+|                   | -                   | -                  | `isNov`          | -                     |
+|                   | -                   | -                  | `isDec`          | -                     |
 
 ```js
 import { isSun, ...etc } from 'match-iz/dates'
@@ -714,6 +804,22 @@ import { isSun, ...etc } from 'match-iz/dates/utc'
 ```
 
 Some detail:
+
+| Helpers                                                                                          | Meaning         |
+| ------------------------------------------------------------------------------------------------ | --------------- |
+| `isHour` / `isMinute` / `isSecond` / `isAM` / `isPM` / `isMorning` / `isAfternoon` / `isEvening` | the time of day |
+
+```js
+match(new Date())(
+  when(isHour(0))('around midnight'),
+  when(isHour(inRange(12, 14)))('lunchtime'),
+  when(allOf(isHour(17), isMinute(0), isSecond(0)))('clock-off'),
+  when(isAM)('morning'),
+  when(isPM)('afternoon'),
+  when(isAfternoon)('afternoon'),
+  when(isEvening)('evening, 6pm-midnight')
+)
+```
 
 | Helpers                                                             | Meaning                            |
 | ------------------------------------------------------------------- | ---------------------------------- |
@@ -778,7 +884,7 @@ match(new Date())(
 )
 ```
 
-## What is `spread(defined)`?
+## What is `spread()`?
 
 The [TC39 spec](https://github.com/tc39/proposal-pattern-matching) proposes both conditional _and_ destructuring behaviour within the same syntax:
 
@@ -822,58 +928,7 @@ when({ data })(<Page {...props} />)
 
 It uses [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) to achieve this.
 
-## What about `against()`?
-
-It's the same as `match()`, but the order of currying is reversed.
-
-So the previous `getLength` example could be:
-
-```js
-const { against, spread, defined } = matchiz
-const { x, y, z } = spread(defined)
-
-const getLength = against(
-  when({ x, y, z })(({ x, y, z }) => Math.hypot(x, y, z)),
-  when({ x, y })(({ x, y }) => Math.hypot(x, y)),
-  otherwise(vector => vector.length)
-)
-```
-
-That makes it easier to pass into a memoizer:
-
-```js
-const fontSize = memoize(
-  against(
-    when([100, 200])('Super Thin'),
-    when([300])('Thin'),
-    when([400, 500])('Normal'),
-    when([600, 700, 800])('Bold'),
-    when([900])('Heavy'),
-    otherwise('Not valid')
-  )
-)
-
-;[100, 200, 300, 400, 500, 600, 700, 800, 900, 901].forEach(size => {
-  console.log(`${size} = `, fontSize(size))
-})
-```
-
-...and `map`/`reduce`/`filter`:
-
-```js
-const html = lines
-  .filter(
-    against(
-      when(/remove-this-one/)(false),
-      when(/and-this-one-too/)(false),
-      when(endsWith('-and-another'))(false),
-      otherwise(true)
-    )
-  )
-  .join('\n')
-```
-
-Anyway, that's all I got!
+That's all I got!
 
 # Credits
 
