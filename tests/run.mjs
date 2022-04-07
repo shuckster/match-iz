@@ -1,9 +1,11 @@
 import { strict } from 'assert'
 
 import { isArray, isDate, isNumber, isPojo } from '../src/types.mjs'
-import * as lib from '../src/match-iz.mjs'
-
 import { safe } from './maybe.mjs'
+
+import * as lib from 'match-iz'
+import * as local from 'match-iz/dates'
+import * as utc from 'match-iz/dates/utc'
 
 const { match, against, when, otherwise, spread, pluck: $ } = lib
 const { allOf, anyOf, not, defined, empty } = lib
@@ -701,8 +703,72 @@ const testCases = [
         assertCase(match(input)(when(empty)('empty')))
       }
     }
+  ],
+  [
+    'isDay / isFri / isTue',
+    {
+      cases: [
+        {
+          input: datesFrom({ startDate: [2022, 1, 1], days: 365 }),
+          expecting: 114
+        }
+      ],
+      run: (assertCase, input) => {
+        const days = input.filter(
+          against(
+            when(local.isDay(-1))(true),
+            when(local.isFri)(true),
+            when(local.isTue)(true)
+          )
+        )
+        assertCase(days.length)
+      }
+    }
+  ],
+  [
+    'isDay(gt(28)) in 2022',
+    {
+      cases: [
+        {
+          input: datesFrom({ startDate: [2022, 1, 1], days: 366 }),
+          expecting: 29
+        }
+      ],
+      run: (assertCase, input) => {
+        const days = input.filter(
+          against(when(allOf(local.isDay(gt(28))))(true))
+        )
+        assertCase(days.length)
+      }
+    }
+  ],
+  [
+    'isDay(gt(28)) in 2024',
+    {
+      cases: [
+        {
+          input: datesFrom({ startDate: [2024, 1, 1], days: 366 }),
+          expecting: 30
+        }
+      ],
+      run: (assertCase, input) => {
+        const days = input.filter(
+          against(when(allOf(local.isDay(gt(28))))(true))
+        )
+        assertCase(days.length)
+      }
+    }
   ]
 ]
+
+function datesFrom({ startDate, days }) {
+  const [year, month, day] = startDate
+  const refDate = new Date(year, month - 1, day)
+  return Array.from(
+    { length: days },
+    (_, i) => new Date(refDate.getTime() + i * 24 * 60 * 60 * 1000)
+  )
+}
 
 function nargs(fn) {
   return (...args) => fn(args)
