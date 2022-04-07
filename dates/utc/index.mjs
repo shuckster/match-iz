@@ -110,7 +110,6 @@ const isPM = isHour(inRange(12, 23))
 const isMorning = isAM
 const isAfternoon = isHour(inRange(12, 17))
 const isEvening = isHour(inRange(18, 23))
-const isNight = isHour(inRange(0, 5))
 
 export { isSun, isMon, isTue, isWed, isThu, isFri, isSat }
 export { nthSun, nthMon, nthTue, nthWed, nthThu, nthFri, nthSat }
@@ -118,4 +117,4 @@ export { isJan, isFeb, isMar, isApr, isMay, isJun }
 export { isJul, isAug, isSep, isOct, isNov, isDec }
 export { isDay, isMonth, isYear, isLeapYear, isDayOfWeek, isWeekNumber }
 export { isHour, isMinute, isSecond, isAM, isPM }
-export { isMorning, isAfternoon, isEvening, isNight }
+export { isMorning, isAfternoon, isEvening }
