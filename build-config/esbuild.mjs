@@ -8,20 +8,16 @@ import { moduleTypes, optionsFrom } from './common.mjs'
 
 const pkg = JSON.parse(fs.readFileSync('./package.json'))
 
-const { paths, outputs, addBanner, globalName } = optionsFrom(pkg)
+const { outputs, addBanner, globalName } = optionsFrom(pkg)
 import { match, when, otherwise, defined } from '../src/match-iz.mjs'
 
 function main() {
   Promise.all(outputs.map(buildModule))
 }
 
-function buildModule({ file, format, module, define }) {
+function buildModule({ src, dist, format, module }) {
   const buildOptions = {
-    entryPoints: match(format)(
-      when('iife')([paths.BROWSER_SRC]),
-      otherwise([paths.SRC])
-    ),
-    define,
+    entryPoints: [src],
     format,
     ...match(format)(
       when('iife')({
@@ -41,7 +37,7 @@ function buildModule({ file, format, module, define }) {
     .then(getConcatenatedEsbuildContent)
     .then($ => new TextDecoder().decode($))
     .then(addBanner)
-    .then(writeTextFile(file))
+    .then(writeTextFile(dist))
     .then(writePackageJson({ module, format }))
 }
 

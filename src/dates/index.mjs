@@ -1,5 +1,5 @@
-import { against, when, allOf } from '../src/match-iz.mjs'
-import { isFunction, isNumber } from '../src/match-iz.mjs'
+import { against, when, allOf } from '../match-iz.mjs'
+import { isFunction, isNumber } from '../match-iz.mjs'
 import { dateSet, range, ifDate, byLastIndex, byIndex } from './utils.mjs'
 
 const endOfMonth = date =>

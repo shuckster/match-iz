@@ -13,25 +13,29 @@
     "otherwise"
   ],
   "types": "index.d.ts",
-  "main": "./dist/cjs/match-iz.cjs.js",
-  "module": "dist/esm/match-iz.esm.js",
+  "main": "./dist/cjs/index.js",
+  "module": "dist/esm/index.js",
   "exports": {
     ".": {
-      "import": "./dist/esm/match-iz.esm.js",
-      "require": "./dist/cjs/match-iz.cjs.js",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
       "browser": "./dist/browser/match-iz.browser.js",
-      "default": "./dist/cjs/match-iz.cjs.js"
+      "default": "./dist/cjs/index.js"
     },
     "./dates": {
-      "import": "./dates/index.mjs",
-      "require": "./dates/index.mjs",
-      "default": "./dates/index.mjs"
+      "import": "./dist/esm/dates/index.js",
+      "require": "./dist/cjs/dates/index.js",
+      "default": "./dist/cjs/dates/index.js"
+    },
+    "./dates/utc": {
+      "import": "./dist/esm/dates/utc/index.js",
+      "require": "./dist/cjs/dates/utc/index.js",
+      "default": "./dist/cjs/dates/utc/index.js"
     }
   },
   "files": [
     "dist/**/*.js",
     "dist/**/package.json",
-    "dates/*.mjs",
     "CHANGELOG.md",
     "README.md",
     "LICENSE",
@@ -53,7 +57,7 @@
     "test": "node ./tests/run.mjs",
     "lint": "pnpx eslint src/*.mjs tests/*.mjs",
     "build": "pnpm run build:esbuild",
-    "build:clean": "rimraf dist/; mkdir -p dist/{esm,cjs,browser}",
+    "build:clean": "rimraf dist/; mkdir -p dist/{esm,cjs,browser}; mkdir -p dist/{esm,cjs}/dates/utc",
     "build:all": "pnpm run build:clean ; pnpm run build",
     "build:esbuild": "node ./build-config/esbuild.mjs"
   },
