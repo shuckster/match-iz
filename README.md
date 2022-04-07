@@ -21,6 +21,9 @@
 A tiny functional, declarative [pattern-matching](https://github.com/tc39/proposal-pattern-matching) library.
 
 - [Overview](#overview)
+  - [pluck](#pluck)
+  - [RegExp capture groups](#regexp-capture-groups)
+  - [cata for ADTs/monads](#cata-for-adtsmonads)
 - [Install](#install)
 - [Examples](#examples)
   - [Front-end Component](#front-end-component)
@@ -33,7 +36,6 @@ A tiny functional, declarative [pattern-matching](https://github.com/tc39/propos
   - [Matchers](#matchers)
   - [Date matchers](#date-matchers)
   - [What is spread()?](#what-is-spreaddefined)
-  - [What about against()?](#what-about-against)
 - [Credits](#credits)
 
 ## Overview:
@@ -110,6 +112,8 @@ match(response)(
 )
 ```
 
+### pluck()
+
 Use `pluck` to extract values of interest when matching against array/object haystacks:
 
 ```js
@@ -133,6 +137,8 @@ match([1, 2, 3])(
   })
 )
 ```
+
+### RegExp capture-groups
 
 If specified, capture groups are extracted automatically from regular-expressions (with the second argument of the `when`-handler being the full-match if you need it):
 
@@ -167,6 +173,8 @@ match(new Date())(
   })
 )
 ```
+
+### cata() for ADTs/monads
 
 Use `cata` to integrate `match-iz` with your ADTs/monads:
 
