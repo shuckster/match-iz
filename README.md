@@ -30,8 +30,8 @@ A tiny functional, declarative [pattern-matching](https://github.com/tc39/propos
   - [Matching array contents](#matching-array-contents)
 - [Documentation](#documentation)
   - [Core library](#core-library)
-  - [Helpers](#helpers)
-  - [Date helpers](#date-helpers)
+  - [Matchers](#matchers)
+  - [Date matchers](#date-matchers)
   - [What is spread()?](#what-is-spreaddefined)
   - [What about against()?](#what-about-against)
 - [Credits](#credits)
@@ -153,7 +153,7 @@ match('1 + 2')(
 // 3
 ```
 
-Since 2.3.0: Basic local + UTC [date helpers](#date-helpers):
+Since 2.3.0: Basic local + UTC [date matchers](#date-matchers):
 
 ```js
 import * as local from 'match-iz/dates'
@@ -508,8 +508,8 @@ function nargs() {
 # Documentation
 
 - [Core library](#core-library)
-- [Helpers](#helpers)
-- [Date helpers](#date-helpers)
+- [Matchers](#matchers)
+- [Date matchers](#date-matchers)
 - [What is spread()?](#what-is-spread)
 
 ## Core-library
@@ -652,9 +652,9 @@ Always wins, so put it at the end to deal with fallbacks.
 
 `handler` can be a function or a literal.
 
-## Helpers
+## Matchers
 
-`match-iz` provides a number of composable helpers you can use to build patterns:
+`match-iz` provides a number of composable matchers you can use to build patterns:
 
 | Numbers         | Strings           | Strings/Arrays | Truthiness | Primitives                                              | Negate     | Combinators       |
 | --------------- | ----------------- | -------------- | ---------- | ------------------------------------------------------- | ---------- | ----------------- |
@@ -675,7 +675,7 @@ import { gt, lt, ...etc } from 'match-iz'
 
 Some detail:
 
-| Helpers                                 | Meaning            |
+| Matchers                                | Meaning            |
 | --------------------------------------- | ------------------ |
 | `gt` / `lt` / `gte` / `lte` / `inRange` | number comparisons |
 
@@ -690,7 +690,7 @@ match(5)(
 )
 ```
 
-| Helpers                   | Meaning            |
+| Matchers                  | Meaning            |
 | ------------------------- | ------------------ |
 | `startsWith` / `endsWith` | string comparisons |
 
@@ -718,7 +718,7 @@ match([1, 2, 3, 4])(
 )
 ```
 
-| Helpers                                  | Meaning                  |
+| Matchers                                 | Meaning                  |
 | ---------------------------------------- | ------------------------ |
 | `empty` / `defined` / `falsy` / `truthy` | bottom-value comparisons |
 
@@ -733,7 +733,7 @@ match('')(
 )
 ```
 
-| Helpers                                                                                              | Meaning               |
+| Matchers                                                                                             | Meaning               |
 | ---------------------------------------------------------------------------------------------------- | --------------------- |
 | `isArray` / `isDate` / `isFunction` / `isNumber` / `isPojo` / `isRegExp` / `isString` / `instanceOf` | primitive comparisons |
 
@@ -758,7 +758,7 @@ match(5)(
 )
 ```
 
-| Helpers                                     | Meaning            |
+| Matchers                                    | Meaning            |
 | ------------------------------------------- | ------------------ |
 | `allOf` / `anyOf` / `includedIn` / `hasOwn` | number comparisons |
 
@@ -776,9 +776,9 @@ match({ one: 1, two: 2 })(
 )
 ```
 
-## Date helpers
+## Date matchers
 
-Since 2.3.0, the following date helpers are available from `match-iz/dates` (or directly from the `matchiz` global variable if you're using the browser-build.)
+Since 2.3.0, the following date matchers are available from `match-iz/dates` (or directly from the `matchiz` global variable if you're using the browser-build.)
 
 | Time              | Days of the week    | Weeks of the month | Months           | Years                 |
 | ----------------- | ------------------- | ------------------ | ---------------- | --------------------- |
@@ -805,7 +805,7 @@ import { isSun, ...etc } from 'match-iz/dates/utc'
 
 Some detail:
 
-| Helpers                                                                                          | Meaning         |
+| Matchers                                                                                         | Meaning         |
 | ------------------------------------------------------------------------------------------------ | --------------- |
 | `isHour` / `isMinute` / `isSecond` / `isAM` / `isPM` / `isMorning` / `isAfternoon` / `isEvening` | the time of day |
 
@@ -821,7 +821,7 @@ match(new Date())(
 )
 ```
 
-| Helpers                                                             | Meaning                            |
+| Matchers                                                            | Meaning                            |
 | ------------------------------------------------------------------- | ---------------------------------- |
 | `isSun` / `isMon` / `isTue` / `isWed` / `isThu` / `isFri` / `isSat` | is that particular day of the week |
 
@@ -833,7 +833,7 @@ match(new Date())(
 )
 ```
 
-| Helpers                                                                    | Meaning                                                              |
+| Matchers                                                                   | Meaning                                                              |
 | -------------------------------------------------------------------------- | -------------------------------------------------------------------- |
 | `nthSun` / `nthMon` / `nthTue` / `nthWed` / `nthThu` / `nthFri` / `nthSat` | the nth \*day of the month. Negatives allowed to search from the end |
 
@@ -845,7 +845,7 @@ match(new Date())(
 )
 ```
 
-| Helpers                                                                                                               | Meaning                  |
+| Matchers                                                                                                              | Meaning                  |
 | --------------------------------------------------------------------------------------------------------------------- | ------------------------ |
 | `isJan` / `isFeb` / `isMar` / `isApr` / `isMay` / `isJun` / `isJul` / `isAug` / `isSep` / `isOct` / `isNov` / `isDec` | is that particular month |
 
@@ -857,7 +857,7 @@ match(new Date())(
 )
 ```
 
-| Helpers                                                         | Meaning                                                                                                                                                                                                          |
+| Matchers                                                        | Meaning                                                                                                                                                                                                          |
 | --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `isDay` / `isMonth` / `isYear` / `isDayOfWeek` / `isWeekNumber` | is the specified day, month, year, DoW, or week-number. All accept a predicate function instead of a number for finer control. `isDay` also accepts negative numbers to work backwards from the end of the month |
 
