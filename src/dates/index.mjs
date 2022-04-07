@@ -1,4 +1,4 @@
-import { against, when, allOf } from '../match-iz.mjs'
+import { against, when, allOf, inRange, anyOf } from '../match-iz.mjs'
 import { isFunction, isNumber } from '../match-iz.mjs'
 import { dateSet, range, ifDate, byLastIndex, byIndex } from './utils.mjs'
 
@@ -90,20 +90,38 @@ const isWeekNumber = ifDate(
   )
 )
 
+const isHour = ifDate(
+  against(
+    when(isFunction)(pred => date => pred(date.getHours())),
+    when(isNumber)(nth => date => date.getHours() === nth)
+  )
 )
 
-const isDayOfWeek = against(
-  when(isFunction)(pred => ifDate(date => pred(date.getDay()))),
-  when(isNumber)(nth => ifDate(date => date.getDay() === nth))
+const isMinute = ifDate(
+  against(
+    when(isFunction)(pred => date => pred(date.getMinutes())),
+    when(isNumber)(nth => date => date.getMinutes() === nth)
+  )
 )
 
-const isWeekNumber = against(
-  when(isFunction)(pred => ifDate(date => pred(getWeekNumber(date)))),
-  when(isNumber)(nth => ifDate(date => getWeekNumber(date) === nth))
+const isSecond = ifDate(
+  against(
+    when(isFunction)(pred => date => pred(date.getSeconds())),
+    when(isNumber)(nth => date => date.getSeconds() === nth)
+  )
 )
+
+const isAM = isHour(inRange(0, 11))
+const isPM = isHour(inRange(12, 23))
+const isMorning = isAM
+const isAfternoon = isHour(inRange(12, 17))
+const isEvening = isHour(inRange(18, 23))
+const isNight = isHour(inRange(0, 7))
 
 export { isSun, isMon, isTue, isWed, isThu, isFri, isSat }
 export { nthSun, nthMon, nthTue, nthWed, nthThu, nthFri, nthSat }
 export { isJan, isFeb, isMar, isApr, isMay, isJun }
 export { isJul, isAug, isSep, isOct, isNov, isDec }
 export { isDay, isMonth, isYear, isLeapYear, isDayOfWeek, isWeekNumber }
+export { isHour, isMinute, isSecond, isAM, isPM }
+export { isMorning, isAfternoon, isEvening, isNight }
