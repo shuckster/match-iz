@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [3.0.0] - 2022-04-09
+
 ### Removed
 
 - Remove `isDate`/`isTime`. `isDate` conflicted with the same function in `types`, and could not have matchers passed into it in the same way as the individual helpers. ie; `isDate(inRange(), anyOf(), ...)` was not possible.
