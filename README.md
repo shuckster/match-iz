@@ -69,7 +69,7 @@ match(literal)(
   when(inRange(100, 200))( ... ),
   when(startsWith('hello'))( ... ),
   when(includes('batman'))( ... ),
-  when(includedIn('one', 'two'))( ... ),
+  when(anyOf('one', /two/))( ... ),
   when(lte(80))( ... ),
   when(empty)( ... ),
   when(defined)( ... ),
@@ -79,10 +79,23 @@ match(object)(
   when({ status: inRange(100, 200) })( ... ),
   when({ text: startsWith('hello') })( ... ),
   when({ array: includes('batman') })( ... ),
-  when({ string: includedIn('one', 'two') })( ... ),
-  when({ length: lte(80) })( ... ),
-  when({ cup: empty })( ... ),
-  when({ pencil: defined })( ... ),
+)
+
+// Name your matchers
+const isInRange = inRange(100, 200)
+const isLessThan80 = lte(80)
+const isStatusInRange = { status: inRange(100, 200) }
+const isTextStartsWithHello = { text: startsWith('hello') }
+const isArrayIncludesBatman = { array: includes('batman') }
+const isMidday = allOf(isHour(12), isMinute(0))
+
+match(object)(
+  when(isInRange)( ... ),
+  when(isLessThan80)( ... ),
+  when(isStatusInRange)( ... ),
+  when(isTextStartsWithHello)( ... ),
+  when(isArrayIncludesBatman)( ... ),
+  when(isMidday)( ... ),
 )
 ```
 
@@ -472,9 +485,9 @@ So you could just use `match` like this:
 
 ```js
 match(haystack)(
-  () => undefined,
-  () => null,
-  () => 'hi'
+  haystack => undefined,
+  haystack => null,
+  haystack => 'hi'
 )
 // "hi"
 ```

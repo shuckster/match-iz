@@ -9,7 +9,7 @@ export const Nothing = () => ({
   toString: () => 'Nothing',
   map: () => Nothing(),
   chain: () => Nothing(),
-  fold: (f /*, _*/) => f(),
+  fork: (f /*, _*/) => f(),
   orElse: f => f(),
   ap: () => Nothing(),
   isNothing: true,
@@ -23,7 +23,7 @@ export const Just = x => ({
   toString: () => `Just(${x})`,
   map: f => Just(f(x)),
   chain: f => f(x),
-  fold: (_, g) => g(x),
+  fork: (_, g) => g(x),
   orElse: () => Just(x),
   ap: m => m.map(x),
   isNothing: false,
@@ -40,4 +40,15 @@ export const safe = (predicate = x => x != null) => {
   return Maybe
 }
 
+export const maybeTry = f => {
+  try {
+    return Just(f())
+  } catch (e) {
+    return Nothing()
+  }
+}
+
 export const Maybe = safe()
+
+export const just = x => () => Just(x)
+export const nothing = () => () => Nothing()

@@ -1,10 +1,10 @@
 import { strict } from 'assert'
 
 import { isArray, isDate, isNumber, isPojo } from '../src/types.mjs'
-import { safe } from './maybe.mjs'
+import { maybeTry, safe } from './maybe.mjs'
 
-import * as lib from 'match-iz'
-import * as local from 'match-iz/dates'
+import * as lib from '../src/match-iz.mjs'
+import * as local from '../dates/index.mjs'
 // import * as utc from 'match-iz/dates/utc'
 
 const { match, against, when, otherwise, spread, pluck: $ } = lib
@@ -69,6 +69,19 @@ const testCases = [
             when('hello, world!', 'hello, world!'),
             otherwise(false)
           )
+        )
+      }
+    }
+  ],
+  [
+    'when() throws',
+    {
+      cases: [{ input: null, expecting: 'null' }],
+      run: assertCase => {
+        assertCase(
+          maybeTry(() => when())
+            .orElse(() => 'null')
+            .valueOf()
         )
       }
     }
@@ -568,13 +581,18 @@ const testCases = [
         {
           input: { message: 'hello wrrld!', number: 42 },
           expecting: 'ok!'
+        },
+        {
+          input: 'two',
+          expecting: 'two?'
         }
       ],
       run: (assertCase, input) => {
         assertCase(
           match(input)(
             when({ message: endsWith('world!'), number: 42 })("that's no good"),
-            when(anyOf({ message: endsWith('world!') }, { number: 42 }))('ok!')
+            when(anyOf({ message: endsWith('world!') }, { number: 42 }))('ok!'),
+            when(anyOf('one', /two/))('two?')
           )
         )
       }

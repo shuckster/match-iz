@@ -15,11 +15,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ```js
 // Deprecated syntax:
-when([allOf(isFri, isHour(gte(17)), isSat, isSun)], ...)
+when([allOf(isFri, isHour(gte(17)), isSat, isSun)])
 //   ^__ _  _                             _  _ __^
 
 // Refactored using `anyOf`:
-when(anyOf(allOf(isFri, isHour(gte(17))), isSat, isSun), ...)
+when(anyOf(allOf(isFri, isHour(gte(17))), isSat, isSun))
 //   ^^^^^^__ _  _                             _  _ __^
 ```
 
