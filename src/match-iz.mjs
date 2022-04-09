@@ -49,10 +49,9 @@ const found = (needle, haystack, pick) =>
         found(needle[key], haystack?.[key], pick)
       )
     : isArray(needle)
-    ? isArray(haystack)
-      ? needle.length === haystack.length &&
-        needle.every((one, index) => found(one, haystack?.[index], pick))
-      : needle.some(thread => found(thread, haystack, pick))
+    ? isArray(haystack) &&
+      needle.length === haystack.length &&
+      needle.every((one, index) => found(one, haystack?.[index], pick))
     : isFunction(needle)
     ? needle(haystack, pick)
     : isString(haystack) && isRegExp(needle)

@@ -11,6 +11,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Remove `isDate`/`isTime`. `isDate` conflicted with the same function in `types`, and could not have matchers passed into it in the same way as the individual helpers. ie; `isDate(inRange(), anyOf(), ...)` was not possible.
 
+- Removed deprecated `when` OR syntax that abuses arrays. Use `anyOf` matcher instead.
+
+```js
+// Deprecated syntax:
+when([allOf(isFri, isHour(gte(17)), isSat, isSun)], ...)
+//   ^__ _  _                             _  _ __^
+
+// Refactored using `anyOf`:
+when(anyOf(allOf(isFri, isHour(gte(17))), isSat, isSun), ...)
+//   ^^^^^^__ _  _                             _  _ __^
+```
+
 ## [2.3.2] - 2022-04-07
 
 ### Fixed
