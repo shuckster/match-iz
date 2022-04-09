@@ -83,7 +83,7 @@ match(object)(
 
 // Name your matchers
 const isInRange = inRange(100, 200)
-const isLessThan80 = lte(80)
+const isLessThan81 = lte(80)
 const isStatusInRange = { status: inRange(100, 200) }
 const isTextStartsWithHello = { text: startsWith('hello') }
 const isArrayIncludesBatman = { array: includes('batman') }
@@ -570,7 +570,7 @@ match(haystack)(
 )
 ```
 
-**Deprecated behaviour**: OR can also be achieved by using an array in your `when`, so long as the haystack is not an array itself:
+**Deprecated behaviour**: Until version 3.0.0, OR could be achieved by using an array in your `when`, so long as the haystack is not an array itself:
 
 ```js
 // OR example:
@@ -584,7 +584,7 @@ match({ message: 'hello wrrld!', number: 42 })(
 // "ok!"
 ```
 
-This behaviour is deprecated and will be removed in the next major version.
+This behaviour was deprecated in version 2.3.0 and removed in version 3.0.0 to prevent unusual behaviour when working with haystacks that may or may not be an array.
 
 ### pluck()
 
@@ -838,6 +838,8 @@ Some detail:
 | `isHour` / `isMinute` / `isSecond` / `isAM` / `isPM` / `isMorning` / `isAfternoon` / `isEvening` | the time of day |
 
 ```js
+const isMidday = allOf(isHour(12), isPM)
+
 match(new Date())(
   when(isHour(0))('around midnight'),
   when(isHour(inRange(12, 14)))('lunchtime'),
@@ -845,7 +847,8 @@ match(new Date())(
   when(isAM)('morning'),
   when(isPM)('afternoon'),
   when(isAfternoon)('afternoon'),
-  when(isEvening)('evening, 6pm-midnight')
+  when(isEvening)('evening, 6pm-midnight'),
+  when(isMidday)("It's midday")
 )
 ```
 
