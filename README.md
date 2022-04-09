@@ -792,21 +792,21 @@ match({ one: 1, two: 2 })(
 
 Since 2.3.0, the following date matchers are available from `match-iz/dates` (or directly from the `matchiz` global variable if you're using the browser-build.)
 
-|                   | Time              | Days of the week    | Weeks of the month | Months           | Years                 |
-| ----------------- | ----------------- | ------------------- | ------------------ | ---------------- | --------------------- |
-| `isDate(y,m?,d?)` | `isHour(0..23)`   | `isDay(-31..31)`    | `nthSun(-5..5)`    | `isMonth(1..12)` | `isYear(n)`           |
-| `isTime(h,m?,s?)` | `isMinute(0..59)` | `isDayOfWeek(0..6)` | `nthMon(-5..5)`    | `isJan`          | `isWeekNumber(1..52)` |
-| -                 | `isSecond(0..59)` | `isSun`             | `nthTue(-5..5)`    | `isFeb`          | `isLeapYear`          |
-| -                 | `isAM`            | `isMon`             | `nthWed(-5..5)`    | `isMar`          | -                     |
-| -                 | `isPM`            | `isTue`             | `nthThu(-5..5)`    | `isApr`          | -                     |
-| -                 | `isMorning`       | `isWed`             | `nthFri(-5..5)`    | `isMay`          | -                     |
-| -                 | `isAfternoon`     | `isThu`             | `nthSat(-5..5)`    | `isJun`          | -                     |
-| -                 | `isEvening`       | `isFri`             | -                  | `isJul`          | -                     |
-| -                 |                   | `isSat`             | -                  | `isAug`          | -                     |
-| -                 |                   | -                   | -                  | `isSep`          | -                     |
-| -                 |                   | -                   | -                  | `isOct`          | -                     |
-| -                 |                   | -                   | -                  | `isNov`          | -                     |
-| -                 |                   | -                   | -                  | `isDec`          | -                     |
+| Time              | Days of the week    | Weeks of the month | Months           | Years                 |
+| ----------------- | ------------------- | ------------------ | ---------------- | --------------------- |
+| `isHour(0..23)`   | `isDay(-31..31)`    | `nthSun(-5..5)`    | `isMonth(1..12)` | `isYear(n)`           |
+| `isMinute(0..59)` | `isDayOfWeek(0..6)` | `nthMon(-5..5)`    | `isJan`          | `isWeekNumber(1..52)` |
+| `isSecond(0..59)` | `isSun`             | `nthTue(-5..5)`    | `isFeb`          | `isLeapYear`          |
+| `isAM`            | `isMon`             | `nthWed(-5..5)`    | `isMar`          | -                     |
+| `isPM`            | `isTue`             | `nthThu(-5..5)`    | `isApr`          | -                     |
+| `isMorning`       | `isWed`             | `nthFri(-5..5)`    | `isMay`          | -                     |
+| `isAfternoon`     | `isThu`             | `nthSat(-5..5)`    | `isJun`          | -                     |
+| `isEvening`       | `isFri`             | -                  | `isJul`          | -                     |
+| -                 | `isSat`             | -                  | `isAug`          | -                     |
+| -                 | -                   | -                  | `isSep`          | -                     |
+| -                 | -                   | -                  | `isOct`          | -                     |
+| -                 | -                   | -                  | `isNov`          | -                     |
+| -                 | -                   | -                  | `isDec`          | -                     |
 
 ```js
 import { isSun, ...etc } from 'match-iz/dates'
@@ -816,17 +816,6 @@ import { isSun, ...etc } from 'match-iz/dates/utc'
 ```
 
 Some detail:
-
-| Matchers            | Meaning   |
-| ------------------- | --------- |
-| `isDate` / `isTime` | date/time |
-
-```js
-match(new Date())(
-  when(isDate(2022, 1, 1))('Not February, but January 1st'),
-  when(isTime(12, 0))('Midday')
-)
-```
 
 | Matchers                                                                                         | Meaning         |
 | ------------------------------------------------------------------------------------------------ | --------------- |
