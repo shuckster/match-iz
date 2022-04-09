@@ -23,6 +23,42 @@ when(anyOf(allOf(isFri, isHour(gte(17))), isSat, isSun), ...)
 //   ^^^^^^__ _  _                             _  _ __^
 ```
 
+### Updated
+
+- `when` now accepts a result/handler as its second argument:
+
+```js
+// New syntax:
+when(literalOrPattern, resultOrHandler)
+
+match(new Date())(
+  when(allOf(nthSun(-1), isMar), dateObj => {
+    return 'Last Sunday of March: Clocks go forward'
+  }),
+
+  when(anyOf(allOf(isFri, isHour(gte(17))), isSat, isSun), () => {
+    return 'Ladies and Gentlemen; The Weekend'
+  }),
+
+  otherwise('The clock is ticking')
+)
+
+// Existing syntax (still works):
+when(literalOrPattern)(resultOrHandler)
+
+match(new Date())(
+  when(allOf(nthSun(-1), isMar))(dateObj => {
+    return 'Last Sunday of March: Clocks go forward'
+  }),
+
+  when(anyOf(allOf(isFri, isHour(gte(17))), isSat, isSun))(() => {
+    return 'Ladies and Gentlemen; The Weekend'
+  }),
+
+  otherwise('The clock is ticking')
+)
+```
+
 ## [2.3.2] - 2022-04-07
 
 ### Fixed

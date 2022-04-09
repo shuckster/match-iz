@@ -48,6 +48,32 @@ const testCases = [
     }
   ],
   [
+    'Literals, uncurried when()',
+    {
+      cases: [
+        { input: null, expecting: 'null' },
+        { input: true, expecting: 'true' },
+        { input: false, expecting: 'false' },
+        { input: 1, expecting: '1' },
+        { input: 'hello, world!', expecting: 'hello, world!' },
+        { input: 'non-existent', expecting: false }
+      ],
+      run: (assertCase, input) => {
+        assertCase(
+          match(input)(
+            when(true, 'true'),
+            when(false, 'false'),
+            when({ test: 1 }, 'should not throw if "null" is an input'),
+            when(null, 'null'),
+            when(1, '1'),
+            when('hello, world!', 'hello, world!'),
+            otherwise(false)
+          )
+        )
+      }
+    }
+  ],
+  [
     'Helpers',
     {
       cases: [

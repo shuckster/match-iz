@@ -486,6 +486,9 @@ However, using `when` makes `match` more powerful:
 ```js
 when(pattern)(handler)
 // returns: value => { matched, value }
+
+// Uncurried version:
+when(pattern, handler)
 ```
 
 `handler` can be a function or a literal. `pattern` is described by example throughout this page.

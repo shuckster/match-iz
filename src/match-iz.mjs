@@ -28,7 +28,7 @@ const otherwise = handler => haystack => ({
   value: () => (!isFunction(handler) ? handler : handler(haystack))
 })
 
-const when = needle => handler => haystack => ({
+const curriedWhen = needle => handler => haystack => ({
   matched: () => found(needle, haystack, value => (haystack = value)),
   value: () =>
     !isFunction(handler)
@@ -37,6 +37,15 @@ const when = needle => handler => haystack => ({
       ? handler(...argsFrom(haystack.match(needle)))
       : handler(haystack)
 })
+
+const when = (...args) =>
+  args.length === 1
+    ? curriedWhen(args[0])
+    : args.length === 2
+    ? curriedWhen(args[0])(args[1])
+    : () => {
+        throw new Error('when() expects 1 or 2 arguments')
+      }
 
 const argsFrom = regExpMatchResult => {
   const { groups } = regExpMatchResult
