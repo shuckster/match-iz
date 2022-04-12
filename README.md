@@ -125,7 +125,7 @@ match(response)(
 )
 ```
 
-Since 2.3.0: Basic local + UTC [date matchers](#date-matchers):
+Basic local + UTC [date matchers](#date-matchers):
 
 ```js
 import * as local from 'match-iz/dates'
@@ -806,7 +806,7 @@ match({ one: 1, two: 2 })(
 
 ## Date matchers
 
-Since 2.3.0, the following date matchers are available from `match-iz/dates` (or directly from the `matchiz` global variable if you're using the browser-build.)
+The following date matchers are available from `match-iz/dates` (or directly from the `matchiz` global variable if you're using the browser-build.)
 
 | Time                     | Days of the week    | Weeks of the month | Months           | Years                 |
 | ------------------------ | ------------------- | ------------------ | ---------------- | --------------------- |
