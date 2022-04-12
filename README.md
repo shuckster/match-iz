@@ -684,16 +684,16 @@ match(maybeDate('2022-01-01'))(
 
 `match-iz` provides a number of composable matchers you can use to build patterns:
 
-| Numbers         | Strings           | Strings/Arrays | Truthiness | Primitives                                              | Negate     | Combinators       |
-| --------------- | ----------------- | -------------- | ---------- | ------------------------------------------------------- | ---------- | ----------------- |
-| `gt(n)`         | `startsWith('s')` | `includes(o)`  | `empty`    | `isArray`                                               | `not(...)` | `allOf(...)`      |
-| `lt(n)`         | `endsWith('s')`   | -              | `falsy`    | `isDate`                                                | -          | `anyOf(...)`      |
-| `gte(n)`        | -                 | -              | `defined`  | `isFunction`                                            | -          | `includedIn(...)` |
-| `lte(n)`        | -                 | -              | `truthy`   | `isNumber`                                              | -          | `hasOwn(...)`     |
-| `inRange(x, y)` | -                 | -              | -          | [`isPojo`](https://google.com/search?q=javascript+pojo) | -          | -                 |
-| -               | -                 | -              | -          | `isRegExp`                                              | -          | -                 |
-| -               | -                 | -              | -          | `isString`                                              | -          | -                 |
-| -               | -                 | -              | -          | `instanceOf`                                            | -          | -                 |
+| Numbers        | Strings           | Strings/Arrays | Truthiness | Primitives                                              | Negate     | Combinators       |
+| -------------- | ----------------- | -------------- | ---------- | ------------------------------------------------------- | ---------- | ----------------- |
+| `gt(n)`        | `startsWith('s')` | `includes(o)`  | `empty`    | `isArray`                                               | `not(...)` | `allOf(...)`      |
+| `lt(n)`        | `endsWith('s')`   | -              | `falsy`    | `isDate`                                                | -          | `anyOf(...)`      |
+| `gte(n)`       | -                 | -              | `defined`  | `isFunction`                                            | -          | `includedIn(...)` |
+| `lte(n)`       | -                 | -              | `truthy`   | `isNumber`                                              | -          | `hasOwn(...)`     |
+| `inRange(x,y)` | -                 | -              | -          | [`isPojo`](https://google.com/search?q=javascript+pojo) | -          | -                 |
+| -              | -                 | -              | -          | `isRegExp`                                              | -          | -                 |
+| -              | -                 | -              | -          | `isString`                                              | -          | -                 |
+| -              | -                 | -              | -          | `instanceOf`                                            | -          | -                 |
 
 Just import them from `match-iz` as you do the core library:
 
@@ -808,21 +808,22 @@ match({ one: 1, two: 2 })(
 
 Since 2.3.0, the following date matchers are available from `match-iz/dates` (or directly from the `matchiz` global variable if you're using the browser-build.)
 
-| Time              | Days of the week    | Weeks of the month | Months           | Years                 |
-| ----------------- | ------------------- | ------------------ | ---------------- | --------------------- |
-| `isHour(0..23)`   | `isDay(-31..31)`    | `nthSun(-5..5)`    | `isMonth(1..12)` | `isYear(n)`           |
-| `isMinute(0..59)` | `isDayOfWeek(0..6)` | `nthMon(-5..5)`    | `isJan`          | `isWeekNumber(1..52)` |
-| `isSecond(0..59)` | `isSun`             | `nthTue(-5..5)`    | `isFeb`          | `isLeapYear`          |
-| `isAM`            | `isMon`             | `nthWed(-5..5)`    | `isMar`          | -                     |
-| `isPM`            | `isTue`             | `nthThu(-5..5)`    | `isApr`          | -                     |
-| `isMorning`       | `isWed`             | `nthFri(-5..5)`    | `isMay`          | -                     |
-| `isAfternoon`     | `isThu`             | `nthSat(-5..5)`    | `isJun`          | -                     |
-| `isEvening`       | `isFri`             | -                  | `isJul`          | -                     |
-| -                 | `isSat`             | -                  | `isAug`          | -                     |
-| -                 | -                   | -                  | `isSep`          | -                     |
-| -                 | -                   | -                  | `isOct`          | -                     |
-| -                 | -                   | -                  | `isNov`          | -                     |
-| -                 | -                   | -                  | `isDec`          | -                     |
+| Time                     | Days of the week    | Weeks of the month | Months           | Years                 |
+| ------------------------ | ------------------- | ------------------ | ---------------- | --------------------- |
+| `isHour(0..23)`          | `isDay(-31..31)`    | `nthSun(-5..5)`    | `isMonth(1..12)` | `isYear(n)`           |
+| `isMinute(0..59)`        | `isDayOfWeek(0..6)` | `nthMon(-5..5)`    | -                | `isWeekNumber(1..52)` |
+| `isSecond(0..59)`        | -                   | `nthTue(-5..5)`    | `isJan`          | `isLeapYear`          |
+| -                        | `isSun`             | `nthWed(-5..5)`    | `isFeb`          | -                     |
+| `isAM`                   | `isMon`             | `nthThu(-5..5)`    | `isMar`          | -                     |
+| `isPM`                   | `isTue`             | `nthFri(-5..5)`    | `isApr`          | -                     |
+| `isMorning`              | `isWed`             | `nthSat(-5..5)`    | `isMay`          | -                     |
+| `isAfternoon`            | `isThu`             | -                  | `isJun`          | -                     |
+| `isEvening`              | `isFri`             | -                  | `isJul`          | -                     |
+| -                        | `isSat`             | -                  | `isAug`          | -                     |
+| `isTime`                 | -                   | -                  | `isSep`          | -                     |
+| `inThePast(n,timeFrame)` | -                   | -                  | `isOct`          | -                     |
+| `inTheNext(n,timeFrame)` | -                   | -                  | `isNov`          | -                     |
+| -                        | -                   | -                  | `isDec`          | -                     |
 
 ```js
 import { isSun, ...etc } from 'match-iz/dates'
@@ -832,6 +833,32 @@ import { isSun, ...etc } from 'match-iz/dates/utc'
 ```
 
 Some detail:
+
+| Matchers | Meaning             |
+| -------- | ------------------- |
+| `isTime` | ms since Unix epoch |
+
+```js
+match(new Date())(
+  when(isTime(0))('1st of January 1970'),
+  when(isTime(ms => ms < 0))('Before the 1st of January 1970')
+)
+```
+
+| Matchers                  | Meaning                        |
+| ------------------------- | ------------------------------ |
+| `inThePast` / `inTheNext` | in a past or future time-frame |
+
+```js
+match(new Date())(
+  when(inThePast(1, 'day'))('Pretty recent'),
+  when(inThePast(2, 'weeks'))('Last fortnight'),
+  when(not(inTheNext(24, 'hours')))('Too soon')
+)
+
+// Available time-frames:
+// 'ms', 'seconds', 'minutes', 'hours', 'days', 'weeks', 'months', 'years'
+```
 
 | Matchers                                                                                         | Meaning         |
 | ------------------------------------------------------------------------------------------------ | --------------- |

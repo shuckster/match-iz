@@ -1,6 +1,8 @@
 type TPredicate = (value: any) => boolean
 type TPredicateOrNumber = TPredicate | number
 
+type TTimeFrame = 'seconds' | 'minutes' | 'hours' | 'days' | 'months' | 'years'
+
 declare module 'match-iz/dates' {
   export function isHour(hourOrFn: TPredicateOrNumber): TPredicate
   export function isMinute(minOrFn: TPredicateOrNumber): TPredicate
@@ -46,10 +48,8 @@ declare module 'match-iz/dates' {
   export function isYear(yrOrFn: TPredicateOrNumber): TPredicate
   export function isDayOfWeek(dowOrFn: TPredicateOrNumber): TPredicate
   export function isWeekNumber(wkNumOrFn: TPredicateOrNumber): TPredicate
+  export function isTime(msOrFn: TPredicateOrNumber): TPredicate
 
-  export function isDate(fn: TPredicate): TPredicate
-  export function isDate(year: number, month?: number, day?: number): TPredicate
-
-  export function isTime(fn: TPredicate): TPredicate
-  export function isTime(hour: number, min?: number, sec?: number): TPredicate
+  export function inThePast(n: number, timeFrame: TTimeFrame): TPredicate
+  export function inTheNext(n: number, timeFrame: TTimeFrame): TPredicate
 }

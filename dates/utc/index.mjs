@@ -1,6 +1,8 @@
 import {
+  match,
   against,
   when,
+  otherwise,
   allOf,
   inRange,
   anyOf,
@@ -111,6 +113,65 @@ const isMorning = isAM
 const isAfternoon = isHour(inRange(12, 17))
 const isEvening = isHour(inRange(18, 23))
 
+const isTime = against(
+  when(isFunction)(pred => ifDate(date => pred(date.getTime()))),
+  when(isNumber)(utcMs => ifDate(date => date.getTime() === utcMs))
+)
+
+// prettier-ignore
+const inTimeRange = (mul) => ([nth]) => {
+  const now = Date.now()
+  return isTime(inRange(now, now + (nth * mul)))
+}
+
+const msInMs = 1
+const secsInMs = 1000
+const minsInMs = 60 * secsInMs
+const hoursInMs = 60 * minsInMs
+const daysInMs = 24 * hoursInMs
+const weeksInMs = 7 * daysInMs
+const monthsInMs = 30 * daysInMs
+const yearsInMs = 365 * daysInMs
+
+const rxMs = /^ms|milliseconds?/i
+const rxSecs = /^s|secs?|seconds?/i
+const rxMins = /^m|mins?|minutes?/i
+const rxHours = /^h|hours?/i
+const rxDays = /^d|days?/i
+const rxWeeks = /^w|weeks?/i
+const rxMonths = /^mo|months?/i
+const rxYears = /^y|years?/i
+
+const inThePast = (...args) =>
+  match(args)(
+    when([isNumber, rxMs])(inTimeRange(-msInMs)),
+    when([isNumber, rxSecs])(inTimeRange(-secsInMs)),
+    when([isNumber, rxMins])(inTimeRange(-minsInMs)),
+    when([isNumber, rxHours])(inTimeRange(-hoursInMs)),
+    when([isNumber, rxDays])(inTimeRange(-daysInMs)),
+    when([isNumber, rxWeeks])(inTimeRange(-weeksInMs)),
+    when([isNumber, rxMonths])(inTimeRange(-monthsInMs)),
+    when([isNumber, rxYears])(inTimeRange(-yearsInMs)),
+    otherwise(() => {
+      throw new Error('inThePast: invalid arguments')
+    })
+  )
+
+const inTheNext = (...args) =>
+  match(args)(
+    when([isNumber, rxMs])(inTimeRange(msInMs)),
+    when([isNumber, rxSecs])(inTimeRange(secsInMs)),
+    when([isNumber, rxMins])(inTimeRange(minsInMs)),
+    when([isNumber, rxHours])(inTimeRange(hoursInMs)),
+    when([isNumber, rxDays])(inTimeRange(daysInMs)),
+    when([isNumber, rxWeeks])(inTimeRange(weeksInMs)),
+    when([isNumber, rxMonths])(inTimeRange(monthsInMs)),
+    when([isNumber, rxYears])(inTimeRange(yearsInMs)),
+    otherwise(() => {
+      throw new Error('inTheNext: invalid arguments')
+    })
+  )
+
 export { isSun, isMon, isTue, isWed, isThu, isFri, isSat }
 export { nthSun, nthMon, nthTue, nthWed, nthThu, nthFri, nthSat }
 export { isJan, isFeb, isMar, isApr, isMay, isJun }
@@ -118,3 +179,4 @@ export { isJul, isAug, isSep, isOct, isNov, isDec }
 export { isDay, isMonth, isYear, isLeapYear, isDayOfWeek, isWeekNumber }
 export { isHour, isMinute, isSecond, isAM, isPM }
 export { isMorning, isAfternoon, isEvening }
+export { isTime, inThePast, inTheNext }

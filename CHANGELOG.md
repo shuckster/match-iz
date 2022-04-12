@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [3.1.0] - 2022-04-12
+
+### Added
+
+- `isTime` for testing milliseconds since Unix epoch
+
+- New `match-iz/dates` methods for testing time-frames relative to now:
+
+```js
+match(date)(
+  // Test if a date is in the past
+  when(inThePast(1, 'day'))(...),
+  when(inThePast(2, 'days'))(...),
+
+  // Test if a date is in the future
+  when(inTheNext(30, 'minutes'))(...),
+)
+
+```
+
+### Removed
+
+- Old `isDate`/`isTime` typedefs were left behind
+
 ## [3.0.0] - 2022-04-09
 
 ### Removed

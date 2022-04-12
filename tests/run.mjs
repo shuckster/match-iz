@@ -5,7 +5,7 @@ import { maybeTry, safe } from './maybe.mjs'
 
 import * as lib from '../src/match-iz.mjs'
 import * as local from '../dates/index.mjs'
-// import * as utc from 'match-iz/dates/utc'
+import * as utc from '../dates/utc/index.mjs'
 
 const { match, against, when, otherwise, spread, pluck: $ } = lib
 const { allOf, anyOf, not, defined, empty } = lib
@@ -802,8 +802,49 @@ const testCases = [
         assertCase(days.length)
       }
     }
+  ],
+  [
+    'inTheNext(...)',
+    {
+      cases: [
+        {
+          input: datesFrom({ startDate: makeNow(), days: 10 }),
+          expecting: 5
+        }
+      ],
+      run: (assertCase, input) => {
+        const days = input.filter(
+          against(when(utc.inTheNext(5, 'days'), true), otherwise(false))
+        )
+        assertCase(days.length)
+      }
+    }
+  ],
+  [
+    'inThePast(...)',
+    {
+      cases: [
+        {
+          input: datesFrom({
+            startDate: makeNow(new Date(Date.now() - 10 * 24 * 60 * 60 * 1000)),
+            days: 11
+          }),
+          expecting: 5
+        }
+      ],
+      run: (assertCase, input) => {
+        const days = input.filter(
+          against(when(utc.inThePast(5, 'days'), true), otherwise(false))
+        )
+        assertCase(days.length)
+      }
+    }
   ]
 ]
+
+function makeNow(date = new Date()) {
+  return [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()]
+}
 
 function datesFrom({ startDate, days }) {
   const [year, month, day] = startDate

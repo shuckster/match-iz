@@ -116,3 +116,4 @@ export { isJul, isAug, isSep, isOct, isNov, isDec }
 export { isDay, isMonth, isYear, isLeapYear, isDayOfWeek, isWeekNumber }
 export { isHour, isMinute, isSecond, isAM, isPM }
 export { isMorning, isAfternoon, isEvening }
+export { isTime, inThePast, inTheNext } from 'match-iz/dates/utc'

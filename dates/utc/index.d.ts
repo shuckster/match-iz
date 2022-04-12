@@ -46,10 +46,8 @@ declare module 'match-iz/dates/utc' {
   export function isYear(yrOrFn: TPredicateOrNumber): TPredicate
   export function isDayOfWeek(dowOrFn: TPredicateOrNumber): TPredicate
   export function isWeekNumber(wkNumOrFn: TPredicateOrNumber): TPredicate
+  export function isTime(msOrFn: TPredicateOrNumber): TPredicate
 
-  export function isDate(fn: TPredicate): TPredicate
-  export function isDate(year: number, month?: number, day?: number): TPredicate
-
-  export function isTime(fn: TPredicate): TPredicate
-  export function isTime(hour: number, min?: number, sec?: number): TPredicate
+  export function inThePast(n: number, timeFrame: TTimeFrame): TPredicate
+  export function inTheNext(n: number, timeFrame: TTimeFrame): TPredicate
 }
