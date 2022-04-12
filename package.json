@@ -65,7 +65,7 @@
   },
   "devDependencies": {
     "compose-paths": "^1.2.1",
-    "esbuild": "^0.14.34",
+    "esbuild": "^0.14.36",
     "eslint": "^8.13.0",
     "nodemon": "^2.0.15",
     "rimraf": "^3.0.2",
