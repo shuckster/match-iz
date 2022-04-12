@@ -40,6 +40,7 @@ declare module 'match-iz' {
    * when({ value: defined }) // structural
    */
   export function when(pattern: any | TPredicate): TMatchHandler
+  export function when(pattern: any | TPredicate, handler: any): TMatchTester
 
   /**
    * @example
