@@ -688,10 +688,10 @@ match(maybeDate('2022-01-01'))(
 | -------------- | ----------------- | -------------- | ---------- | ------------------------------------------------------- | ---------- | ----------------- |
 | `gt(n)`        | `startsWith('s')` | `includes(o)`  | `empty`    | `isArray`                                               | `not(...)` | `allOf(...)`      |
 | `lt(n)`        | `endsWith('s')`   | -              | `falsy`    | `isDate`                                                | -          | `anyOf(...)`      |
-| `gte(n)`       | -                 | -              | `defined`  | `isFunction`                                            | -          | `includedIn(...)` |
-| `lte(n)`       | -                 | -              | `truthy`   | `isNumber`                                              | -          | `hasOwn(...)`     |
-| `inRange(x,y)` | -                 | -              | -          | [`isPojo`](https://google.com/search?q=javascript+pojo) | -          | -                 |
-| -              | -                 | -              | -          | `isRegExp`                                              | -          | -                 |
+| `gte(n)`       | -                 | -              | `defined`  | `isFunction`                                            | -          | `firstOf(...)`    |
+| `lte(n)`       | -                 | -              | `truthy`   | `isNumber`                                              | -          | `lastOf(...)`     |
+| `inRange(x,y)` | -                 | -              | -          | [`isPojo`](https://google.com/search?q=javascript+pojo) | -          | `includedIn(...)` |
+| -              | -                 | -              | -          | `isRegExp`                                              | -          | `hasOwn(...)`     |
 | -              | -                 | -              | -          | `isString`                                              | -          | -                 |
 | -              | -                 | -              | -          | `instanceOf`                                            | -          | -                 |
 
@@ -786,12 +786,12 @@ match(5)(
 )
 ```
 
-| Matchers                                    | Meaning            |
-| ------------------------------------------- | ------------------ |
-| `allOf` / `anyOf` / `includedIn` / `hasOwn` | number comparisons |
+| Matchers                                                           | Meaning     |
+| ------------------------------------------------------------------ | ----------- |
+| `allOf` / `anyOf` / `firstOf` / `lastOf` / `includedIn` / `hasOwn` | combinators |
 
 ```js
-match({ one: 1, two: 2 })(
+match({ one: 1, two: 2, three: [1, 2, 'a'] })(
   when(allOf(isPojo, hasOwn('one')))(() => {
     return 'Has "one"'
   }),
@@ -800,6 +800,9 @@ match({ one: 1, two: 2 })(
   }),
   when({ two: includedIn(1, gt(3)) })(() => {
     return 'Has "two" with a value of 1 or >3'
+  }),
+  when({ three: lastOf(isString) })(() => {
+    return 'Has "three" with a string value in the last position'
   })
 )
 ```

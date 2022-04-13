@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- `firstOf()` and `lastOf()` matchers:
+
+```js
+match([1, 'a', 3, 4, 5, 6])(
+  when(lastOf(isNumber, isString), () => {
+    return 'last two items are a number and a string'
+  }),
+  when(firstOf(isNumber, isString), () => {
+    return 'first two iteams are a number and a string'
+  })
+)
+```
+
 ## [3.1.0] - 2022-04-12
 
 ### Added

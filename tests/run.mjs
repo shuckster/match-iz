@@ -1,6 +1,6 @@
 import { strict } from 'assert'
 
-import { isArray, isDate, isNumber, isPojo } from '../src/types.mjs'
+import { isArray, isDate, isNumber, isPojo, isString } from '../src/types.mjs'
 import { maybeTry, safe } from './maybe.mjs'
 
 import * as lib from '../src/match-iz.mjs'
@@ -11,6 +11,7 @@ const { match, against, when, otherwise, spread, pluck: $ } = lib
 const { allOf, anyOf, not, defined, empty } = lib
 const { gt, lt, gte, lte, inRange, startsWith, endsWith } = lib
 const { includes, includedIn, hasOwn, cata } = lib
+const { firstOf, lastOf } = lib
 
 const { just, nothing } = cata({
   just: m => m?.isJust,
@@ -827,7 +828,7 @@ const testCases = [
         {
           input: datesFrom({
             startDate: makeNow(new Date(Date.now() - 10 * 24 * 60 * 60 * 1000)),
-            days: 11
+            days: 12
           }),
           expecting: 5
         }
@@ -837,6 +838,32 @@ const testCases = [
           against(when(utc.inThePast(5, 'days'), true), otherwise(false))
         )
         assertCase(days.length)
+      }
+    }
+  ],
+  [
+    'firstOf(), lastOf()',
+    {
+      cases: [
+        {
+          input: [1, 'a', 3, 4, 5, 6],
+          expecting: 'firstOf'
+        },
+        {
+          input: [9, 8, 7, 6, 5, 'a'],
+          expecting: 'lastOf'
+        }
+      ],
+      run: (assertCase, input) => {
+        const result = match(input)(
+          when(lastOf(isNumber, isString))(() => {
+            return 'lastOf'
+          }),
+          when(firstOf(isNumber, isString))(() => {
+            return 'firstOf'
+          })
+        )
+        assertCase(result)
       }
     }
   ]

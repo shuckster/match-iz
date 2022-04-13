@@ -94,6 +94,20 @@ const allOf =
   (haystack, pick) =>
     these.flat().every(needle => found(needle, haystack, pick))
 
+const firstOf = (...needles) =>
+  ifArrayOrString(
+    (haystack, pick) =>
+      needles.length <= haystack.length &&
+      found(needles, haystack.slice(0, needles.length), pick)
+  )
+
+const lastOf = (...needles) =>
+  ifArrayOrString(
+    (haystack, pick) =>
+      needles.length <= haystack.length &&
+      found(needles, haystack.slice(haystack.length - needles.length), pick)
+  )
+
 const empty = value =>
   value !== value ||
   (!value && value !== 0 && value !== false) ||
@@ -148,15 +162,15 @@ const spread = fn => new Proxy({}, { get: () => fn })
 
 const ifString = fn => value => isString(value) && fn(value)
 const ifNumber = fn => value => isNumber(value) && fn(value)
-const ifArrayOrString = fn => value =>
-  (isArray(value) || isString(value)) && fn(value)
+const ifArrayOrString = fn => (haystack, pick) =>
+  (isArray(haystack) || isString(haystack)) && fn(haystack, pick)
 
 //
 // Expose
 //
 
 export { against, match, when, otherwise, pluck }
-export { not, anyOf, allOf, spread }
+export { not, anyOf, allOf, firstOf, lastOf, spread }
 export { cata, instanceOf, hasOwn }
 export { defined, empty, truthy, falsy }
 export { startsWith, endsWith, includes, includedIn }
