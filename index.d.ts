@@ -1,4 +1,5 @@
 export type TPredicate = (value: any) => boolean
+export type TPattern = any | TPredicate
 
 export type TEvaluator = {
   matched: () => boolean
@@ -39,8 +40,23 @@ declare module 'match-iz' {
    * when(x => x)             // predicate
    * when({ value: defined }) // structural
    */
-  export function when(pattern: any | TPredicate): TMatchHandler
-  export function when(pattern: any | TPredicate, handler: any): TMatchTester
+  export function when(pattern: TPattern): TMatchHandler
+  export function when(pattern: TPattern, handler: any): TMatchTester
+  export function when(
+    pattern: TPattern,
+    guard: TPattern,
+    handler: any
+  ): TMatchTester
+
+  export function when(
+    pattern: TPattern,
+    guard1: TPattern,
+    guard2?: TPattern,
+    guard3?: TPattern,
+    guard4?: TPattern,
+    guard5?: TPattern,
+    handler: any
+  ): TMatchTester
 
   /**
    * @example

@@ -47,6 +47,11 @@ const when = (...args) => {
     const [needle, handler] = args
     return curriedWhen(needle)(handler)
   }
+  if (args.length > 2) {
+    const handler = args.slice(-1)[0]
+    const needles = args.slice(0, -1)
+    return curriedWhen(allOf(needles))(handler)
+  }
   throw new Error('expected 1 or 2 arguments')
 }
 

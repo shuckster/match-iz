@@ -842,6 +842,33 @@ const testCases = [
     }
   ],
   [
+    'when() guards',
+    {
+      cases: [
+        {
+          input: 6,
+          expecting: 'greater than 5'
+        },
+        {
+          input: 8,
+          expecting: 'greater than 6 and less than 11'
+        }
+      ],
+      run: (assertCase, input) => {
+        const result = match(input)(
+          when(
+            isNumber,
+            gte(7),
+            lt(11),
+            () => 'greater than 6 and less than 11'
+          ),
+          when(isNumber, gt(5), () => 'greater than 5')
+        )
+        assertCase(result)
+      }
+    }
+  ],
+  [
     'firstOf(), lastOf()',
     {
       cases: [

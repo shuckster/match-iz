@@ -22,6 +22,22 @@ match([1, 'a', 3, 4, 5, 6])(
 )
 ```
 
+- Support `when` guards, which are essentially just consecutive patterns:
+
+```js
+match(haystack)(
+  when(isNumber, gt(5), lte(10), num => {
+    return 'a number between 6 and 10'
+  }),
+  when(isString, startsWith('a'), str => {
+    return 'a string starting with "a"'
+  }),
+  when(isArray, lastOf(isNumber, isNumber), arr => {
+    return 'the last two elements of the array are numbers'
+  })
+)
+```
+
 ## [3.1.0] - 2022-04-12
 
 ### Added
