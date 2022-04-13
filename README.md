@@ -503,14 +503,19 @@ when(pattern)(handler)
 // Uncurried version:
 when(pattern, handler)
 
-// The uncurried version support an arbitrary number of guards:
+// The uncurried version supports an arbitrary number of guards:
 when(pattern, guard, handler)
 when(pattern, guard1, guard2, guard3, handler)
 
 // Guards work exactly like patterns, eg:
-when(isArray, lastOf(isNumber), () => {
-  return "it's an array whose last element is a number"
-})
+when(
+  isArray,
+  lastOf(isNumber),
+  x => x.length > 4,
+  () => {
+    return "it's an array of length >4 whose last element is a number"
+  }
+)
 ```
 
 `handler` can be a function or a literal. `pattern` is described by example throughout this page.
