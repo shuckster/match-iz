@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [3.2.0] - 2022-04-14
+
 ### Added
 
 - `firstOf()` and `lastOf()` matchers:
