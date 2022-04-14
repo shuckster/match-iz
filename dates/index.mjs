@@ -1,12 +1,8 @@
-import {
-  against,
-  when,
-  allOf,
-  inRange,
-  anyOf,
-  isFunction,
-  isNumber
-} from 'match-iz'
+import * as lib from 'match-iz'
+
+const { against, when } = lib
+const { allOf, anyOf, inRange } = lib
+const { isFunction, isNumber } = lib
 
 import { dateSet, range, ifDate, byLastIndex, byIndex } from './utils.mjs'
 

@@ -809,7 +809,10 @@ const testCases = [
     {
       cases: [
         {
-          input: datesFrom({ startDate: makeNow(), days: 10 }),
+          input: datesFrom({
+            startDate: Date.now(),
+            days: 10
+          }),
           expecting: 5
         }
       ],
@@ -822,12 +825,32 @@ const testCases = [
     }
   ],
   [
+    'inTheFuture()',
+    {
+      cases: [
+        {
+          input: datesFrom({
+            startDate: Date.now() - daysMs(5),
+            days: 11
+          }),
+          expecting: 5
+        }
+      ],
+      run: (assertCase, input) => {
+        const days = input.filter(
+          against(when(utc.inTheFuture(), true), otherwise(false))
+        )
+        assertCase(days.length)
+      }
+    }
+  ],
+  [
     'inThePast(...)',
     {
       cases: [
         {
           input: datesFrom({
-            startDate: makeNow(new Date(Date.now() - 10 * 24 * 60 * 60 * 1000)),
+            startDate: Date.now() - daysMs(10),
             days: 12
           }),
           expecting: 5
@@ -836,6 +859,26 @@ const testCases = [
       run: (assertCase, input) => {
         const days = input.filter(
           against(when(utc.inThePast(5, 'days'), true), otherwise(false))
+        )
+        assertCase(days.length)
+      }
+    }
+  ],
+  [
+    'inThePast()',
+    {
+      cases: [
+        {
+          input: datesFrom({
+            startDate: Date.now() - daysMs(4),
+            days: 10
+          }),
+          expecting: 5
+        }
+      ],
+      run: (assertCase, input) => {
+        const days = input.filter(
+          against(when(utc.inThePast(), true), otherwise(false))
         )
         assertCase(days.length)
       }
@@ -896,16 +939,22 @@ const testCases = [
   ]
 ]
 
-function makeNow(date = new Date()) {
-  return [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()]
+function daysMs(n) {
+  return n * 24 * 60 * 60 * 1000
 }
 
 function datesFrom({ startDate, days }) {
-  const [year, month, day] = startDate
-  const refDate = new Date(year, month - 1, day)
+  const refDate = match(startDate)(
+    when([isNumber, isNumber, isNumber])(x => {
+      const [year, month, day] = x
+      return new Date(Date.UTC(year, month - 1, day))
+    }),
+    when(isNumber)(x => new Date(x)),
+    when(isDate)(x => x)
+  )
   return Array.from(
     { length: days },
-    (_, i) => new Date(refDate.getTime() + i * 24 * 60 * 60 * 1000)
+    (_, i) => new Date(refDate.getTime() + daysMs(i))
   )
 }
 

@@ -1,14 +1,8 @@
-import {
-  match,
-  against,
-  when,
-  otherwise,
-  allOf,
-  inRange,
-  anyOf,
-  isFunction,
-  isNumber
-} from 'match-iz'
+import * as lib from 'match-iz'
+
+const { match, against, when, otherwise } = lib
+const { allOf, anyOf, inRange, gt, lt } = lib
+const { isFunction, isNumber } = lib
 
 import { dateSet, range, ifDate, byLastIndex, byIndex } from '../utils.mjs'
 
@@ -144,6 +138,7 @@ const rxYears = /^y|years?/i
 
 const inThePast = (...args) =>
   match(args)(
+    when([])(() => isTime(lt(Date.now()))),
     when([isNumber, rxMs])(inTimeRange(-msInMs)),
     when([isNumber, rxSecs])(inTimeRange(-secsInMs)),
     when([isNumber, rxMins])(inTimeRange(-minsInMs)),
@@ -159,6 +154,7 @@ const inThePast = (...args) =>
 
 const inTheNext = (...args) =>
   match(args)(
+    when([])(() => isTime(gt(Date.now()))),
     when([isNumber, rxMs])(inTimeRange(msInMs)),
     when([isNumber, rxSecs])(inTimeRange(secsInMs)),
     when([isNumber, rxMins])(inTimeRange(minsInMs)),

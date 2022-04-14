@@ -879,7 +879,9 @@ match(new Date())(
 match(new Date())(
   when(inThePast(1, 'day'))('Pretty recent'),
   when(inThePast(2, 'weeks'))('Last fortnight'),
-  when(not(inTheNext(24, 'hours')))('Too soon')
+  when(inTheNext(24, 'hours'))('Too soon'),
+  when(inTheFuture())("It's coming"),
+  when(inThePast())('That was quick')
 )
 
 // Available time-frames:

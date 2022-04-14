@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [3.3.0] - 2022-04-14
+
+### Added
+
+- `inTheFuture` alias for `inTheNext`
+
+- `inTheFuture` + `inThePast` can be used without arguments now
+
 ## [3.2.2] - 2022-04-14
 
 ### Updated
