@@ -819,6 +819,15 @@ match({ one: 1, two: 2, three: [1, 2, 'a'] })(
     return 'Has "three" with a string value in the last position'
   })
 )
+
+match([1, 'a', 3, 4, 5, 6])(
+  when(lastOf(isNumber, isString), () => {
+    return 'last two items are a number and a string'
+  }),
+  when(firstOf(isNumber, isString), () => {
+    return 'first two items are a number and a string'
+  })
+)
 ```
 
 ## Date matchers

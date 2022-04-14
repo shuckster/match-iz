@@ -7,11 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-## [3.2.1] - 2022-04-14
+## [3.2.2] - 2022-04-14
 
 ### Updated
 
-- README tweaks
+- README tweaks, typos
 
 ## [3.2.0] - 2022-04-14
 
@@ -25,7 +25,7 @@ match([1, 'a', 3, 4, 5, 6])(
     return 'last two items are a number and a string'
   }),
   when(firstOf(isNumber, isString), () => {
-    return 'first two iteams are a number and a string'
+    return 'first two items are a number and a string'
   })
 )
 ```
