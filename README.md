@@ -834,22 +834,22 @@ match([1, 'a', 3, 4, 5, 6])(
 
 The following date matchers are available from `match-iz/dates` (or directly from the `matchiz` global variable if you're using the browser-build.)
 
-| Time                     | Days of the week    | Weeks of the month | Months           | Years                 |
-| ------------------------ | ------------------- | ------------------ | ---------------- | --------------------- |
-| `isHour(0..23)`          | `isDay(-31..31)`    | `nthSun(-5..5)`    | `isMonth(1..12)` | `isYear(n)`           |
-| `isMinute(0..59)`        | `isDayOfWeek(0..6)` | `nthMon(-5..5)`    | -                | `isWeekNumber(1..52)` |
-| `isSecond(0..59)`        | -                   | `nthTue(-5..5)`    | `isJan`          | `isLeapYear`          |
-| -                        | `isSun`             | `nthWed(-5..5)`    | `isFeb`          | -                     |
-| `isAM`                   | `isMon`             | `nthThu(-5..5)`    | `isMar`          | -                     |
-| `isPM`                   | `isTue`             | `nthFri(-5..5)`    | `isApr`          | -                     |
-| `isMorning`              | `isWed`             | `nthSat(-5..5)`    | `isMay`          | -                     |
-| `isAfternoon`            | `isThu`             | -                  | `isJun`          | -                     |
-| `isEvening`              | `isFri`             | -                  | `isJul`          | -                     |
-| -                        | `isSat`             | -                  | `isAug`          | -                     |
-| `isTime`                 | -                   | -                  | `isSep`          | -                     |
-| `inThePast(n,timeFrame)` | -                   | -                  | `isOct`          | -                     |
-| `inTheNext(n,timeFrame)` | -                   | -                  | `isNov`          | -                     |
-| -                        | -                   | -                  | `isDec`          | -                     |
+| Time                       | Days of the week    | Weeks of the month | Months           | Years                 |
+| -------------------------- | ------------------- | ------------------ | ---------------- | --------------------- |
+| `isHour(0..23)`            | `isDay(-31..31)`    | `nthSun(-5..5)`    | `isMonth(1..12)` | `isYear(n)`           |
+| `isMinute(0..59)`          | `isDayOfWeek(0..6)` | `nthMon(-5..5)`    | -                | `isWeekNumber(1..52)` |
+| `isSecond(0..59)`          | -                   | `nthTue(-5..5)`    | `isJan`          | `isLeapYear`          |
+| -                          | `isSun`             | `nthWed(-5..5)`    | `isFeb`          | -                     |
+| `isAM`                     | `isMon`             | `nthThu(-5..5)`    | `isMar`          | -                     |
+| `isPM`                     | `isTue`             | `nthFri(-5..5)`    | `isApr`          | -                     |
+| `isMorning`                | `isWed`             | `nthSat(-5..5)`    | `isMay`          | -                     |
+| `isAfternoon`              | `isThu`             | -                  | `isJun`          | -                     |
+| `isEvening`                | `isFri`             | -                  | `isJul`          | -                     |
+| -                          | `isSat`             | -                  | `isAug`          | -                     |
+| `isTime`                   | -                   | -                  | `isSep`          | -                     |
+| `inThePast(n,timeFrame)`   | -                   | -                  | `isOct`          | -                     |
+| `inTheNext(n,timeFrame)`   | -                   | -                  | `isNov`          | -                     |
+| `inTheFuture(n,timeFrame)` | -                   | -                  | `isDec`          | -                     |
 
 ```js
 import { isSun, ...etc } from 'match-iz/dates'
@@ -871,9 +871,9 @@ match(new Date())(
 )
 ```
 
-| Matchers                  | Meaning                        |
-| ------------------------- | ------------------------------ |
-| `inThePast` / `inTheNext` | in a past or future time-frame |
+| Matchers                                  | Meaning                                                                            |
+| ----------------------------------------- | ---------------------------------------------------------------------------------- |
+| `inThePast` / `inTheNext` / `inTheFuture` | in a past or future time-frame (`inTheNext` + `inTheFuture` as the same functions) |
 
 ```js
 match(new Date())(

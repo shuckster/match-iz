@@ -168,7 +168,7 @@ const inTheNext = (...args) =>
     when([isNumber, rxMonths])(inTimeRange(monthsInMs)),
     when([isNumber, rxYears])(inTimeRange(yearsInMs)),
     otherwise(() => {
-      throw new Error('inTheNext: invalid arguments')
+      throw new Error('inTheNext/inTheFuture: invalid arguments')
     })
   )
 
@@ -179,4 +179,4 @@ export { isJul, isAug, isSep, isOct, isNov, isDec }
 export { isDay, isMonth, isYear, isLeapYear, isDayOfWeek, isWeekNumber }
 export { isHour, isMinute, isSecond, isAM, isPM }
 export { isMorning, isAfternoon, isEvening }
-export { isTime, inThePast, inTheNext }
+export { isTime, inThePast, inTheNext, inTheNext as inTheFuture }
