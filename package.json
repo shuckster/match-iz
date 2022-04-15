@@ -19,7 +19,6 @@
     ".": {
       "import": "./dist/index.mjs",
       "require": "./dist/index.js",
-      "browser": "./dist/match-iz.browser.js",
       "default": "./dist/index.js"
     },
     "./dates": {

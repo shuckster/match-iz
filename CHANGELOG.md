@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [3.3.1] - 2022-04-15
+
+### Removed / Fixed
+
+- Remove `browser` setting from `package.json`; seems to cause issues with CodeSandbox build process, and isn't really necessary since the browser-build is something that's interacted with manually.
+
 ## [3.3.0] - 2022-04-14
 
 ### Added
