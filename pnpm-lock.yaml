@@ -1,7 +1,7 @@
 lockfileVersion: 5.3
 
 specifiers:
-  compose-paths: ^1.2.1
+  compose-paths: ^1.2.2
   esbuild: ^0.14.36
   eslint: ^8.13.0
   nodemon: ^2.0.15
@@ -9,7 +9,7 @@ specifiers:
   typescript: ^4.6.3
 
 devDependencies:
-  compose-paths: 1.2.1
+  compose-paths: 1.2.2
   esbuild: 0.14.36
   eslint: 8.13.0
   nodemon: 2.0.15
@@ -228,8 +228,8 @@ packages:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
     dev: true
 
-  /compose-paths/1.2.1:
-    resolution: {integrity: sha512-Lf+i4prhy9aHydQW3rIjbHgwSYWHl72//Oykbsbm7hi6A+W51vsasSDM0POePLd5Hn2j7D/zcCEcl2ZyPqviZA==}
+  /compose-paths/1.2.2:
+    resolution: {integrity: sha512-K/cUR3lqBMFTnNRkoJuhfhsJx2/vMcE9zOJoIxxwkNEZPvlV9nbScKIITuJyQHDgR5pRmr/GieGQe/i1i/pLBA==}
     engines: {node: '>=10'}
     dev: true
 

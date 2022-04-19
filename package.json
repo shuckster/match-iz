@@ -63,7 +63,7 @@
     "build:esbuild": "node ./build-config/esbuild.mjs"
   },
   "devDependencies": {
-    "compose-paths": "^1.2.1",
+    "compose-paths": "^1.2.2",
     "esbuild": "^0.14.36",
     "eslint": "^8.13.0",
     "nodemon": "^2.0.15",
