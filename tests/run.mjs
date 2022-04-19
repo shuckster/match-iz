@@ -11,7 +11,7 @@ const { match, against, when, otherwise, spread, pluck: $ } = lib
 const { allOf, anyOf, not, defined, empty } = lib
 const { gt, lt, gte, lte, inRange, startsWith, endsWith } = lib
 const { includes, includedIn, hasOwn, cata } = lib
-const { firstOf, lastOf } = lib
+const { firstOf, lastOf, some, every } = lib
 
 const { just, nothing } = cata({
   just: m => m?.isJust,
@@ -931,6 +931,49 @@ const testCases = [
           }),
           when(firstOf(isNumber, isString))(() => {
             return 'firstOf'
+          })
+        )
+        assertCase(result)
+      }
+    }
+  ],
+  [
+    'some(), every()',
+    {
+      cases: [
+        {
+          input: [1, 'a', 3, 4, 5, 6],
+          expecting: 'some strings'
+        },
+        {
+          input: [9, 8, 7, 6, 5],
+          expecting: 'all numbers'
+        },
+        {
+          input: ['9', '8', '7', '6', '5'],
+          expecting: 'all strings'
+        },
+        {
+          input: [{ id: 1 }, { id: 2 }, { id: 3 }],
+          expecting: true
+        },
+        {
+          input: [{ id: 1 }, { id: '2' }, { id: 3 }],
+          expecting: false
+        }
+      ],
+      run: (assertCase, input) => {
+        const result = match(input)(
+          when(every({ id: isNumber }))(true),
+          when(some({ id: isNumber }))(false),
+          when(every(isString))(() => {
+            return 'all strings'
+          }),
+          when(some(isString))(() => {
+            return 'some strings'
+          }),
+          when(every(isNumber))(() => {
+            return 'all numbers'
           })
         )
         assertCase(result)

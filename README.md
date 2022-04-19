@@ -698,16 +698,16 @@ match(maybeDate('2022-01-01'))(
 
 `match-iz` provides a number of composable matchers you can use to build patterns:
 
-| Numbers        | Strings           | Strings/Arrays | Truthiness | Primitives                                              | Negate     | Combinators       |
-| -------------- | ----------------- | -------------- | ---------- | ------------------------------------------------------- | ---------- | ----------------- |
-| `gt(n)`        | `startsWith('s')` | `includes(o)`  | `empty`    | `isArray`                                               | `not(...)` | `allOf(...)`      |
-| `lt(n)`        | `endsWith('s')`   | -              | `falsy`    | `isDate`                                                | -          | `anyOf(...)`      |
-| `gte(n)`       | -                 | -              | `defined`  | `isFunction`                                            | -          | `firstOf(...)`    |
-| `lte(n)`       | -                 | -              | `truthy`   | `isNumber`                                              | -          | `lastOf(...)`     |
-| `inRange(x,y)` | -                 | -              | -          | [`isPojo`](https://google.com/search?q=javascript+pojo) | -          | `includedIn(...)` |
-| -              | -                 | -              | -          | `isRegExp`                                              | -          | `hasOwn(...)`     |
-| -              | -                 | -              | -          | `isString`                                              | -          | -                 |
-| -              | -                 | -              | -          | `instanceOf`                                            | -          | -                 |
+| Numbers        | Strings           | Strings/Arrays | Arrays       | Truthiness | Primitives                                              | Negate     | Combinators       |
+| -------------- | ----------------- | -------------- | ------------ | ---------- | ------------------------------------------------------- | ---------- | ----------------- |
+| `gt(n)`        | `startsWith('s')` | `includes(o)`  | `some(...)`  | `empty`    | `isArray`                                               | `not(...)` | `allOf(...)`      |
+| `lt(n)`        | `endsWith('s')`   | -              | `every(...)` | `falsy`    | `isDate`                                                | -          | `anyOf(...)`      |
+| `gte(n)`       | -                 | -              | -            | `defined`  | `isFunction`                                            | -          | `firstOf(...)`    |
+| `lte(n)`       | -                 | -              | -            | `truthy`   | `isNumber`                                              | -          | `lastOf(...)`     |
+| `inRange(x,y)` | -                 | -              | -            | -          | [`isPojo`](https://google.com/search?q=javascript+pojo) | -          | `includedIn(...)` |
+| -              | -                 | -              | -            | -          | `isRegExp`                                              | -          | `hasOwn(...)`     |
+| -              | -                 | -              | -            | -          | `isString`                                              | -          | -                 |
+| -              | -                 | -              | -            | -          | `instanceOf`                                            | -          | -                 |
 
 Just import them from `match-iz` as you do the core library:
 
@@ -757,6 +757,18 @@ match('lorem ipsum')(
 match([1, 2, 3, 4])(
   when(includes(5))('Array has a 5'),
   when([1, 2, 3, gt(3)])('Array is [1, 2, 3, >3]')
+)
+```
+
+| Matchers         | Meaning                |
+| ---------------- | ---------------------- |
+| `some` / `every` | array item comparisons |
+
+```js
+match(array)(
+  when(every(isNumber))('all items are numbers'),
+  when(some(isNumber))('some items are numbers'),
+  when(every({ id: isNumber }))('all items have an id property')
 )
 ```
 

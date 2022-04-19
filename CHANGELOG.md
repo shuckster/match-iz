@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- `every()` / `some()` for matching patterns in array haystacks:
+
+```js
+match(array)(
+  when(every(isNumber))('all items are numbers'),
+  when(some(isNumber))('some items are numbers'),
+  when(every({ id: isNumber }))('all items have an id property')
+)
+```
+
 ## [3.3.1] - 2022-04-15
 
 ### Removed / Fixed
