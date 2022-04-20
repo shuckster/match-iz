@@ -22,6 +22,7 @@ export { isDayOfWeek, isWeekNumber } from '../dates/index.mjs'
 
 export { isHour, isMinute, isSecond, isAM, isPM } from '../dates/index.mjs'
 export { isMorning, isAfternoon, isEvening } from '../dates/index.mjs'
+export { isTime, inThePast, inTheNext, inTheFuture } from '../dates/index.mjs'
 
 // UTC dates & times
 //
@@ -29,13 +30,15 @@ import { isSun, isMon, isTue, isWed } from '../dates/utc/index.mjs'
 import { isThu, isFri, isSat } from '../dates/utc/index.mjs'
 import { nthSun, nthMon, nthTue, nthWed } from '../dates/utc/index.mjs'
 import { nthThu, nthFri, nthSat } from '../dates/utc/index.mjs'
-import { isJan, isFeb, isMar, isApr, isMay, isJun } from '../dates/utc/index.mjs'
-import { isJul, isAug, isSep, isOct, isNov, isDec } from '../dates/utc/index.mjs'
+import { isJan, isFeb, isMar, isApr } from '../dates/utc/index.mjs'
+import { isMay, isJun, isJul, isAug } from '../dates/utc/index.mjs'
+import { isSep, isOct, isNov, isDec } from '../dates/utc/index.mjs'
 import { isDay, isMonth, isYear, isLeapYear } from '../dates/utc/index.mjs'
-import { isDayOfWeek, isWeekNumber } from '../dates/utc/index.mjs'
+import { isDayOfWeek, isWeekNumber, isTime } from '../dates/utc/index.mjs'
 
 import { isHour, isMinute, isSecond, isAM, isPM } from '../dates/utc/index.mjs'
 import { isMorning, isAfternoon, isEvening } from '../dates/utc/index.mjs'
+import { inThePast, inTheNext, inTheFuture } from '../dates/utc/index.mjs'
 
 export const utc = {
   ...{ isSun, isMon, isTue, isWed },
@@ -48,5 +51,6 @@ export const utc = {
   ...{ isDayOfWeek, isWeekNumber },
 
   ...{ isHour, isMinute, isSecond, isAM, isPM },
-  ...{ isMorning, isAfternoon, isEvening }
+  ...{ isMorning, isAfternoon, isEvening },
+  ...{ isTime, inThePast, inTheNext, inTheFuture }
 }
