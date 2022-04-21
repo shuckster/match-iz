@@ -43,6 +43,8 @@ declare module 'match-iz/dates' {
   export const isNov: TPredicate
   export const isDec: TPredicate
 
+  export const isLeapYear: TPredicate
+
   export function isDay(dayOrFn: TPredicateOrNumber): TPredicate
   export function isMonth(monOrFn: TPredicateOrNumber): TPredicate
   export function isYear(yrOrFn: TPredicateOrNumber): TPredicate
@@ -50,6 +52,12 @@ declare module 'match-iz/dates' {
   export function isWeekNumber(wkNumOrFn: TPredicateOrNumber): TPredicate
   export function isTime(msOrFn: TPredicateOrNumber): TPredicate
 
+  export function inThePast(): TPredicate
   export function inThePast(n: number, timeFrame: TTimeFrame): TPredicate
+
+  export function inTheNext(): TPredicate
   export function inTheNext(n: number, timeFrame: TTimeFrame): TPredicate
+
+  export function inTheFuture(): TPredicate
+  export function inTheFuture(n: number, timeFrame: TTimeFrame): TPredicate
 }

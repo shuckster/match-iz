@@ -98,11 +98,13 @@ declare module 'match-iz' {
   export function endsWith(text: string): TPredicate
   export function includes(content: any): TPredicate
 
-  export function not(value: TPattern): TPredicate
+  export function not(pattern: TPattern): TPredicate
   export function allOf(...these: TPattern[]): TPredicate
   export function anyOf(...these: TPattern[]): TPredicate
   export function firstOf(...these: TPattern[]): TPredicate
   export function lastOf(...these: TPattern[]): TPredicate
+  export function some(pattern: TPattern): TPredicate
+  export function every(pattern: TPattern): TPredicate
   export function includedIn(...these: TPattern): TPredicate
   export function hasOwn(...props: string[]): TPredicate
   export function instanceOf(constructor: any): TPredicate
