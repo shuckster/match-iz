@@ -858,10 +858,14 @@ The following date matchers are available from `match-iz/dates` (or directly fro
 | `isAfternoon`              | `isThu`             | -                  | `isJun`          | -                     |
 | `isEvening`                | `isFri`             | -                  | `isJul`          | -                     |
 | -                          | `isSat`             | -                  | `isAug`          | -                     |
-| `isTime`                   | -                   | -                  | `isSep`          | -                     |
-| `inThePast(n,timeFrame)`   | -                   | -                  | `isOct`          | -                     |
-| `inTheNext(n,timeFrame)`   | -                   | -                  | `isNov`          | -                     |
-| `inTheFuture(n,timeFrame)` | -                   | -                  | `isDec`          | -                     |
+| `isBefore`                 | -                   | -                  | `isSep`          | -                     |
+| `isAfter`                  | -                   | -                  | `isOct`          | -                     |
+| -                          | -                   | -                  | `isNov`          | -                     |
+| `inThePast(n,timeFrame)`   | -                   | -                  | `isDec`          | -                     |
+| `inTheNext(n,timeFrame)`   | -                   | -                  | -                | -                     |
+| `inTheFuture(n,timeFrame)` | -                   | -                  | -                | -                     |
+| -                          | -                   | -                  | -                | -                     |
+| `isTime`                   | -                   | -                  | -                | -                     |
 
 ```js
 import { isSun, ...etc } from 'match-iz/dates'
@@ -916,6 +920,19 @@ match(new Date())(
   when(isAfternoon)('afternoon'),
   when(isEvening)('evening, 6pm-midnight'),
   when(isMidday)("It's midday")
+)
+```
+
+| Matchers               | Meaning             |
+| ---------------------- | ------------------- |
+| `isBefore` / `isAfter` | before/after a date |
+
+```js
+match(new Date())(
+  when(isBefore([2001, 1, 1]))('Before midnight January 1st, 2001'),
+  when(isAfter([1970, 5]))('After May 1970 (ie; June onwards)'),
+  when(isBefore([1999]))('Before 1999 (ie; up to and including 1998)'),
+  when(isAfter(new Date(2001, 0, 1)))('After midnight January 1st, 2001')
 )
 ```
 

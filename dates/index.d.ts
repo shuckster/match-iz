@@ -3,6 +3,24 @@ type TPredicateOrNumber = TPredicate | number
 
 type TTimeFrame = 'seconds' | 'minutes' | 'hours' | 'days' | 'months' | 'years'
 
+type TYear = [number]
+type TYearMonth = [number, number]
+type TYearMonthDay = [number, number, number]
+type TYearMonthDayHour = [number, number, number, number]
+type TYearMonthDayHourMinute = [number, number, number, number, number]
+type TYearMonthDayHourMinuteSecond = [number, number, number, number, number, number]
+type TYearMonthDayHourMinuteSecondMillisecond = [number, number, number, number, number, number, number]
+type TDateTimeArray =
+  | TYear
+  | TYearMonth
+  | TYearMonthDay
+  | TYearMonthDayHour
+  | TYearMonthDayHourMinute
+  | TYearMonthDayHourMinuteSecond
+  | TYearMonthDayHourMinuteSecondMillisecond
+
+type TDateTime = TDateTimeArray | Date | number
+
 declare module 'match-iz/dates' {
   export function isHour(hourOrFn: TPredicateOrNumber): TPredicate
   export function isMinute(minOrFn: TPredicateOrNumber): TPredicate
@@ -60,4 +78,7 @@ declare module 'match-iz/dates' {
 
   export function inTheFuture(): TPredicate
   export function inTheFuture(n: number, timeFrame: TTimeFrame): TPredicate
+
+  export function isBefore(dateTime: TDateTime): TPredicate
+  export function isAfter(dateTime: TDateTime): TPredicate
 }

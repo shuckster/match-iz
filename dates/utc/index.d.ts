@@ -1,8 +1,3 @@
-type TPredicate = (value: any) => boolean
-type TPredicateOrNumber = TPredicate | number
-
-type TTimeFrame = 'seconds' | 'minutes' | 'hours' | 'days' | 'months' | 'years'
-
 declare module 'match-iz/dates/utc' {
   export function isHour(hourOrFn: TPredicateOrNumber): TPredicate
   export function isMinute(minOrFn: TPredicateOrNumber): TPredicate
@@ -60,4 +55,7 @@ declare module 'match-iz/dates/utc' {
 
   export function inTheFuture(): TPredicate
   export function inTheFuture(n: number, timeFrame: TTimeFrame): TPredicate
+
+  export function isBefore(dateTime: TDateTime): TPredicate
+  export function isAfter(dateTime: TDateTime): TPredicate
 }

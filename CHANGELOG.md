@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [3.5.0] - 2022-04-23
+
+### Added
+
+- `isBefore()` / `isAfter()` date matchers:
+
+```js
+match(new Date())(
+  when(isBefore([2001, 1, 1]))('Before midnight January 1st, 2001'),
+  when(isAfter([1970, 5]))('After May 1970 (ie; June onwards)'),
+  when(isBefore([1999]))('Before 1999 (ie; up to and including 1998)'),
+  when(isAfter(new Date(2001, 0, 1)))('After midnight January 1st, 2001')
+)
+```
+
 ## [3.4.2] - 2022-04-21
 
 ### Fixed

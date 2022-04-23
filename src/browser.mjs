@@ -23,6 +23,7 @@ export { isDayOfWeek, isWeekNumber } from '../dates/index.mjs'
 export { isHour, isMinute, isSecond, isAM, isPM } from '../dates/index.mjs'
 export { isMorning, isAfternoon, isEvening } from '../dates/index.mjs'
 export { isTime, inThePast, inTheNext, inTheFuture } from '../dates/index.mjs'
+export { isBefore, isAfter } from '../dates/index.mjs'
 
 // UTC dates & times
 //
@@ -39,6 +40,7 @@ import { isDayOfWeek, isWeekNumber, isTime } from '../dates/utc/index.mjs'
 import { isHour, isMinute, isSecond, isAM, isPM } from '../dates/utc/index.mjs'
 import { isMorning, isAfternoon, isEvening } from '../dates/utc/index.mjs'
 import { inThePast, inTheNext, inTheFuture } from '../dates/utc/index.mjs'
+import { isBefore, isAfter } from '../dates/utc/index.mjs'
 
 export const utc = {
   ...{ isSun, isMon, isTue, isWed },
@@ -52,5 +54,6 @@ export const utc = {
 
   ...{ isHour, isMinute, isSecond, isAM, isPM },
   ...{ isMorning, isAfternoon, isEvening },
-  ...{ isTime, inThePast, inTheNext, inTheFuture }
+  ...{ isTime, inThePast, inTheNext, inTheFuture },
+  ...{ isBefore, isAfter }
 }

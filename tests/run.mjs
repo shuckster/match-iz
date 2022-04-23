@@ -885,6 +885,46 @@ const testCases = [
     }
   ],
   [
+    'isBefore()',
+    {
+      cases: [
+        {
+          input: datesFrom({
+            startDate: [2001, 1, 1],
+            days: 10
+          }),
+          expecting: 5
+        }
+      ],
+      run: (assertCase, input) => {
+        const days = input.filter(
+          against(when(utc.isBefore([2001, 1, 6]), true), otherwise(false))
+        )
+        assertCase(days.length)
+      }
+    }
+  ],
+  [
+    'isAfter()',
+    {
+      cases: [
+        {
+          input: datesFrom({
+            startDate: [2001, 1, 1],
+            days: 10
+          }),
+          expecting: 5
+        }
+      ],
+      run: (assertCase, input) => {
+        const days = input.filter(
+          against(when(utc.isAfter([2001, 1, 5]), true), otherwise(false))
+        )
+        assertCase(days.length)
+      }
+    }
+  ],
+  [
     'when() guards',
     {
       cases: [

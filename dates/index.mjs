@@ -1,8 +1,9 @@
 import * as lib from 'match-iz'
+import { isTime } from 'match-iz/dates/utc'
 
-const { against, when } = lib
-const { allOf, anyOf, inRange } = lib
-const { isFunction, isNumber } = lib
+const { match, against, when } = lib
+const { allOf, anyOf, every, inRange, gt, lt } = lib
+const { isArray, isDate, isFunction, isNumber } = lib
 
 import { dateSet, range, ifDate, byLastIndex, byIndex } from './utils.mjs'
 
@@ -105,6 +106,30 @@ const isMorning = isAM
 const isAfternoon = isHour(inRange(12, 17))
 const isEvening = isHour(inRange(18, 23))
 
+const parseDateBefore = args =>
+  match(args)(
+    when(anyOf(isDate, isNumber))(x => new Date(x)),
+    when([isNumber])(([year]) => new Date(year, 0, 1)),
+    when([isNumber, isNumber])(([year, month]) => new Date(year, month - 1, 1)),
+    when(allOf(isArray, { length: inRange(3, 7) }, every(isNumber)))(
+      ([year, month, day, ...rest]) => new Date(year, month - 1, day, ...rest)
+    )
+  )
+
+const parseDateAfter = args =>
+  match(args)(
+    when(anyOf(isDate, isNumber))(x => new Date(x)),
+    when([isNumber])(([year]) => new Date(year + 1, 0, 0)),
+    when([isNumber, isNumber])(([year, month]) => new Date(year, month, 0)),
+    when(allOf(isArray, { length: inRange(3, 7) }, every(isNumber)))(
+      ([year, month, day, ...rest]) =>
+        new Date(year, month - 1, day + 1, ...rest)
+    )
+  )
+
+const isBefore = n => isTime(lt(parseDateBefore(n)))
+const isAfter = n => isTime(gt(parseDateAfter(n)))
+
 export { isSun, isMon, isTue, isWed, isThu, isFri, isSat }
 export { nthSun, nthMon, nthTue, nthWed, nthThu, nthFri, nthSat }
 export { isJan, isFeb, isMar, isApr, isMay, isJun }
@@ -113,3 +138,4 @@ export { isDay, isMonth, isYear, isLeapYear, isDayOfWeek, isWeekNumber }
 export { isHour, isMinute, isSecond, isAM, isPM }
 export { isMorning, isAfternoon, isEvening }
 export { isTime, inThePast, inTheNext, inTheFuture } from 'match-iz/dates/utc'
+export { isBefore, isAfter }
