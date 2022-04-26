@@ -1,7 +1,7 @@
 {
   "name": "match-iz",
   "browserGlobalName": "matchiz",
-  "version": "3.5.2",
+  "version": "3.5.3",
   "description": "A tiny pattern-matching library in the style of the TC39 proposal",
   "author": "Conan Theobald",
   "license": "MIT",
