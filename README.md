@@ -86,10 +86,10 @@ You can browse a few more [examples below](#before--after-examples), and full [d
 
 ## Before / After Examples:
 
-- [getResponse()](#getresponse)
-- [performSearch()](#performsearch)
-- [AccountPage()](#accountpage)
-- [calculateExpr()](#calculateexpr)
+- [getResponse()](#getresponse--testing-status-codes)
+- [performSearch()](#performsearch--"overloaded"-function-call)
+- [AccountPage()](#accountpage--react-component)
+- [calculateExpr()](#calculateexpr--regular-expressions)
 
 #### `getResponse` | Testing status-codes:
 
