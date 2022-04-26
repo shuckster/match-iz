@@ -87,7 +87,7 @@ You can browse a few more [examples below](#before--after-examples), and full [d
 ## Before / After Examples:
 
 - [getResponse()](#getresponse--testing-status-codes)
-- [performSearch()](#performsearch--"overloaded"-function-call)
+- [performSearch()](#performsearch--overloaded-function-call)
 - [AccountPage()](#accountpage--react-component)
 - [calculateExpr()](#calculateexpr--regular-expressions)
 
