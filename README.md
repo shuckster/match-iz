@@ -62,20 +62,17 @@ return match(res)(
 
 2. The `inRange()` pattern-helper guards against non-numbers before trying to determine if its input is within a certain range.
 
-Many [pattern-helpers](https://github.com/shuckster/match-iz/wiki) are provided to permit you to express terse, declarative, and reusable patterns.
+Many [pattern-helpers](https://github.com/shuckster/match-iz/wiki) are provided to permit you to express terse, declarative, and reusable (just pop them into variables/constants) patterns.
 
 Here are some of the date ones:
 
 ```js
+const isLastSundayOfMarch = allOf(nthSun(-1), isMar)
+const isTheWeekend = anyOf(allOf(isFri, isEvening), isSat, isSun)
+
 match(new Date())(
-  when(
-    allOf(nthSun(-1), isMar),
-    () => 'Last Sunday of March: Clocks go forward'
-  ),
-  when(
-    anyOf(allOf(isFri, isEvening), isSat, isSun),
-    () => 'Ladies and Gentlemen; The Weekend'
-  ),
+  when(isLastSundayOfMarch, () => 'Last Sunday of March: Clocks go forward'),
+  when(isTheWeekend, () => 'Ladies and Gentlemen; The Weekend'),
   otherwise(dateObj => {
     return `The clock is ticking: ${dateObj.toString()}`
   })
