@@ -20,12 +20,12 @@
 
 A tiny functional, declarative [pattern-matching](https://github.com/tc39/proposal-pattern-matching) library.
 
-- [Introduction](#introduction)
-- [Before/After Examples](#before--after-examples)
-- [Install/Use](#install--use)
-- [Documentation](#documentation)
-- [Credits](#credits)
-- [License](#license)
+- 👋 [Introduction](#introduction)
+- 👩‍🏫 [Before / After Examples](#before--after-examples)
+- 📀 [Install / Use](#install--use)
+- 📖 [Documentation](https://github.com/shuckster/match-iz/wiki)
+- ✍️ [Credits](#credits)
+- 📃 [License](#license)
 
 ## Introduction
 
