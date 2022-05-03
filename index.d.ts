@@ -51,10 +51,34 @@ declare module 'match-iz' {
   export function when(
     pattern: TPattern,
     guard1: TPattern,
-    guard2?: TPattern,
-    guard3?: TPattern,
-    guard4?: TPattern,
-    guard5?: TPattern,
+    guard2: TPattern,
+    handler: any
+  ): TMatchTester
+
+  export function when(
+    pattern: TPattern,
+    guard1: TPattern,
+    guard2: TPattern,
+    guard3: TPattern,
+    handler: any
+  ): TMatchTester
+
+  export function when(
+    pattern: TPattern,
+    guard1: TPattern,
+    guard2: TPattern,
+    guard3: TPattern,
+    guard4: TPattern,
+    handler: any
+  ): TMatchTester
+
+  export function when(
+    pattern: TPattern,
+    guard1: TPattern,
+    guard2: TPattern,
+    guard3: TPattern,
+    guard4: TPattern,
+    guard5: TPattern,
     handler: any
   ): TMatchTester
 

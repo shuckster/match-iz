@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [3.5.4] - 2022-05-03
+
+### Fixed
+
+- `when()` typedef overloads were not working properly
+
 ## [3.5.3] - 2022-04-26
 
 ### Updated
