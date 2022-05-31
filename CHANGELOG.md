@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [3.6.0] - 2022-05-31
+
+### Updated
+
+- Implement basic generics into the typedefs
+
+### Fixed
+
+- Remove deprecated form of anyOf() from JSDoc
+- Use uncurried form of when() in JSDoc
+
 ## [3.5.4] - 2022-05-03
 
 ### Fixed
