@@ -1,13 +1,19 @@
 export type TPredicate = (value: any) => boolean
 export type TPattern = any | TPredicate
+export type THandler<Input = any, Output = any> = (value: Input) => Output
 
-export type TEvaluator = {
-  matched: () => boolean
-  value: () => any
+export type TEvaluator<Input, Output> = {
+  matched: (value: Input) => boolean
+  value: (value: Input) => Output
 }
 
-export type TMatchTester = (value: any) => TEvaluator | any
-export type TMatchHandler = (handler: any) => TMatchTester
+export type TMatchTester<Input = any, Output = any> = (
+  value: Input
+) => TEvaluator<Input, Output> | Output
+
+export type TMatchHandler<Input = any, Output = any> = (
+  handler: THandler<Input, Output> | Output
+) => TMatchTester<Input, Output>
 
 declare module 'match-iz' {
   /**
@@ -18,7 +24,9 @@ declare module 'match-iz' {
    *   otherwise(fallbackResult)
    * )(valueToTestAgainst)
    */
-  export function against(...needles: TMatchTester[]): (haystack: any) => any
+  export function against<Input = any, Output = any>(
+    ...needles: TMatchTester<Input, Output>[]
+  ): (haystack: Input) => Output
 
   /**
    * @example
@@ -28,10 +36,13 @@ declare module 'match-iz' {
    *   otherwise(fallbackResult)
    * )
    */
-  export function match(haystack: any): (...needles: TMatchTester[]) => any
+  export function match<Input = any, Output = any>(
+    haystack: Input
+  ): (...needles: TMatchTester<Input, Output>[]) => Output
 
   /**
    * @example
+   * when(pattern, resultOrHandler)
    * Uncurried: when('foo', handler)
    *   Curried: when('foo')(handler)
    * // more:
@@ -41,53 +52,62 @@ declare module 'match-iz' {
    * when(x => x)             // predicate
    * when({ value: defined }) // structural
    */
-  export function when(pattern: TPattern): TMatchHandler
-  export function when(pattern: TPattern, handler: any): TMatchTester
-  export function when(
+  export function when<Input = any, Output = any>(
+    pattern: TPattern
+  ): TMatchHandler<Input, Output>
+
+  export function when<Input = any, Output = any>(
+    pattern: TPattern,
+    handler: THandler<Input, Output> | Output
+  ): TMatchTester<Input, Output>
+
+  export function when<Input = any, Output = any>(
     pattern: TPattern,
     guard: TPattern,
-    handler: any
-  ): TMatchTester
+    handler: THandler<Input, Output> | Output
+  ): TMatchTester<Input, Output>
 
-  export function when(
+  export function when<Input = any, Output = any>(
     pattern: TPattern,
     guard1: TPattern,
     guard2: TPattern,
-    handler: any
-  ): TMatchTester
+    handler: THandler<Input, Output> | Output
+  ): TMatchTester<Input, Output>
 
-  export function when(
+  export function when<Input = any, Output = any>(
     pattern: TPattern,
     guard1: TPattern,
     guard2: TPattern,
     guard3: TPattern,
-    handler: any
-  ): TMatchTester
+    handler: THandler<Input, Output> | Output
+  ): TMatchTester<Input, Output>
 
-  export function when(
+  export function when<Input = any, Output = any>(
     pattern: TPattern,
     guard1: TPattern,
     guard2: TPattern,
     guard3: TPattern,
     guard4: TPattern,
-    handler: any
-  ): TMatchTester
+    handler: THandler<Input, Output> | Output
+  ): TMatchTester<Input, Output>
 
-  export function when(
+  export function when<Input = any, Output = any>(
     pattern: TPattern,
     guard1: TPattern,
     guard2: TPattern,
     guard3: TPattern,
     guard4: TPattern,
     guard5: TPattern,
-    handler: any
-  ): TMatchTester
+    handler: THandler<Input, Output> | Output
+  ): TMatchTester<Input, Output>
 
   /**
    * @example
-   * otherwise(fallbackResult)
+   * otherwise(fallbackResultOrHandler)
    */
-  export function otherwise(handler: any): TMatchTester
+  export function otherwise<Input = any, Output = any>(
+    handler: THandler<Input, Output> | Output
+  ): TMatchTester<Input, Output>
 
   /**
    * Specify how match/against should detect ADTs/monads and extract their values
