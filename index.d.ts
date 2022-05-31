@@ -32,9 +32,10 @@ declare module 'match-iz' {
 
   /**
    * @example
-   * when('foo')(handler)     // is "foo"
+   * Uncurried: when('foo', handler)
+   *   Curried: when('foo')(handler)
    * // more:
-   * when([42, 'baz'])        // 42 or "baz"
+   * when(anyOf(42, 'baz'))   // 42 or "baz"
    * when(inRange(100, 200))  // inclusive
    * when(/test/)             // RegExp
    * when(x => x)             // predicate
