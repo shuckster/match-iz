@@ -13,8 +13,8 @@ declare module 'match-iz' {
   /**
    * @example
    * against(
-   *   when(valueOrCondition)(result),
-   *   when(valueOrCondition)(result),
+   *   when(valueOrCondition, resultOrHandler),
+   *   when(valueOrCondition, resultOrHandler),
    *   otherwise(fallbackResult)
    * )(valueToTestAgainst)
    */
@@ -23,8 +23,8 @@ declare module 'match-iz' {
   /**
    * @example
    * match(valueToTestAgainst)(
-   *   when(valueOrCondition)(result),
-   *   when(valueOrCondition)(result),
+   *   when(valueOrCondition, resultOrHandler),
+   *   when(valueOrCondition, resultOrHandler),
    *   otherwise(fallbackResult)
    * )
    */
@@ -137,13 +137,13 @@ declare module 'match-iz' {
   /**
    * @example
    * match({ key: 'value', payload: 123 })(
-   *   when({ key: 'value', payload: pluck() })(payload => {
+   *   when({ key: 'value', payload: pluck() }, payload => {
    *     payload === 123 // true
    *   })
    * )
    *
    * match({ key: 'value', payload: 123 })(
-   *   when({ payload: pluck(isInteger) })(payload => {
+   *   when({ payload: pluck(isInteger) }, payload => {
    *     payload === 123 // true
    *   })
    * )
@@ -161,8 +161,9 @@ declare module 'match-iz' {
   /**
    * @example
    * const { x, y, z } = spread(defined)
+   *
    * match(vector)(
-   *   when({ x, y, z })(...)
+   *   when({ x, y, z }, resultOrHandler)
    * )
    */
   export function spread(fn: TPredicate): object
