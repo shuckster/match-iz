@@ -11,7 +11,7 @@ const { match, against, when, otherwise, spread, pluck: $ } = lib
 const { allOf, anyOf, not, defined, empty } = lib
 const { gt, lt, gte, lte, inRange, startsWith, endsWith } = lib
 const { includes, includedIn, hasOwn, cata } = lib
-const { firstOf, lastOf, some, every } = lib
+const { firstOf, lastOf, some, every, isStrictly } = lib
 
 const { just, nothing } = cata({
   just: m => m?.isJust,
@@ -20,6 +20,14 @@ const { just, nothing } = cata({
 })
 
 const maybeNumber = safe(isNumber)
+
+const objectToTest1 = {
+  some: 'data'
+}
+
+const objectToTest2 = {
+  some: 'data'
+}
 
 const testCases = [
   [
@@ -921,6 +929,30 @@ const testCases = [
           against(when(utc.isAfter([2001, 1, 5]), true), otherwise(false))
         )
         assertCase(days.length)
+      }
+    }
+  ],
+  [
+    'isStrictly()',
+    {
+      cases: [
+        {
+          input: {
+            data1: objectToTest1,
+            data2: objectToTest2
+          },
+          expecting: 'ok!'
+        }
+      ],
+      run: (assertCase, input) => {
+        assertCase(
+          match(input)(
+            when({
+              data1: isStrictly(objectToTest1),
+              data2: isStrictly(objectToTest2)
+            })('ok!')
+          )
+        )
       }
     }
   ],

@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [3.7.0] - 2022-06-01
+
+### Added
+
+- `isStrictly` exact-match pattern-helper
+
 ## [3.6.0] - 2022-05-31
 
 ### Updated

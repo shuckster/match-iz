@@ -138,6 +138,7 @@ const startsWith = s => ifString(value => value.startsWith(s))
 const endsWith = s => ifString(value => value.endsWith(s))
 const includes = o => ifArrayOrString(value => value.includes(o))
 const includedIn = anyOf
+const isStrictly = value => x => x === value
 
 const hasOwn =
   (...props) =>
@@ -189,5 +190,5 @@ export { not, anyOf, allOf, firstOf, lastOf, every, some, spread }
 export { cata, instanceOf, hasOwn }
 export { defined, empty, truthy, falsy }
 export { startsWith, endsWith, includes, includedIn }
-export { gt, lt, gte, lte, inRange }
+export { gt, lt, gte, lte, inRange, isStrictly }
 export { isArray, isDate, isFunction, isNumber, isPojo, isRegExp, isString }
