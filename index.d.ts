@@ -177,6 +177,7 @@ declare module 'match-iz' {
   export const isPojo: TPredicate
   export const isRegExp: TPredicate
   export const isString: TPredicate
+  export const isStrictly: TPredicate
 
   /**
    * @example
