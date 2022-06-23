@@ -87,6 +87,14 @@ const pluck =
 // Matchers
 //
 
+const equalNumberOfValues = (left, right) =>
+  [left, right].every(isPojo) ? keys(left).length === keys(right).length : true
+
+const eq = needle => (haystack, pick) =>
+  equalNumberOfValues(needle, haystack) && found(needle, haystack, pick)
+
+const deepEq = needle => walk(needle, x => (isPojo(x) ? eq(x) : x))
+
 const not = needle => (haystack, pick) => !found(needle, haystack, pick)
 
 const anyOf =
@@ -170,6 +178,17 @@ const falsy = value => !value
 // Helpers
 //
 
+const objWalk = fn => (acc, key) => ((acc[key] = walk(acc[key], fn)), acc)
+const arrWalk = fn => item => walk(item, fn)
+const walk = (obj, fn) =>
+  fn(
+    isPojo(obj)
+      ? keys(obj).reduce(objWalk(fn), { ...obj })
+      : isArray(obj)
+      ? obj.map(arrWalk(fn))
+      : obj
+  )
+
 const spread = fn => new Proxy({}, { get: () => fn })
 
 const ifString = fn => value => isString(value) && fn(value)
@@ -186,7 +205,7 @@ const ifArrayOrString = fn => (haystack, pick) =>
 //
 
 export { against, match, when, otherwise, pluck }
-export { not, anyOf, allOf, firstOf, lastOf, every, some, spread }
+export { eq, deepEq, not, anyOf, allOf, firstOf, lastOf, every, some, spread }
 export { cata, instanceOf, hasOwn }
 export { defined, empty, truthy, falsy }
 export { startsWith, endsWith, includes, includedIn }

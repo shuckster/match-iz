@@ -8,7 +8,7 @@ import * as local from '../dates/index.mjs'
 import * as utc from '../dates/utc/index.mjs'
 
 const { match, against, when, otherwise, spread, pluck: $ } = lib
-const { allOf, anyOf, not, defined, empty } = lib
+const { eq, deepEq, allOf, anyOf, not, defined, empty } = lib
 const { gt, lt, gte, lte, inRange, startsWith, endsWith } = lib
 const { includes, includedIn, hasOwn, cata } = lib
 const { firstOf, lastOf, some, every, isStrictly } = lib
@@ -1047,6 +1047,34 @@ const testCases = [
           when(every(isNumber))(() => {
             return 'all numbers'
           })
+        )
+        assertCase(result)
+      }
+    }
+  ],
+  [
+    'eq()',
+    {
+      cases: [
+        {
+          input: { hello: 'world', here: 'there', how: 'now' },
+          expecting: 'no match'
+        },
+        {
+          input: { one: '1', two: '2', three: { four: '4', five: '5' } },
+          expecting: 'no match'
+        }
+      ],
+      run: (assertCase, input) => {
+        const result = match(input)(
+          when(eq({ hello: 'world', here: 'there' }))('shallow match'),
+          when(eq({ one: '1', two: '2', three: eq({ four: '4' }) }))(
+            'deep match 1'
+          ),
+          when(deepEq({ one: '1', two: '2', three: { four: '4' } }))(
+            'deep match 2'
+          ),
+          otherwise('no match')
         )
         assertCase(result)
       }

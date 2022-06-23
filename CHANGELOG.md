@@ -7,6 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [3.8.0] - 2022-06-23
+
+### Added
+
+- `eq` + `deepEq` for object equality comparison:
+
+```js
+match({ one: '1', two: '2', three: '3' })(
+  when({ one: '1', two: '2' }, 'partial match')
+)
+// 'partial match'
+
+match({ one: '1', two: '2', three: '3' })(
+  when(eq({ one: '1', two: '2' }), 'shallow match')
+)
+// undefined
+
+match({ one: '1', two: '2', three: { four: '4', five: '5' } })(
+  when(
+    eq({ one: '1', two: '2', three: eq({ four: '4' }) }),
+    'deep match using nested eq()'
+  )
+)
+// undefined
+
+match({ one: '1', two: '2', three: { four: '4', five: '5' } })(
+  when(
+    deepEq({ one: '1', two: '2', three: { four: '4' } }),
+    'deep match using deepEq()'
+  )
+)
+// undefined
+```
+
 ## [3.7.1] - 2022-06-01
 
 ### Added
