@@ -3,6 +3,8 @@ import * as lib from './types.mjs'
 const { isArray, isDate, isFunction, isNumber } = lib
 const { isPojo, isRegExp, isString, instanceOf } = lib
 
+const { keys, entries, assign } = Object
+
 //
 // match-iz
 //
@@ -62,9 +64,7 @@ const argsFrom = regExpMatchResult => {
 
 const found = (needle, haystack, pick) =>
   isPojo(needle)
-    ? Object.keys(needle).every(key =>
-        found(needle[key], haystack?.[key], pick)
-      )
+    ? keys(needle).every(key => found(needle[key], haystack?.[key], pick))
     : isArray(needle)
     ? isArray(haystack) &&
       needle.length === haystack.length &&
@@ -123,7 +123,7 @@ const empty = value =>
   value !== value ||
   (!value && value !== 0 && value !== false) ||
   (isArray(value) && !value.length) ||
-  (isPojo(value) && !Object.keys(value).length)
+  (isPojo(value) && !keys(value).length)
 
 const defined = value => !empty(value)
 
@@ -147,13 +147,13 @@ const hasOwn =
     (([props, keysInHaystack]) =>
       props.length && props.every(prop => keysInHaystack.includes(prop)))([
       props.flat(),
-      Object.keys(haystack)
+      keys(haystack)
     ])
 
 const cata = ({ getValue, ...catas }) =>
-  Object.entries(catas).reduce(
+  entries(catas).reduce(
     (acc, [type, cataFn]) =>
-      Object.assign(acc, {
+      assign(acc, {
         [type]: handler => haystack => ({
           matched: () => cataFn(haystack),
           value: () =>
