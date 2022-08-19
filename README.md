@@ -6,6 +6,11 @@
       alt="MIT license"
       src="https://img.shields.io/npm/l/match-iz?style=plastic"
     /></a>
+  <a href="https://www.npmjs.com/package/match-iz">
+    <img
+      alt="Downloads per week"
+      src="https://img.shields.io/npm/dw/match-iz?style=plastic"
+    /></a>
   <a href="https://bundlephobia.com/result?p=match-iz">
     <img
       alt="npm bundle size"
