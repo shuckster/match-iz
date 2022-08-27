@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [3.8.1] - 2022-08-27
+
+### Fixed
+
+- Fix browser build
+
 ## [3.8.0] - 2022-06-23
 
 ### Added
