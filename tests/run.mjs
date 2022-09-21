@@ -10,7 +10,7 @@ import * as utc from '../dates/utc/index.mjs'
 const { match, against, when, otherwise, spread, pluck: $ } = lib
 const { eq, deepEq, allOf, anyOf, not, defined, empty } = lib
 const { gt, lt, gte, lte, inRange, startsWith, endsWith } = lib
-const { includes, includedIn, hasOwn, cata } = lib
+const { includes, includedIn, hasOwn, cata, pluck } = lib
 const { firstOf, lastOf, some, every, isStrictly } = lib
 
 const { just, nothing } = cata({
@@ -27,6 +27,12 @@ const objectToTest1 = {
 
 const objectToTest2 = {
   some: 'data'
+}
+
+function* range(start, end) {
+  for (let i = start; i <= end; i++) {
+    yield i
+  }
 }
 
 const testCases = [
@@ -1074,6 +1080,57 @@ const testCases = [
           when(deepEq({ one: '1', two: '2', three: { four: '4' } }))(
             'deep match 2'
           ),
+          otherwise('no match')
+        )
+        assertCase(result)
+      }
+    }
+  ],
+  [
+    'iterators / generators / Map / Set',
+    {
+      cases: [
+        {
+          input: (function* gen1() {
+            yield 1
+            yield 2
+            yield 3
+          })(),
+          expecting: 'aha!'
+        },
+        {
+          input: (function* gen2() {
+            yield 'a'
+            yield 'b'
+            yield 'c'
+            yield 'd'
+          })(),
+          expecting: 'gotcha!'
+        },
+        {
+          input: range(0, 100),
+          expecting: 'range!'
+        },
+        {
+          input: new Map([
+            [{ id: 1 }, 'a'],
+            [{ id: 2 }, 'b'],
+            [{ id: 3 }, 'c']
+          ]),
+          expecting: 2
+        },
+        {
+          input: new Set(['zero', 'one', 'two', 'three']),
+          expecting: 'Set!'
+        }
+      ],
+      run: (assertCase, input) => {
+        const result = match(input)(
+          when([1, 2, 3], 'aha!'),
+          when(lastOf('c', 'd'), 'gotcha!'),
+          when(lastOf(99, 100), 'range!'),
+          when([{ id: pluck(defined) }, 'b'], maybeTwo => maybeTwo),
+          when('three', 'Set!'),
           otherwise('no match')
         )
         assertCase(result)

@@ -16,5 +16,9 @@ const isPojo = obj =>
     ? false
     : Object.getPrototypeOf(obj) === objectPrototype
 
+const isIterable = x =>
+  x == null ? false : [x[Symbol.iterator], x.next].every(typeOf('function'))
+
 export { instanceOf, isArguments, isObject }
-export { isArray, isDate, isFunction, isNumber, isPojo, isRegExp, isString }
+export { isArray, isNumber, isRegExp, isString }
+export { isDate, isFunction, isPojo, isIterable }
