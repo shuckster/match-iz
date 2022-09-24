@@ -1,6 +1,6 @@
 import * as lib from './types.mjs'
 
-const { isArray, isDate, isFunction, isNumber } = lib
+const { isArguments, isArray, isDate, isFunction, isNumber } = lib
 const { isPojo, isRegExp, isString, instanceOf, isIterable } = lib
 
 const { keys, entries, assign } = Object
@@ -25,12 +25,14 @@ function match(haystack) {
 const against =
   (...needles) =>
   haystack => {
-    const [setOrMap, maybeIterator] =
-      haystack instanceof Map
-        ? [true, haystack.entries()]
-        : haystack instanceof Set
-        ? [true, haystack.values()]
-        : [false, haystack]
+    const [setOrMap, maybeIterator] = isArguments(haystack)
+      ? [false, Array.from(haystack)]
+      : instanceOf(Map)(haystack) ||
+        (typeof FormData !== 'undefined' && instanceOf(FormData)(haystack))
+      ? [true, haystack.entries()]
+      : instanceOf(Set)(haystack)
+      ? [true, haystack.values()]
+      : [false, haystack]
 
     if (!isIterable(maybeIterator)) {
       return find(...needles)(maybeIterator).result
