@@ -40,7 +40,7 @@ const against =
 
     const [otherwise, whens] = needles.reduce(
       ([o, r], x) => (isOtherwise(x) ? [x, r] : [o, [...r, x]]),
-      [{ value: () => undefined }, []]
+      [() => ({ value: () => {} }), []]
     )
 
     const consumed = []
