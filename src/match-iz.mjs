@@ -25,14 +25,15 @@ function match(haystack) {
 const against =
   (...needles) =>
   haystack => {
-    const [setOrMap, maybeIterator] = isArguments(haystack)
-      ? [false, Array.from(haystack)]
-      : instanceOf(Map)(haystack) ||
-        (typeof FormData !== 'undefined' && instanceOf(FormData)(haystack))
-      ? [true, haystack.entries()]
+    const [kind, maybeIterator] = isArguments(haystack)
+      ? [{}, Array.from(haystack)]
+      : instanceOf(Map)(haystack)
+      ? [{ isMap: true }, haystack.entries()]
+      : typeof FormData !== 'undefined' && instanceOf(FormData)(haystack)
+      ? [{ isMap: true }, haystack.entries()]
       : instanceOf(Set)(haystack)
-      ? [true, haystack.values()]
-      : [false, haystack]
+      ? [{ isSet: true }, haystack.values()]
+      : [{}, haystack]
 
     if (!isIterable(maybeIterator)) {
       return find(...needles)(maybeIterator).result
@@ -49,9 +50,15 @@ const against =
       if (done) return otherwise().value()
 
       consumed.push(value)
-      const { found, result } = find(...whens)(setOrMap ? value : [...consumed])
+      const { found, result } = find(...whens)(
+        kind.isSet
+          ? value
+          : kind.isMap
+          ? { key: value[0], value: value[1] }
+          : [...consumed]
+      )
       if (found) return result
-    } while (consumed.length < iterationLimit || setOrMap)
+    } while (consumed.length < iterationLimit || kind.isSet || kind.isMap)
 
     throw new Error(
       `Hit iterationLimit: ${iterationLimit}. Use setIterationLimit(Infinity) to disable.`

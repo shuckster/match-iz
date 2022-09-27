@@ -1129,7 +1129,9 @@ const testCases = [
           when([1, 2, 3], 'aha!'),
           when(lastOf('c', 'd'), 'gotcha!'),
           when(lastOf(99, 100), 'range!'),
-          when([{ id: pluck(defined) }, 'b'], maybeTwo => maybeTwo),
+          when({ key: { id: pluck(defined) }, value: 'b' })(
+            maybeTwo => maybeTwo
+          ),
           when('three', 'Set!'),
           otherwise('no match')
         )
