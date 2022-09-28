@@ -27,9 +27,8 @@ const against =
   haystack => {
     const [kind, maybeIterator] = isArguments(haystack)
       ? [{}, Array.from(haystack)]
-      : instanceOf(Map)(haystack)
-      ? [{ isMap: true }, haystack.entries()]
-      : typeof FormData !== 'undefined' && instanceOf(FormData)(haystack)
+      : instanceOf(Map)(haystack) ||
+        (typeof FormData !== 'undefined' && instanceOf(FormData)(haystack))
       ? [{ isMap: true }, haystack.entries()]
       : instanceOf(Set)(haystack)
       ? [{ isSet: true }, haystack.values()]
