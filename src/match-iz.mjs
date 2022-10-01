@@ -1,7 +1,8 @@
 import * as lib from './types.mjs'
 
 const { isArguments, isArray, isDate, isFunction, isNumber } = lib
-const { isPojo, isRegExp, isString, instanceOf, isIterable } = lib
+const { isPojo, isRegExp, isString, instanceOf } = lib
+const { isMap, isSet, isIterable, isFormData } = lib
 
 const { keys, entries, assign } = Object
 
@@ -27,10 +28,9 @@ const against =
   haystack => {
     const [kind, maybeIterator] = isArguments(haystack)
       ? [{}, Array.from(haystack)]
-      : instanceOf(Map)(haystack) ||
-        (typeof FormData !== 'undefined' && instanceOf(FormData)(haystack))
+      : isMap(haystack) || isFormData(haystack)
       ? [{ isMap: true }, haystack.entries()]
-      : instanceOf(Set)(haystack)
+      : isSet(haystack)
       ? [{ isSet: true }, haystack.values()]
       : [{}, haystack]
 
