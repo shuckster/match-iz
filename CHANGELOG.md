@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [3.9.1] - 2022-10-12
+
+### Fixed
+
+- Fix browser build. The following now exist on the `matchiz` object: `firstOf`, `lastOf`, `some`, `every`, `isStrictly`.
+
 ## [3.9.0] - 2022-10-12
 
 ### Added
@@ -75,8 +81,8 @@ match({ one: '1', two: '2', three: { four: '4', five: '5' } })(
 
 ### Fixed
 
-- Remove deprecated form of anyOf() from JSDoc
-- Use uncurried form of when() in JSDoc
+- Remove deprecated form of `anyOf()` from JSDoc
+- Use uncurried form of `when()` in JSDoc
 
 ## [3.5.4] - 2022-05-03
 
