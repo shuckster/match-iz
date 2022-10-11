@@ -1138,6 +1138,37 @@ const testCases = [
         assertCase(result)
       }
     }
+  ],
+  [
+    'arguments',
+    {
+      cases: [
+        {
+          input: [1, 2, 3],
+          expecting: 'aha!'
+        },
+        {
+          input: ['a', 'b', 'c', 'd'],
+          expecting: 'gotcha!'
+        },
+        {
+          input: range(0, 100),
+          expecting: 'range!'
+        }
+      ],
+      run: (assertCase, input) => {
+        function matcher() {
+          return match(arguments)(
+            when([1, 2, 3], 'aha!'),
+            when(lastOf('c', 'd'), 'gotcha!'),
+            when(lastOf(99, 100), 'range!'),
+            otherwise('no match')
+          )
+        }
+
+        assertCase(matcher(...input))
+      }
+    }
   ]
 ]
 
