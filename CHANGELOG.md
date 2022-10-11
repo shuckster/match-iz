@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Now matches on `arguments` keyword
+
+- Now matches `Map`, `Set`, and iterators. See [PR for more details](https://github.com/shuckster/match-iz/pull/1).
+
 ## [3.8.1] - 2022-08-27
 
 ### Fixed
