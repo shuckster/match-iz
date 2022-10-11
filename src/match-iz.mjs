@@ -114,7 +114,7 @@ const when = (...args) => {
     const needles = args.slice(0, -1)
     return curriedWhen(allOf(needles))(handler)
   }
-  throw new Error('expected 1 or 2 arguments')
+  throw new Error('Expected at least 1 argument')
 }
 
 const argsFrom = regExpMatchResult => {
