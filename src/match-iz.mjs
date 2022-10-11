@@ -1,7 +1,8 @@
 import * as lib from './types.mjs'
 
-const { isArray, isDate, isFunction, isNumber } = lib
+const { isArguments, isArray, isDate, isFunction, isNumber } = lib
 const { isPojo, isRegExp, isString, instanceOf } = lib
+const { isMap, isSet, isIterable, isFormData } = lib
 
 const { keys, entries, assign } = Object
 
@@ -9,26 +10,85 @@ const { keys, entries, assign } = Object
 // match-iz
 //
 
+let iterationLimit = 20000
+
+export const getIterationLimit = () => iterationLimit
+export const setIterationLimit = newMaxiumum => {
+  const previousValue = iterationLimit
+  iterationLimit = newMaxiumum
+  return () => (iterationLimit = previousValue)
+}
+
 function match(haystack) {
   return (...needles) => against(...needles)(haystack)
 }
 
-const against = (...needles) => {
+const against =
+  (...needles) =>
+  haystack => {
+    const [kind, maybeIterator] = isArguments(haystack)
+      ? [{}, Array.from(haystack)]
+      : isMap(haystack) || isFormData(haystack)
+      ? [{ isMap: true }, haystack.entries()]
+      : isSet(haystack)
+      ? [{ isSet: true }, haystack.values()]
+      : [{}, haystack]
+
+    if (!isIterable(maybeIterator)) {
+      return find(...needles)(maybeIterator).result
+    }
+
+    const [otherwise, whens] = needles.reduce(
+      ([o, r], x) => (isOtherwise(x) ? [x, r] : [o, [...r, x]]),
+      [() => ({ value: () => {} }), []]
+    )
+
+    const consumed = []
+    do {
+      const { value, done } = maybeIterator.next()
+      if (done) return otherwise().value()
+
+      consumed.push(value)
+      const { found, result } = find(...whens)(
+        kind.isSet
+          ? value
+          : kind.isMap
+          ? { key: value[0], value: value[1] }
+          : [...consumed]
+      )
+      if (found) return result
+    } while (consumed.length < iterationLimit || kind.isSet || kind.isMap)
+
+    throw new Error(
+      `Hit iterationLimit: ${iterationLimit}. Use setIterationLimit(Infinity) to disable.`
+    )
+  }
+
+const find = (...needles) => {
   let result
-  return haystack =>
-    needles.find(needle => {
+  return haystack => {
+    const found = !!needles.find(needle => {
       const received = needle(haystack)
       const { matched, value } = received || {}
       return [matched, value].every(isFunction)
         ? matched(haystack) && ((result = value(haystack)), true)
         : received && (result = received)
-    }) && result
+    })
+    return { found, result }
+  }
 }
 
-const otherwise = handler => haystack => ({
-  matched: () => true,
-  value: () => (!isFunction(handler) ? handler : handler(haystack))
-})
+const symOtherwise = Symbol('@@match-iz/otherwise')
+const isOtherwise = x => x?.[symOtherwise] === true
+
+const otherwise = handler => {
+  const matcher = haystack => ({
+    matched: () => true,
+    value: () => (!isFunction(handler) ? handler : handler(haystack))
+  })
+  matcher[symOtherwise] = true
+  return matcher
+}
 
 const curriedWhen = needle => handler => haystack => ({
   matched: () => found(needle, haystack, value => (haystack = value)),
@@ -209,5 +269,5 @@ export { eq, deepEq, not, anyOf, allOf, firstOf, lastOf, every, some, spread }
 export { cata, instanceOf, hasOwn }
 export { defined, empty, truthy, falsy }
 export { startsWith, endsWith, includes, includedIn }
-export { gt, lt, gte, lte, inRange, isStrictly }
+export { gt, lt, gte, lte, inRange, isStrictly, isIterable }
 export { isArray, isDate, isFunction, isNumber, isPojo, isRegExp, isString }

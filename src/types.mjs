@@ -11,10 +11,20 @@ const isString = typeOf('string')
 const isNumber = obj => obj === obj && typeOf('number')(obj)
 const isObject = obj => obj !== null && typeOf('object')(obj)
 const isRegExp = instanceOf(RegExp)
+const isSet = instanceOf(Set)
+const isMap = instanceOf(Map)
 const isPojo = obj =>
   obj === null || !isObject(obj) || isArguments(obj)
     ? false
     : Object.getPrototypeOf(obj) === objectPrototype
 
+const isIterable = x =>
+  x != null && [x[Symbol.iterator], x.next].every(isFunction)
+
+const isFormData = x =>
+  typeof FormData !== 'undefined' && instanceOf(FormData)(x)
+
 export { instanceOf, isArguments, isObject }
-export { isArray, isDate, isFunction, isNumber, isPojo, isRegExp, isString }
+export { isArray, isNumber, isRegExp, isString }
+export { isDate, isFunction, isPojo }
+export { isMap, isSet, isIterable, isFormData }
