@@ -15,7 +15,48 @@ export type TMatchHandler<Input = any, Output = any> = (
   handler: THandler<Input, Output> | Output
 ) => TMatchTester<Input, Output>
 
+export type TIterationLimit = number
+export type TPreviousIterationLimit = number
+
 declare module 'match-iz' {
+  /**
+   * When matching iterators, a built-in upper limit is specified
+   * to prevent infinite loops. This limit can be queried and updated
+   * by invoking `getIterationLimit` and `setIterationLimit`.
+   * @example
+   * getIterationLimit()
+   * // 20000 (default)
+   *
+   * let restorePreviousLimit = setIterationLimit(Infinity)
+   * getIterationLimit()
+   * // Infinity
+   *
+   * restorePreviousLimit()
+   * getIterationLimit()
+   * // 20000
+   */
+  export function getIterationLimit(): TIterationLimit
+
+  /**
+   * When matching iterators, a built-in upper limit is specified
+   * to prevent infinite loops. This limit can be queried and updated
+   * by invoking `getIterationLimit` and `setIterationLimit`.
+   * @example
+   * getIterationLimit()
+   * // 20000 (default)
+   *
+   * let restorePreviousLimit = setIterationLimit(Infinity)
+   * getIterationLimit()
+   * // Infinity
+   *
+   * restorePreviousLimit()
+   * getIterationLimit()
+   * // 20000
+   */
+  export function setIterationLimit(
+    newMaxiumum: TIterationLimit
+  ): () => TPreviousIterationLimit
+
   /**
    * @example
    * against(

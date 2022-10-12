@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [3.9.2] - 2022-10-12
+
+### Added
+
+- Typedefs + JSDoc for `getIterationLimit` and `setIterationLimit`
+
 ## [3.9.1] - 2022-10-12
 
 ### Fixed
