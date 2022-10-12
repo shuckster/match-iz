@@ -10,6 +10,7 @@ export { isArray, isDate, isFunction, isNumber } from './match-iz.mjs'
 export { isPojo, isRegExp, isString } from './match-iz.mjs'
 export { firstOf, lastOf, some, every } from './match-iz.mjs'
 export { isStrictly } from './match-iz.mjs'
+export { getIterationLimit, setIterationLimit } from './match-iz.mjs'
 
 // Dates & times
 //
