@@ -12,8 +12,8 @@ const { keys, entries, assign } = Object
 
 let iterationLimit = 20000
 
-export const getIterationLimit = () => iterationLimit
-export const setIterationLimit = newMaxiumum => {
+const getIterationLimit = () => iterationLimit
+const setIterationLimit = newMaxiumum => {
   const previousValue = iterationLimit
   iterationLimit = newMaxiumum
   return () => (iterationLimit = previousValue)
@@ -271,3 +271,4 @@ export { defined, empty, truthy, falsy }
 export { startsWith, endsWith, includes, includedIn }
 export { gt, lt, gte, lte, inRange, isStrictly, isIterable }
 export { isArray, isDate, isFunction, isNumber, isPojo, isRegExp, isString }
+export { getIterationLimit, setIterationLimit }
