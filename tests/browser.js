@@ -1,4 +1,10 @@
 /* globals matchiz */
+
+/**
+ * A post-build test to ensure that the browser-build has the same
+ * "exports" on the `matchiz` variable that the CJS/ESM libs do.
+ */
+
 const fs = require('fs')
 
 const browserSrc = fs.readFileSync('./dist/match-iz.browser.js', 'utf8')
