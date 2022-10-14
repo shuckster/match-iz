@@ -1,18 +1,14 @@
 /* globals matchiz */
 const fs = require('fs')
-const srcLib = require('../dist/index.js')
-const srcDateLib = require('../dates/index.js')
-const srcDateUtcLib = require('../dates/utc/index.js')
 
 const browserSrc = fs.readFileSync('./dist/match-iz.browser.js', 'utf8')
 eval(browserSrc)
 
+const srcLib = require('../dist/index.js')
+const srcDateLib = require('../dates/index.js')
 const srcExports = Object.keys(srcLib)
 const srcDateExports = Object.keys(srcDateLib)
-const srcDateUtcExports = Object.keys(srcDateUtcLib)
-
 const browserExports = Object.keys(matchiz)
-const browserUtcExports = Object.keys(matchiz.utc)
 
 let returnCode = 0
 
@@ -29,6 +25,10 @@ srcDateExports.forEach(exp => {
     returnCode = 1
   }
 })
+
+const srcDateUtcLib = require('../dates/utc/index.js')
+const srcDateUtcExports = Object.keys(srcDateUtcLib)
+const browserUtcExports = Object.keys(matchiz.utc)
 
 srcDateUtcExports.forEach(exp => {
   if (!browserUtcExports.includes(exp)) {
