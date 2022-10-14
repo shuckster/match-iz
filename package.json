@@ -57,8 +57,9 @@
     "test": "node ./tests/run.mjs",
     "lint": "pnpx eslint src/*.mjs dates/**/*.mjs tests/*.mjs",
     "build": "pnpm run build:esbuild",
+    "build:check": "node ./tests/browser.js",
     "build:clean": "rimraf dist/ dates/index.js dates/utc/index.js; mkdir -p dist/",
-    "build:all": "pnpm run build:clean ; pnpm run build",
+    "build:all": "pnpm run build:clean ; pnpm run build ; pnpm run build:check",
     "build:watch": "pnpm run build:clean; nodemon ./build-config/esbuild.mjs",
     "build:esbuild": "node ./build-config/esbuild.mjs"
   },
