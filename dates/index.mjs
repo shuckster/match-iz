@@ -14,7 +14,7 @@ const endOfMonth = date =>
 const getWeekNumber = date => {
   const d = dateSet(date)('Date')(date.getDate() + 4 - (date.getDay() || 7))
   const yearStart = dateSet(date)('Month')(0, 1)
-  return Math.ceil(((d - yearStart) / 86400000 + 1) / 7)
+  return Math.ceil(((+d - +yearStart) / 86400000 + 1) / 7)
 }
 
 const [isSun, isMon, isTue, isWed, isThu, isFri, isSat] = [...range(0, 6)].map(

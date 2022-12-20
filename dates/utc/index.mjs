@@ -15,7 +15,7 @@ const getUTCWeekNumber = date => {
     date.getUTCDate() + 4 - (date.getUTCDay() || 7)
   )
   const yearStart = dateSet(date)('UTCMonth')(0, 1)
-  return Math.ceil(((d - yearStart) / 86400000 + 1) / 7)
+  return Math.ceil(((+d - +yearStart) / 86400000 + 1) / 7)
 }
 
 const [isSun, isMon, isTue, isWed, isThu, isFri, isSat] = [...range(0, 6)].map(
