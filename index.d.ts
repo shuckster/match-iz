@@ -219,6 +219,7 @@ declare module 'match-iz' {
   export const isRegExp: TPredicate
   export const isString: TPredicate
   export const isStrictly: TPredicate
+  export const isIterable: TPredicate
 
   /**
    * @example
