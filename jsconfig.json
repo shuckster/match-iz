@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "ES2015",
+    "checkJs": true,
+    "paths": {
+      "match-iz": ["./src/match-iz.mjs"],
+      "match-iz/dates": ["./dates/index.mjs"],
+      "match-iz/dates/utc": ["./dates/utc/index.mjs"]
+    }
+  },
+  "include": ["src/**/*", "dates/**/*"]
+}
