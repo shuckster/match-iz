@@ -28,6 +28,9 @@ export { isMorning, isAfternoon, isEvening } from '../dates/index.mjs'
 export { isTime, inThePast, inTheNext, inTheFuture } from '../dates/index.mjs'
 export { isBefore, isAfter } from '../dates/index.mjs'
 
+export { inDay, inMonth, inYear } from '../dates/index.mjs'
+export { inDays, inMonths, inYears } from '../dates/index.mjs'
+
 // UTC dates & times
 //
 import { isSun, isMon, isTue, isWed } from '../dates/utc/index.mjs'
@@ -45,6 +48,9 @@ import { isMorning, isAfternoon, isEvening } from '../dates/utc/index.mjs'
 import { inThePast, inTheNext, inTheFuture } from '../dates/utc/index.mjs'
 import { isBefore, isAfter } from '../dates/utc/index.mjs'
 
+import { inDay, inMonth, inYear } from '../dates/utc/index.mjs'
+import { inDays, inMonths, inYears } from '../dates/utc/index.mjs'
+
 export const utc = {
   ...{ isSun, isMon, isTue, isWed },
   ...{ isThu, isFri, isSat },
@@ -58,5 +64,8 @@ export const utc = {
   ...{ isHour, isMinute, isSecond, isAM, isPM },
   ...{ isMorning, isAfternoon, isEvening },
   ...{ isTime, inThePast, inTheNext, inTheFuture },
-  ...{ isBefore, isAfter }
+  ...{ isBefore, isAfter },
+
+  ...{ inDay, inMonth, inYear },
+  ...{ inDays, inMonths, inYears }
 }
