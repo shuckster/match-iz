@@ -7,6 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [3.10.0] - 2023-03-11
+
+### Added
+
+- New date pattern-helpers: `inDay/s`, `inMonth/s`, `inYear/s`
+
+Usage:
+
+```js
+let date = new Date(2021, 0, 1, 12, 0, 0)
+match(date)(
+  when(inDay(new Date(2021, 0, 1)), 'January 1st 2021'),
+  when(inDay(new Date(2021, 0, 2)), 'January 2nd 2021')
+)
+```
+
+Use a 1-based month index by passing an array:
+
+```js
+let date = new Date(2021, 0, 1, 12, 0, 0)
+match(date)(
+  when(inDay([2021, 1, 1]), 'January 1st 2021'),
+  when(inDay([2021, 1, 2]), 'January 2nd 2021')
+)
+```
+
+The plural helpers accept arrays of date-objects and/or 1-based month-index arrays:
+
+```js
+let date = new Date(2021, 0, 1, 12, 0, 0)
+match(date)(
+  when(inDays([[2021, 1, 1], new Date(2021, 0, 2)]), 'January 1st or 2nd 2021')
+)
+```
+
 ## [3.9.4] - 2022-10-14
 
 ### Added
