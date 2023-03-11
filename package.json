@@ -66,10 +66,10 @@
   "devDependencies": {
     "compose-paths": "^1.2.2",
     "dedent": "^0.7.0",
-    "esbuild": "^0.16.10",
-    "eslint": "^8.30.0",
-    "nodemon": "^2.0.20",
-    "rimraf": "^3.0.2",
-    "typescript": "^4.9.4"
+    "esbuild": "^0.17.11",
+    "eslint": "^8.36.0",
+    "nodemon": "^2.0.21",
+    "rimraf": "^4.4.0",
+    "typescript": "^4.9.5"
   }
 }
