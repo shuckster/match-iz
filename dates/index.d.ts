@@ -1,4 +1,4 @@
-type TPredicate = (value: any) => boolean
+type TPredicate = (value: unknown) => boolean
 type TPredicateOrNumber = TPredicate | number
 
 type TTimeFrame = 'seconds' | 'minutes' | 'hours' | 'days' | 'months' | 'years'
@@ -81,4 +81,11 @@ declare module 'match-iz/dates' {
 
   export function isBefore(dateTime: TDateTime): TPredicate
   export function isAfter(dateTime: TDateTime): TPredicate
+
+  export function inDay(dateTime: TDateTime): TPredicate
+  export function inDays(dateTime?: TDateTime[]): TPredicate
+  export function inMonth(dateTime: TDateTime): TPredicate
+  export function inMonths(dateTime?: TDateTime[]): TPredicate
+  export function inYear(dateTime: TDateTime): TPredicate
+  export function inYears(dateTime?: TDateTime[]): TPredicate
 }

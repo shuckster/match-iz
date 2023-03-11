@@ -130,6 +130,39 @@ const parseDateAfter = args =>
 const isBefore = n => isTime(lt(parseDateBefore(n)))
 const isAfter = n => isTime(gt(parseDateAfter(n)))
 
+const inDay = arg => {
+  const day = parseDateBefore(arg)
+  return ifDate(
+    x =>
+      x.getFullYear() === day.getFullYear() &&
+      x.getMonth() === day.getMonth() &&
+      x.getDate() === day.getDate()
+  )
+}
+
+const inMonth = arg => {
+  const day = parseDateBefore(arg)
+  return ifDate(
+    x =>
+      x.getFullYear() === day.getFullYear() && x.getMonth() === day.getMonth()
+  )
+}
+
+const inYear = arg => {
+  const day = parseDateBefore(arg)
+  return ifDate(x => x.getFullYear() === day.getFullYear())
+}
+
+const inDays = against(when(isArray)(xs => x => xs.some(day => inDay(day)(x))))
+
+const inMonths = against(
+  when(isArray)(xs => x => xs.some(day => inMonth(day)(x)))
+)
+
+const inYears = against(
+  when(isArray)(xs => x => xs.some(day => inYear(day)(x)))
+)
+
 export { isSun, isMon, isTue, isWed, isThu, isFri, isSat }
 export { nthSun, nthMon, nthTue, nthWed, nthThu, nthFri, nthSat }
 export { isJan, isFeb, isMar, isApr, isMay, isJun }
@@ -139,3 +172,5 @@ export { isHour, isMinute, isSecond, isAM, isPM }
 export { isMorning, isAfternoon, isEvening }
 export { isTime, inThePast, inTheNext, inTheFuture } from 'match-iz/dates/utc'
 export { isBefore, isAfter }
+export { inDay, inMonth, inYear }
+export { inDays, inMonths, inYears }

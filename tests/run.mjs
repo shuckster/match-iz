@@ -939,6 +939,144 @@ const testCases = [
     }
   ],
   [
+    'inDay()',
+    {
+      cases: [
+        {
+          input: datesFrom({
+            startDate: [2001, 1, 1],
+            days: 10
+          }),
+          expecting: 1
+        }
+      ],
+      run: (assertCase, input) => {
+        const days = input.filter(
+          against(when(utc.inDay([2001, 1, 5]), true), otherwise(false))
+        )
+        assertCase(days.length)
+      }
+    }
+  ],
+  [
+    'inDays()',
+    {
+      cases: [
+        {
+          input: datesFrom({
+            startDate: [2001, 1, 1],
+            days: 40
+          }),
+          expecting: 2
+        }
+      ],
+      run: (assertCase, input) => {
+        const days = input.filter(
+          against(
+            when(
+              utc.inDays([
+                [2001, 1, 1],
+                [2001, 2, 1]
+              ]),
+              true
+            ),
+            otherwise(false)
+          )
+        )
+        assertCase(days.length)
+      }
+    }
+  ],
+  [
+    'inMonth()',
+    {
+      cases: [
+        {
+          input: datesFrom({
+            startDate: [2000, 12, 31],
+            days: 35
+          }),
+          expecting: 31
+        }
+      ],
+      run: (assertCase, input) => {
+        const days = input.filter(
+          against(when(utc.inMonth([2001, 1]), true), otherwise(false))
+        )
+        assertCase(days.length)
+      }
+    }
+  ],
+  [
+    'inMonths()',
+    {
+      cases: [
+        {
+          input: datesFrom({
+            startDate: [2000, 11, 30],
+            days: 63
+          }),
+          expecting: 62
+        }
+      ],
+      run: (assertCase, input) => {
+        const days = input.filter(
+          against(
+            when(
+              utc.inMonths([
+                [2000, 12],
+                [2001, 1]
+              ]),
+              true
+            ),
+            otherwise(false)
+          )
+        )
+        assertCase(days.length)
+      }
+    }
+  ],
+  [
+    'inYear()',
+    {
+      cases: [
+        {
+          input: datesFrom({
+            startDate: [2000, 12, 31],
+            days: 370
+          }),
+          expecting: 365
+        }
+      ],
+      run: (assertCase, input) => {
+        const days = input.filter(
+          against(when(utc.inYear([2001]), true), otherwise(false))
+        )
+        assertCase(days.length)
+      }
+    }
+  ],
+  [
+    'inYears()',
+    {
+      cases: [
+        {
+          input: datesFrom({
+            startDate: [2000, 12, 31],
+            days: 365 * 3
+          }),
+          expecting: 730
+        }
+      ],
+      run: (assertCase, input) => {
+        const days = input.filter(
+          against(when(utc.inYears([[2001], [2002]]), true), otherwise(false))
+        )
+        assertCase(days.length)
+      }
+    }
+  ],
+  [
     'isStrictly()',
     {
       cases: [
