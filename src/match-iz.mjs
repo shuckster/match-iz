@@ -19,6 +19,23 @@ const setIterationLimit = newMaxiumum => {
   return () => (iterationLimit = previousValue)
 }
 
+function findBackwards(array, predicate) {
+  for (let i = array.length - 1; i >= 0; i--) {
+    if (predicate(array[i])) return array[i]
+  }
+}
+
+function exhaustivenssCheck(input, maybeOtherwise) {
+  if (!isOtherwise(maybeOtherwise)) {
+    const reason = (
+      `Exhausted all patterns without finding a match for input: ${JSON.stringify(input)}. ` +
+        `Handle it, or use otherwise() for the fall-through case.`
+    )
+
+    throw new Error(reason)
+  }
+}
+
 function match(haystack) {
   return (...needles) => against(...needles)(haystack)
 }
@@ -35,9 +52,17 @@ const against =
       : [{}, haystack]
 
     if (!isIterable(maybeIterator)) {
-      return find(...needles)(maybeIterator).result
+      const input = maybeIterator
+      const { found, result } = find(...needles)(input)
+      if (found) {
+        return result
+      }
+      const otherwise = findBackwards(needles, isOtherwise)
+      exhaustivenssCheck(input, otherwise)
+      return result
     }
 
+    const iterator = maybeIterator
     const [otherwise, whens] = needles.reduce(
       ([o, r], x) => (isOtherwise(x) ? [x, r] : [o, [...r, x]]),
       [() => ({ value: () => {} }), []]
@@ -45,8 +70,11 @@ const against =
 
     const consumed = []
     do {
-      const { value, done } = maybeIterator.next()
-      if (done) return otherwise().value()
+      const { value, done } = iterator.next()
+      if (done) {
+        exhaustivenssCheck(iterator, otherwise)
+        return otherwise().value()
+      }
 
       consumed.push(value)
       const { found, result } = find(...whens)(

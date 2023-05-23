@@ -777,7 +777,8 @@ const testCases = [
           against(
             when(local.isDay(-1))(true),
             when(local.isFri)(true),
-            when(local.isTue)(true)
+            when(local.isTue)(true),
+            otherwise(false)
           )
         )
         assertCase(days.length)
@@ -795,7 +796,7 @@ const testCases = [
       ],
       run: (assertCase, input) => {
         const days = input.filter(
-          against(when(allOf(local.isDay(gt(28))))(true))
+          against(when(allOf(local.isDay(gt(28))))(true), otherwise(false))
         )
         assertCase(days.length)
       }
@@ -812,7 +813,7 @@ const testCases = [
       ],
       run: (assertCase, input) => {
         const days = input.filter(
-          against(when(allOf(local.isDay(gt(28))))(true))
+          against(when(allOf(local.isDay(gt(28))))(true), otherwise(false))
         )
         assertCase(days.length)
       }
@@ -1305,6 +1306,45 @@ const testCases = [
         }
 
         assertCase(matcher(...input))
+      }
+    }
+  ],
+  [
+    'exhaustiveness checking',
+    {
+      cases: [
+        {
+          input: [1, 2, 3],
+          expecting: 'aha!'
+        },
+        {
+          input: new Set(['x', 'y', 'z']),
+          expecting: 'aha!'
+        },
+        {
+          input: function* () {
+            yield false
+            yield true
+            yield undefined
+            yield null
+            yield NaN
+          },
+          expecting: 'aha!'
+        }
+      ],
+      run: (assertCase, input) => {
+        let threw = false
+        try {
+          const result = match(input)(
+            when(includes('a'), 'aha!'),
+            when(includes('b'), 'aha!'),
+            when(0, 'aha!')
+          )
+          assertCase(result)
+        } catch (err) {
+          threw = err
+        }
+        strict.notStrictEqual(threw, false)
       }
     }
   ]
