@@ -69,7 +69,10 @@ const writePackageJson = against(
   when({ module: defined, format: anyOf(Object.keys(moduleTypes)) })(
     ({ module, format }) =>
       writeTextFile(module)(makePackageJsonForType(format))
-  )
+  ),
+  otherwise(() => {
+    // noop
+  })
 )
 
 function makePackageJsonForType(type = 'esm') {
