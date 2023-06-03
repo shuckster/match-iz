@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [4.0.0] - 2023-06-03
+
+### BREAKING CHANGE
+
+- `matchiz` now includes a runtime exhaustiveness check. If no patterns match and no `otherwise` was specified, an error will be thrown. `4.0.0` is otherwise identical to `3.10.0`.
+
 ## [3.10.0] - 2023-03-11
 
 ### Added
