@@ -11,6 +11,7 @@ const { keys, entries, assign } = Object
 //
 
 let iterationLimit = 20000
+let enableExhaustivenessChecks = true
 
 const getIterationLimit = () => iterationLimit
 const setIterationLimit = newMaxiumum => {
@@ -25,12 +26,12 @@ function findBackwards(array, predicate) {
   }
 }
 
-function exhaustivenssCheck(input, maybeOtherwise) {
-  if (!isOtherwise(maybeOtherwise)) {
-    const reason = (
-      `Exhausted all patterns without finding a match for input: ${JSON.stringify(input)}. ` +
-        `Handle it, or use otherwise() for the fall-through case.`
-    )
+function exhaustivenessCheck(input, maybeOtherwise) {
+  if (enableExhaustivenessChecks && !isOtherwise(maybeOtherwise)) {
+    const reason =
+      `Exhausted all patterns without finding a match for input: ${JSON.stringify(
+        input
+      )}. ` + `Handle it, or use otherwise() for the fall-through case.`
 
     throw new Error(reason)
   }
@@ -58,7 +59,7 @@ const against =
         return result
       }
       const otherwise = findBackwards(needles, isOtherwise)
-      exhaustivenssCheck(input, otherwise)
+      exhaustivenessCheck(input, otherwise)
       return result
     }
 
@@ -72,7 +73,7 @@ const against =
     do {
       const { value, done } = iterator.next()
       if (done) {
-        exhaustivenssCheck(iterator, otherwise)
+        exhaustivenessCheck(iterator, otherwise)
         return otherwise().value()
       }
 
