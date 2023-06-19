@@ -129,7 +129,7 @@ const yearsInMs = 365 * daysInMs
 
 const rxMs = /^ms|milliseconds?/i
 const rxSecs = /^s|secs?|seconds?/i
-const rxMins = /^m|mins?|minutes?/i
+const rxMins = /^(m|mins?|minutes?)$/i
 const rxHours = /^h|hours?/i
 const rxDays = /^d|days?/i
 const rxWeeks = /^w|weeks?/i

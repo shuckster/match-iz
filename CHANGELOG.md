@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [4.0.1] - 2023-06-19
+
+### Fixed
+
+- 'months' was broken for `inTheNext/Future/Past` because the minutes RegExp got there first, making `inTheNext(6, 'months')` assume 6 minutes.
+
 ## [4.0.0] - 2023-06-03
 
 ### BREAKING CHANGE
