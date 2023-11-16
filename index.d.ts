@@ -1,5 +1,5 @@
-export type TPredicate = (value: any) => boolean
-export type TPattern = any | TPredicate
+export type TPredicate<Input = any> = (value: Input) => boolean
+export type TPattern<Input = any> = Input | TPredicate<Input>
 export type THandler<Input = any, Output = any> = (value: Input) => Output
 
 export type TEvaluator<Input, Output> = {
@@ -94,51 +94,51 @@ declare module 'match-iz' {
    * when({ value: defined }) // structural
    */
   export function when<Input = any, Output = any>(
-    pattern: TPattern
+    pattern: TPattern<Input>
   ): TMatchHandler<Input, Output>
 
   export function when<Input = any, Output = any>(
-    pattern: TPattern,
+    pattern: TPattern<Input>,
     handler: THandler<Input, Output> | Output
   ): TMatchTester<Input, Output>
 
   export function when<Input = any, Output = any>(
-    pattern: TPattern,
-    guard: TPattern,
+    pattern: TPattern<Input>,
+    guard: TPattern<Input>,
     handler: THandler<Input, Output> | Output
   ): TMatchTester<Input, Output>
 
   export function when<Input = any, Output = any>(
-    pattern: TPattern,
-    guard1: TPattern,
-    guard2: TPattern,
+    pattern: TPattern<Input>,
+    guard1: TPattern<Input>,
+    guard2: TPattern<Input>,
     handler: THandler<Input, Output> | Output
   ): TMatchTester<Input, Output>
 
   export function when<Input = any, Output = any>(
-    pattern: TPattern,
-    guard1: TPattern,
-    guard2: TPattern,
-    guard3: TPattern,
+    pattern: TPattern<Input>,
+    guard1: TPattern<Input>,
+    guard2: TPattern<Input>,
+    guard3: TPattern<Input>,
     handler: THandler<Input, Output> | Output
   ): TMatchTester<Input, Output>
 
   export function when<Input = any, Output = any>(
-    pattern: TPattern,
-    guard1: TPattern,
-    guard2: TPattern,
-    guard3: TPattern,
-    guard4: TPattern,
+    pattern: TPattern<Input>,
+    guard1: TPattern<Input>,
+    guard2: TPattern<Input>,
+    guard3: TPattern<Input>,
+    guard4: TPattern<Input>,
     handler: THandler<Input, Output> | Output
   ): TMatchTester<Input, Output>
 
   export function when<Input = any, Output = any>(
-    pattern: TPattern,
-    guard1: TPattern,
-    guard2: TPattern,
-    guard3: TPattern,
-    guard4: TPattern,
-    guard5: TPattern,
+    pattern: TPattern<Input>,
+    guard1: TPattern<Input>,
+    guard2: TPattern<Input>,
+    guard3: TPattern<Input>,
+    guard4: TPattern<Input>,
+    guard5: TPattern<Input>,
     handler: THandler<Input, Output> | Output
   ): TMatchTester<Input, Output>
 
