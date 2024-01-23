@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [4.0.3] - 2024-01-23
+
+### Updated
+
+- `index.d.ts`: Updated to parse patterns into types when the input is sent
+                into your `when` handlers:
+
+Some examples:
+
+```typescript
+when({ one: 1 as const, two: isNumber }, (res) => {
+  // res will be typed as = { one: 1, two: number }
+})
+```
+
+```javascript
+when({ name: isString, age: isNumber }, (res) => {
+  // res will be typed as = { name: string, age: number }
+})
+```
+
+You can have your own predicates conform by using the `is` keyword:
+
+```typescript
+function isString(value: any): value is string {
+  return typeof value === 'string';
+}
+```
+
 ## [4.0.2] - 2023-11-16
 
 ### Updated

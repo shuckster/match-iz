@@ -1,6 +1,25 @@
+export type PatternAsType<P> = P extends (value: any) => value is infer R
+  ? R // Handle predicate functions
+  : P extends (...args: any[]) => any
+    ? P // Preserve literal functions
+    : P extends object
+      ? { [K in keyof P]: PatternAsType<P[K]> } // Recurse into objects
+      : P; // Handle literal values (numbers, strings, etc.)
+
+export type ObjectAsInterface<T> = T & { [key: string]: any };
+
+export type PatternAsInterface<P> = P extends (value: any) => value is infer R
+  ? R // Handle predicate functions
+  : P extends (...args: any[]) => any
+    ? P // Preserve literal functions
+    : P extends object // Recurse into objects
+      ? ObjectAsInterface<{ [K in keyof P]: PatternAsInterface<P[K]> }>
+      : P; // Handle literal values (numbers, strings, etc.)
+
+export type TPredicateAsserting<Kind = any> = (value: any) => value is Kind
 export type TPredicate<Input = any> = (value: Input) => boolean
 export type TPattern<Input = any> = Input | TPredicate<Input>
-export type THandler<Input = any, Output = any> = (value: Input) => Output
+export type THandler<Input = any, Output = any> = (value: PatternAsInterface<Input>) => Output
 
 export type TEvaluator<Input, Output> = {
   matched: (value: Input) => boolean
@@ -175,13 +194,13 @@ declare module 'match-iz' {
   export const truthy: TPredicate
   export const falsy: TPredicate
 
-  export function gt(greaterThan: number): TPredicate
-  export function lt(lessThan: number): TPredicate
-  export function gte(greaterThanOrEqualTo: number): TPredicate
-  export function lte(lessThanOrEqualTo: number): TPredicate
-  export function inRange(min: number, max: number): TPredicate
-  export function startsWith(text: string): TPredicate
-  export function endsWith(text: string): TPredicate
+  export function gt(greaterThan: number): TPredicateAsserting<number>
+  export function lt(lessThan: number): TPredicateAsserting<number>
+  export function gte(greaterThanOrEqualTo: number): TPredicateAsserting<number>
+  export function lte(lessThanOrEqualTo: number): TPredicateAsserting<number>
+  export function inRange(min: number, max: number): TPredicateAsserting<number>
+  export function startsWith(text: string): TPredicateAsserting<string>
+  export function endsWith(text: string): TPredicateAsserting<string>
   export function includes(content: any): TPredicate
 
   export function not(pattern: TPattern): TPredicate
@@ -211,15 +230,15 @@ declare module 'match-iz' {
    */
   export function pluck(predicate?: TPredicate): TPredicate
 
-  export const isArray: TPredicate
-  export const isDate: TPredicate
-  export const isFunction: TPredicate
-  export const isNumber: TPredicate
-  export const isPojo: TPredicate
-  export const isRegExp: TPredicate
-  export const isString: TPredicate
+  export const isArray: TPredicateAsserting<any[]>
+  export const isDate: TPredicateAsserting<Date>
+  export const isFunction: TPredicateAsserting<Function>
+  export const isNumber: TPredicateAsserting<number>
+  export const isPojo: TPredicateAsserting<object>
+  export const isRegExp: TPredicateAsserting<RegExp>
+  export const isString: TPredicateAsserting<string>
   export const isStrictly: TPredicate
-  export const isIterable: TPredicate
+  export const isIterable: TPredicateAsserting<Iterable<any>>
 
   /**
    * @example
