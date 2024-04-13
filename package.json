@@ -19,17 +19,20 @@
     ".": {
       "import": "./dist/index.mjs",
       "require": "./dist/index.js",
-      "default": "./dist/index.js"
+      "default": "./dist/index.js",
+      "types": "./index.d.ts"
     },
     "./dates": {
       "import": "./dates/index.mjs",
       "require": "./dates/index.js",
-      "default": "./dates/index.js"
+      "default": "./dates/index.js",
+      "types": "./dates/index.d.ts"
     },
     "./dates/utc": {
       "import": "./dates/utc/index.mjs",
       "require": "./dates/utc/index.js",
-      "default": "./dates/utc/index.js"
+      "default": "./dates/utc/index.js",
+      "types": "./dates/utc/index.d.ts"
     },
     "./package.json": "./package.json"
   },
