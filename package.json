@@ -58,7 +58,7 @@
   },
   "scripts": {
     "test": "node ./tests/run.mjs",
-    "lint": "pnpx eslint src/*.mjs dates/**/*.mjs tests/*.mjs",
+    "lint": "eslint src/*.mjs dates/**/*.mjs tests/*.mjs",
     "build": "pnpm run build:esbuild",
     "build:check": "node ./tests/browser.js",
     "build:clean": "rimraf dist/ dates/index.js dates/utc/index.js; mkdir -p dist/",
