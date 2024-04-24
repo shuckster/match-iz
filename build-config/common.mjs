@@ -58,7 +58,7 @@ function optionsFrom(pkg) {
     }
   ]
 
-  const globalName = pkg.name.replace(/[^a-zA-Z]/gi, '')
+  const globalName = pkg.name.replace(/[^a-zA-Z]/g, '')
 
   function addBanner(build = '') {
     return `/*
