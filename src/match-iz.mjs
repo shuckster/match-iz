@@ -85,7 +85,9 @@ const against =
           ? { key: value[0], value: value[1] }
           : [...consumed]
       )
-      if (found) return result
+      if (found) {
+        return result;
+      }
     } while (consumed.length < iterationLimit || kind.isSet || kind.isMap)
 
     throw new Error(
@@ -107,6 +109,10 @@ const find = (...needles) => {
   }
 }
 
+const restFnKey = '@@match-iz/rest';
+const hasRestFn = x => isFunction(x?.[restFnKey]);
+const restFnFrom = x => x[restFnKey];
+
 const symOtherwise = Symbol('@@match-iz/otherwise')
 const isOtherwise = x => x?.[symOtherwise] === true
 
@@ -119,15 +125,19 @@ const otherwise = handler => {
   return matcher
 }
 
-const curriedWhen = needle => handler => haystack => ({
-  matched: () => found(needle, haystack, value => (haystack = value)),
-  value: () =>
-    !isFunction(handler)
-      ? handler
-      : isString(haystack) && isRegExp(needle)
-      ? handler(...argsFrom(haystack.match(needle)))
-      : handler(haystack)
-})
+const curriedWhen = needle => handler => haystack => {
+  const ctx = { haystack };
+  return {
+    matched: () =>
+      found(needle, haystack, value => (haystack = value), ctx),
+    value: () =>
+      !isFunction(handler)
+        ? handler
+        : isString(haystack) && isRegExp(needle)
+        ? handler(...argsFrom(haystack.match(needle), ctx.rest))
+        : handler(haystack, ctx.rest),
+  }
+};
 
 const when = (...args) => {
   if (args.length === 1) {
@@ -151,14 +161,25 @@ const argsFrom = regExpMatchResult => {
   return groups ? [groups, regExpMatchResult] : [regExpMatchResult]
 }
 
-const found = (needle, haystack, pick) =>
+const found = (needle, haystack, pick, ctx = { haystack }) =>
   isPojo(needle)
-    ? keys(needle).every(key => found(needle[key], haystack?.[key], pick))
+    ? keys(needle).every(key => {
+        ctx.consumedKeys = ctx.consumedKeys || [];
+        ctx.consumedKeys.push(key);
+        ctx.key = key;
+        return found(needle[key], haystack?.[key], pick, ctx)
+      })
     : isArray(needle)
     ? isArray(haystack) &&
-      needle.every((one, index) => found(one, haystack?.[index], pick))
+      needle.every((one, index) => {
+        const value = hasRestFn(one)
+          ? restFnFrom(one) 
+          : one;
+        ctx.key = index;
+        return found(value, haystack?.[index], pick, ctx)
+      })
     : isFunction(needle)
-    ? needle(haystack, pick)
+    ? needle(haystack, pick, ctx)
     : isString(haystack) && isRegExp(needle)
     ? needle.test(haystack)
     : needle === haystack || [needle, haystack].every(Number.isNaN)
@@ -170,6 +191,49 @@ const pluck =
     (isFunction(A[0]) ? A[0](value) : found(A[0], value, pick))
       ? (pick(value), true)
       : false
+
+const rest = (...A) => {
+  const restMatcher = A.length === 0 ? () => true : A[0];
+  const valReducer = ctx => (acc, key) => assign(acc, { [key]: ctx.haystack[key] });
+  const restReducer = (acc, key) => assign(acc, { [key]: restMatcher });
+
+  return {
+    [restFnKey]: (value, pick, ctx) => {
+      if (isPojo(ctx.haystack)) {
+        const consumedKeys = [];
+        const restKeys = keys(ctx.haystack).reduce((acc, key) => {
+          if ((ctx.consumedKeys || []).includes(key)) {
+            consumedKeys.push(key);
+          } else {
+            acc.push(key);
+          }
+          return acc;
+        }, []);
+        const leftObj = consumedKeys.reduce(valReducer(ctx), {});
+        const rightObj = restKeys.reduce(restReducer, {});
+        const matched = found(assign({}, leftObj, rightObj), ctx.haystack, pick);
+        if (matched) {
+          ctx.rest = restKeys.reduce(valReducer(ctx), {});
+        }
+        return matched;
+      }
+
+      if (isArray(ctx.haystack)) {
+        const left = ctx.haystack.slice(0, ctx.key);
+        const right = ctx.haystack.slice(ctx.key).map(
+          () => restMatcher,
+        );
+        const matched = found(left.concat(right), ctx.haystack, pick);
+        if (matched) {
+          ctx.rest = ctx.haystack.slice(ctx.key);
+        }
+        return matched;
+      }
+
+      return false;
+    }
+  }
+}
 
 //
 // Matchers
@@ -296,7 +360,7 @@ const ifArrayOrString = fn => (haystack, pick) =>
 // Expose
 //
 
-export { against, match, when, otherwise, pluck }
+export { against, match, when, otherwise, pluck, rest }
 export { eq, deepEq, not, anyOf, allOf, firstOf, lastOf, every, some, spread }
 export { cata, instanceOf, hasOwn }
 export { defined, empty, truthy, falsy }
@@ -304,3 +368,4 @@ export { startsWith, endsWith, includes, includedIn }
 export { gt, lt, gte, lte, inRange, isStrictly, isIterable }
 export { isArray, isDate, isFunction, isNumber, isPojo, isRegExp, isString }
 export { getIterationLimit, setIterationLimit }
+

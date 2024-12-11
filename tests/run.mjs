@@ -1,4 +1,4 @@
-import { strict } from 'assert'
+import { strict, deepStrictEqual } from 'assert'
 
 import { isArray, isDate, isNumber, isPojo, isString } from '../src/types.mjs'
 import { maybeTry, safe } from './maybe.mjs'
@@ -12,6 +12,7 @@ const { eq, deepEq, allOf, anyOf, not, defined, empty } = lib
 const { gt, lt, gte, lte, inRange, startsWith, endsWith } = lib
 const { includes, includedIn, hasOwn, cata, pluck } = lib
 const { firstOf, lastOf, some, every, isStrictly } = lib
+const { rest } = lib
 
 const { just, nothing } = cata({
   just: m => m?.isJust,
@@ -1364,7 +1365,81 @@ const testCases = [
         strict.notStrictEqual(threw, false)
       }
     }
-  ]
+  ],
+  [
+    'rest() arrays',
+    {
+      cases: [
+        {
+          input: [1, 2, 3, 4],
+          expecting: '1'
+        },
+        {
+          input: [1, 2, '3', '4'],
+          expecting: '2'
+        },
+        {
+          input: [4, 3, '2', '1'],
+          expecting: '3'
+        },
+        {
+          input: [9, true, '8', {}],
+          expecting: '4'
+        },
+      ],
+      run: (assertCase, input) => {
+        const result = match(input)(
+          when([1, 2, rest(isNumber)], (_, rest) => {
+            deepStrictEqual(rest, [3, 4]);
+            return '1'
+          }),
+          when([1, 2, rest(isString)], (_, rest) => {
+            deepStrictEqual(rest, ['3', '4']);
+            return '2'
+          }),
+          when([4, 3, rest(isString)], (_, rest) => {
+            deepStrictEqual(rest, ['2', '1']);
+            return '3'
+          }),
+          when([9, rest()], (_, rest) => {
+            deepStrictEqual(rest, [true, '8', {}]);
+            return '4'
+          }),
+          otherwise('5'),
+        )
+        assertCase(result)
+      }
+    }
+  ],
+  [
+    'rest() objects',
+    {
+      cases: [
+        {
+          input: { one: 1, two: 2, three: 3 },
+          expecting: '1'
+        },
+        {
+          input: { nine: 9, yes: true, hi: 'greetings!' },
+          expecting: '2'
+        },
+      ],
+      run: (assertCase, input) => {
+        const result = match(input)(
+          when({ one: 1, ...rest(isNumber) }, (haystack, rest) => {
+            deepStrictEqual(rest, { two: 2, three: 3 });
+            return '1'
+          }),
+          when({ nine: 9, ...rest() }, (haystack, rest) => {
+            deepStrictEqual(rest, { yes: true, hi: 'greetings!' });
+            return '2'
+          }),
+          otherwise('3'),
+        )
+        assertCase(result)
+      }
+    }
+  ],
 ]
 
 function daysMs(n) {
