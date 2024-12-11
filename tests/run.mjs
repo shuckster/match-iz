@@ -577,8 +577,8 @@ const testCases = [
             when([1, NaN])('1 NaN'),
             when([2, isNaN])('2 NaN'),
             when([3, Number.isNaN])('3 NaN'),
-            when([4, Number.isNaN, [NaN]])('4 NaN'),
             when([4, isNaN, [NaN, 'b']])('5 NaN'),
+            when([4, Number.isNaN, [NaN]])('4 NaN'),
             otherwise('oops')
           )
         )

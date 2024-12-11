@@ -156,7 +156,6 @@ const found = (needle, haystack, pick) =>
     ? keys(needle).every(key => found(needle[key], haystack?.[key], pick))
     : isArray(needle)
     ? isArray(haystack) &&
-      needle.length === haystack.length &&
       needle.every((one, index) => found(one, haystack?.[index], pick))
     : isFunction(needle)
     ? needle(haystack, pick)
