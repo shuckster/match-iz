@@ -495,7 +495,7 @@ const testCases = [
     }
   ],
   [
-    'Matching an array against an array instead of literals/objects',
+    'Matching an array against an eq(array)',
     {
       cases: [
         { input: ['1', '', undefined, ''], expecting: 'one' },
@@ -512,10 +512,10 @@ const testCases = [
         const _ = empty
         assertCase(
           match(input)(
-            when(['1', _, _, _])('one'),
-            when([_, '2', _, _])('two, four items'),
-            when([_, '2'])('two, two items'),
-            when([_, '2', _])('two, three items'),
+            when(eq(['1', _, _, _]))('one'),
+            when(eq([_, '2', _, _]))('two, four items'),
+            when(eq([_, '2']))('two, two items'),
+            when(eq([_, '2', _]))('two, three items'),
             otherwise('nope')
           )
         )

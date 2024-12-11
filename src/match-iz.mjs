@@ -177,7 +177,11 @@ const pluck =
 //
 
 const equalNumberOfValues = (left, right) =>
-  [left, right].every(isPojo) ? keys(left).length === keys(right).length : true
+  [left, right].every(isArray)
+    ? left.length === right.length
+    : [left, right].every(isPojo)
+    ? keys(left).length === keys(right).length
+    : true;
 
 const eq = needle => (haystack, pick) =>
   equalNumberOfValues(needle, haystack) && found(needle, haystack, pick)
