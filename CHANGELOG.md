@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Updated 
+
+- `eq` now works with arrays as well as objects. Change made in order to 
+  support v5 `rest` helper, since that will require a breaking-change for which 
+  the updated `eq` is the fallback for.
+
+```javascript 
+match([1, 2, 3])(
+  when(eq([1, 2]), 1),
+  when(eq([1, 2, 3]), 2),
+  otherwise(3),
+)
+// 2
+```
+
 ## [4.0.4] - 2024-04-14
 
 ### Fixed
