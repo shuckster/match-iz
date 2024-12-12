@@ -1,7 +1,7 @@
 import * as lib from 'match-iz'
 
 const { match, against, when, otherwise } = lib
-const { allOf, anyOf, every, inRange, lt, gt } = lib
+const { allOf, anyOf, every, inRange, lt, gt, eq } = lib
 const { isArray, isDate, isFunction, isNumber } = lib
 
 import { dateSet, range, ifDate, byLastIndex, byIndex } from '../utils.mjs'
@@ -138,15 +138,15 @@ const rxYears = /^(y|years?)/i
 
 const inThePast = (...args) =>
   match(args)(
-    when([])(() => isTime(lt(Date.now()))),
-    when([isNumber, rxMs])(inTimeRange(-msInMs)),
-    when([isNumber, rxSecs])(inTimeRange(-secsInMs)),
-    when([isNumber, rxMins])(inTimeRange(-minsInMs)),
-    when([isNumber, rxHours])(inTimeRange(-hoursInMs)),
-    when([isNumber, rxDays])(inTimeRange(-daysInMs)),
-    when([isNumber, rxWeeks])(inTimeRange(-weeksInMs)),
-    when([isNumber, rxMonths])(inTimeRange(-monthsInMs)),
-    when([isNumber, rxYears])(inTimeRange(-yearsInMs)),
+    when(eq([]))(() => isTime(lt(Date.now()))),
+    when(eq([isNumber, rxMs]))(inTimeRange(-msInMs)),
+    when(eq([isNumber, rxSecs]))(inTimeRange(-secsInMs)),
+    when(eq([isNumber, rxMins]))(inTimeRange(-minsInMs)),
+    when(eq([isNumber, rxHours]))(inTimeRange(-hoursInMs)),
+    when(eq([isNumber, rxDays]))(inTimeRange(-daysInMs)),
+    when(eq([isNumber, rxWeeks]))(inTimeRange(-weeksInMs)),
+    when(eq([isNumber, rxMonths]))(inTimeRange(-monthsInMs)),
+    when(eq([isNumber, rxYears]))(inTimeRange(-yearsInMs)),
     otherwise(() => {
       throw new Error('inThePast: invalid arguments')
     })
@@ -154,15 +154,15 @@ const inThePast = (...args) =>
 
 const inTheNext = (...args) =>
   match(args)(
-    when([])(() => isTime(gt(Date.now()))),
-    when([isNumber, rxMs])(inTimeRange(msInMs)),
-    when([isNumber, rxSecs])(inTimeRange(secsInMs)),
-    when([isNumber, rxMins])(inTimeRange(minsInMs)),
-    when([isNumber, rxHours])(inTimeRange(hoursInMs)),
-    when([isNumber, rxDays])(inTimeRange(daysInMs)),
-    when([isNumber, rxWeeks])(inTimeRange(weeksInMs)),
-    when([isNumber, rxMonths])(inTimeRange(monthsInMs)),
-    when([isNumber, rxYears])(inTimeRange(yearsInMs)),
+    when(eq([]))(() => isTime(gt(Date.now()))),
+    when(eq([isNumber, rxMs]))(inTimeRange(msInMs)),
+    when(eq([isNumber, rxSecs]))(inTimeRange(secsInMs)),
+    when(eq([isNumber, rxMins]))(inTimeRange(minsInMs)),
+    when(eq([isNumber, rxHours]))(inTimeRange(hoursInMs)),
+    when(eq([isNumber, rxDays]))(inTimeRange(daysInMs)),
+    when(eq([isNumber, rxWeeks]))(inTimeRange(weeksInMs)),
+    when(eq([isNumber, rxMonths]))(inTimeRange(monthsInMs)),
+    when(eq([isNumber, rxYears]))(inTimeRange(yearsInMs)),
     otherwise(() => {
       throw new Error('inTheNext/inTheFuture: invalid arguments')
     })
@@ -171,8 +171,8 @@ const inTheNext = (...args) =>
 const parseDateBefore = args =>
   match(args)(
     when(anyOf(isDate, isNumber))(x => new Date(x)),
-    when([isNumber])(([year]) => new Date(Date.UTC(year, 0, 1))),
-    when([isNumber, isNumber])(
+    when(eq([isNumber]))(([year]) => new Date(Date.UTC(year, 0, 1))),
+    when(eq([isNumber, isNumber]))(
       ([year, month]) => new Date(Date.UTC(year, month - 1, 1))
     ),
     when(allOf(isArray, { length: inRange(3, 7) }, every(isNumber)))(
@@ -184,11 +184,11 @@ const parseDateBefore = args =>
 const parseDateAfter = args =>
   match(args)(
     when(anyOf(isDate, isNumber))(x => new Date(x)),
-    when([isNumber])(([year]) => new Date(Date.UTC(year + 1, 0, 0))),
-    when([isNumber, isNumber])(
+    when(eq([isNumber]))(([year]) => new Date(Date.UTC(year + 1, 0, 0))),
+    when(eq([isNumber, isNumber]))(
       ([year, month]) => new Date(Date.UTC(year, month, 0))
     ),
-    when([isNumber, isNumber, isNumber])(
+    when(eq([isNumber, isNumber, isNumber]))(
       ([year, month, day]) => new Date(Date.UTC(year, month - 1, day))
     ),
     when(allOf(isArray, { length: inRange(4, 7) }, every(isNumber)))(

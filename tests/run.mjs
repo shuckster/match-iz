@@ -575,11 +575,11 @@ const testCases = [
       run: (assertCase, input) => {
         assertCase(
           match(input)(
-            when([1, NaN])('1 NaN'),
-            when([2, isNaN])('2 NaN'),
-            when([3, Number.isNaN])('3 NaN'),
-            when([4, isNaN, [NaN, 'b']])('5 NaN'),
-            when([4, Number.isNaN, [NaN]])('4 NaN'),
+            when(eq([1, NaN]))('1 NaN'),
+            when(eq([2, isNaN]))('2 NaN'),
+            when(eq([3, Number.isNaN]))('3 NaN'),
+            when(eq([4, isNaN, [NaN, 'b']]))('5 NaN'),
+            when(eq([4, Number.isNaN, [NaN]]))('4 NaN'),
             otherwise('oops')
           )
         )
@@ -1283,7 +1283,7 @@ const testCases = [
       ],
       run: (assertCase, input) => {
         const result = match(input)(
-          when([1, 2, 3], 'aha!'),
+          when(eq([1, 2, 3]), 'aha!'),
           when(lastOf('c', 'd'), 'gotcha!'),
           when(lastOf(99, 100), 'range!'),
           when({ key: { id: pluck(defined) }, value: 'b' })(
@@ -1316,7 +1316,7 @@ const testCases = [
       run: (assertCase, input) => {
         function matcher() {
           return match(arguments)(
-            when([1, 2, 3], 'aha!'),
+            when(eq([1, 2, 3]), 'aha!'),
             when(lastOf('c', 'd'), 'gotcha!'),
             when(lastOf(99, 100), 'range!'),
             otherwise('no match')
