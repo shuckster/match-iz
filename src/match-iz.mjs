@@ -194,6 +194,7 @@ const pluck =
 
 const rest = (...A) => {
   const restMatcher = A.length === 0 ? () => true : A[0];
+  const restMatchRtn = () => restMatcher
   const valReducer = ctx => (acc, key) => assign(acc, { [key]: ctx.haystack[key] });
   const restReducer = (acc, key) => assign(acc, { [key]: restMatcher });
 
@@ -220,9 +221,7 @@ const rest = (...A) => {
 
       if (isArray(ctx.haystack)) {
         const left = ctx.haystack.slice(0, ctx.key);
-        const right = ctx.haystack.slice(ctx.key).map(
-          () => restMatcher,
-        );
+        const right = ctx.haystack.slice(ctx.key).map(restMatchRtn);
         const matched = found(left.concat(right), ctx.haystack, pick);
         if (matched) {
           ctx.rest = ctx.haystack.slice(ctx.key);
