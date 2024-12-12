@@ -123,7 +123,7 @@ const otherwise = handler => {
   })
   matcher[symOtherwise] = true
   return matcher
-}
+};
 
 const curriedWhen = needle => handler => haystack => {
   const ctx = { haystack };
@@ -154,7 +154,7 @@ const when = (...args) => {
     return curriedWhen(allOf(needles))(handler)
   }
   throw new Error('Expected at least 1 argument')
-}
+};
 
 const argsFrom = regExpMatchResult => {
   const { groups } = regExpMatchResult
