@@ -1440,6 +1440,25 @@ const testCases = [
       }
     }
   ],
+  [
+    'match exact items in array only',
+    {
+      cases: [
+        {
+          input: [1, 2, 3],
+          expecting: '1'
+        },
+      ],
+      run: (assertCase, input) => {
+        const result = match(input)(
+          when(allOf({ length: 3 }, [[1, 2, 3]]), '1'),
+          otherwise(false),
+        );
+
+        assertCase(result)
+      }
+    }
+  ],
 ]
 
 function daysMs(n) {
