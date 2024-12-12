@@ -821,6 +821,43 @@ const testCases = [
     }
   ],
   [
+    'inTheNext(...) regression',
+    {
+      cases: [
+        {
+          input: {
+            name: 'days',
+            dates: datesFrom({ startDate: [2024, 12, 12], days: 10 })
+          },
+          expecting: 5
+        },
+        {
+          input: {
+            name: 'months',
+            dates: datesFrom({ startDate: [2024, 12, 12], days: 300 })
+          },
+          expecting: 180
+        }
+      ],
+      run: (assertCase, input) => {
+        const days = input.dates.filter(
+          against(
+            when(
+              allOf(() => input.name === 'days', utc.inTheNext(5, 'days')),
+              true
+            ),
+            when(
+              allOf(() => input.name === 'months', utc.inTheNext(6, 'months')),
+              true
+            ),
+            otherwise(false)
+          )
+        )
+        assertCase(days.length)
+      }
+    }
+  ],
+  [
     'inTheNext(...)',
     {
       cases: [
