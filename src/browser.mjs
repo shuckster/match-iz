@@ -1,6 +1,6 @@
 // Core
 //
-export { against, match, when, otherwise, pluck } from './match-iz.mjs'
+export { against, match, when, otherwise, pluck, rest } from './match-iz.mjs'
 export { eq, deepEq, not, anyOf, allOf, spread } from './match-iz.mjs'
 export { cata, instanceOf, hasOwn } from './match-iz.mjs'
 export { defined, empty, truthy, falsy } from './match-iz.mjs'
