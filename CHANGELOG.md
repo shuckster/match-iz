@@ -7,6 +7,85 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### BREAKING
+
+- Exact array matches now require `eq`:
+
+```javascript 
+// <= match-iz@4
+match([1, 2, 3])(
+  when([1, 2], 1),
+  when([1, 2, 3], 2),
+  otherwise(3),
+)
+// 2 (array-matching was exact by default)
+
+// v5 onwards:
+match([1, 2, 3])(
+  when([1, 2], 1),
+  when([1, 2, 3], 2),
+  otherwise(3),
+)
+// 1 (because array-matching is now partial)
+
+match([1, 2, 3])(
+  when(eq([1, 2]), 1),
+  when(eq([1, 2, 3]), 2),
+  otherwise(3),
+)
+// 2 (use `eq` to make array-matching exact)
+```
+
+Notice with v5 that array matching is now partial, hence the first example 
+returning `1` instead of `2` as in `<=v4`.
+
+### Added
+
+- `rest` introduced for slurping the values of arrays or objects:
+
+```javascript
+// Objects
+match({ one: 1, two: 2, three: 3 })(
+  when({ one: 1, ...rest(isNumber) }, (_, rest) => {
+    console.log(rest);
+    // { two: 2, three: 3 }
+  }),
+)
+
+// Arrays
+match([1, 2, 3])(
+  when([1, rest(isNumber)], (_, rest) => {
+    console.log(rest);
+    // [2, 3]
+  }),
+)
+
+```
+
+Notice `rest()` is used for arrays, and `...rest()` for objects.
+
+You can omit the argument to `rest` to match/capture everything:
+
+```javascript 
+// Objects
+match({ one: 1, two: 2, three: 'three' })(
+  when({ one: 1, ...rest() }, (_, rest) => {
+    console.log(rest);
+    // { two: 2, three: 'three' }
+  }),
+)
+
+// Arrays
+match([1, 2, 'three'])(
+  when([1, rest()], (_, rest) => {
+    console.log(rest);
+    // [2, 'three']
+  }),
+)
+```
+
+Caveat: `rest` cannot yet be nested in sub-arrays or sub-objects.
+
 ### Updated 
 
 - `eq` now works with arrays as well as objects. Change made in order to 
