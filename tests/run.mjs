@@ -1423,6 +1423,10 @@ const testCases = [
           input: { nine: 9, yes: true, hi: 'greetings!' },
           expecting: '2'
         },
+        {
+          input: { nine: '9', no: false, hi: 'ahoyhoy!' },
+          expecting: '3'
+        },
       ],
       run: (assertCase, input) => {
         const result = match(input)(
@@ -1434,7 +1438,11 @@ const testCases = [
             deepStrictEqual(rest, { yes: true, hi: 'greetings!' });
             return '2'
           }),
-          otherwise('3'),
+          when({ nine: '9', ...rest() }, (haystack, rest) => {
+            deepStrictEqual(rest, { no: false, hi: 'ahoyhoy!' });
+            return '3'
+          }),
+          otherwise('4'),
         )
         assertCase(result)
       }
