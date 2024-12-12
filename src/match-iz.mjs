@@ -186,9 +186,9 @@ const found = (needle, haystack, pick, ctx = { haystack }) =>
 
 const pluck =
   (...A) =>
-  (value, pick) =>
+  (value, pick, ctx) =>
     A.length === 0 ||
-    (isFunction(A[0]) ? A[0](value) : found(A[0], value, pick))
+    (isFunction(A[0]) ? A[0](value) : found(A[0], value, pick, ctx))
       ? (pick(value), true)
       : false
 
@@ -246,41 +246,41 @@ const equalNumberOfValues = (left, right) =>
     ? keys(left).length === keys(right).length
     : true;
 
-const eq = needle => (haystack, pick) =>
-  equalNumberOfValues(needle, haystack) && found(needle, haystack, pick)
+const eq = needle => (haystack, pick, ctx) =>
+  equalNumberOfValues(needle, haystack) && found(needle, haystack, pick, ctx)
 
 const deepEq = needle => walk(needle, x => (isPojo(x) ? eq(x) : x))
 
-const not = needle => (haystack, pick) => !found(needle, haystack, pick)
+const not = needle => (haystack, pick, ctx) => !found(needle, haystack, pick, ctx)
 
 const anyOf =
   (...these) =>
-  (haystack, pick) =>
-    these.flat().some(needle => found(needle, haystack, pick))
+  (haystack, pick, ctx) =>
+    these.flat().some(needle => found(needle, haystack, pick, ctx))
 
 const allOf =
   (...these) =>
-  (haystack, pick) =>
-    these.flat().every(needle => found(needle, haystack, pick))
+  (haystack, pick, ctx) =>
+    these.flat().every(needle => found(needle, haystack, pick, ctx))
 
 const every = needle =>
-  ifArray(haystack => haystack.every(hs => found(needle, hs)))
+  ifArray((haystack, pick, ctx) => haystack.every(hs => found(needle, hs, pick, ctx)))
 
 const some = needle =>
-  ifArray(haystack => haystack.some(hs => found(needle, hs)))
+  ifArray((haystack, pick, ctx) => haystack.some(hs => found(needle, hs, pick, ctx)))
 
 const firstOf = (...needles) =>
   ifArrayOrString(
-    (haystack, pick) =>
+    (haystack, pick, ctx) =>
       needles.length <= haystack.length &&
-      found(needles, haystack.slice(0, needles.length), pick)
+      found(needles, haystack.slice(0, needles.length), pick, ctx)
   )
 
 const lastOf = (...needles) =>
   ifArrayOrString(
-    (haystack, pick) =>
+    (haystack, pick, ctx) =>
       needles.length <= haystack.length &&
-      found(needles, haystack.slice(haystack.length - needles.length), pick)
+      found(needles, haystack.slice(haystack.length - needles.length), pick, ctx)
   )
 
 const empty = value =>
@@ -350,11 +350,11 @@ const spread = fn => new Proxy({}, { get: () => fn })
 const ifString = fn => value => isString(value) && fn(value)
 const ifNumber = fn => value => isNumber(value) && fn(value)
 
-const ifArray = fn => (haystack, pick) =>
-  isArray(haystack) && fn(haystack, pick)
+const ifArray = fn => (haystack, pick, ctx) =>
+  isArray(haystack) && fn(haystack, pick, ctx)
 
-const ifArrayOrString = fn => (haystack, pick) =>
-  (isArray(haystack) || isString(haystack)) && fn(haystack, pick)
+const ifArrayOrString = fn => (haystack, pick, ctx) =>
+  (isArray(haystack) || isString(haystack)) && fn(haystack, pick, ctx)
 
 //
 // Expose
