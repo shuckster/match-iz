@@ -1511,12 +1511,13 @@ function daysMs(n) {
 }
 
 function datesFrom({ startDate, days }) {
+  const { isYear, isMonth, isDay, isEpoch } = spread(isNumber);
   const refDate = match(startDate)(
-    when([isNumber, isNumber, isNumber])(x => {
+    when([isYear, isMonth, isDay])(x => {
       const [year, month, day] = x
-      return new Date(Date.UTC(year, month - 1, day))
+      return new Date(Date.UTC(year, month - 1, day, 0, 0, 0))
     }),
-    when(isNumber)(x => new Date(x)),
+    when(isEpoch)(x => new Date(x)),
     when(isDate)(x => x)
   )
   return Array.from(
