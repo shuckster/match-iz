@@ -1467,15 +1467,15 @@ const testCases = [
       ],
       run: (assertCase, input) => {
         const result = match(input)(
-          when({ one: 1, ...rest(isNumber) }, (haystack, rest) => {
+          when({ one: 1, ...rest(isNumber) }, (_, rest) => {
             deepStrictEqual(rest, { two: 2, three: 3 });
             return '1'
           }),
-          when({ nine: 9, ...rest() }, (haystack, rest) => {
+          when({ nine: 9, ...rest() }, (_, rest) => {
             deepStrictEqual(rest, { yes: true, hi: 'greetings!' });
             return '2'
           }),
-          when({ nine: '9', ...rest() }, (haystack, rest) => {
+          when({ nine: '9', ...rest() }, (_, rest) => {
             deepStrictEqual(rest, { no: false, hi: 'ahoyhoy!' });
             return '3'
           }),
