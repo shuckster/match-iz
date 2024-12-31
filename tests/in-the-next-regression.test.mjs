@@ -10,14 +10,14 @@ const testCases = [
   {
     input: {
       name: "days",
-      dates: datesFrom({ startDate: [2024, 12, 12, 0, 0, 0, 0], days: 10 }),
+      dates: datesFrom({ startDate: [2024, 12, 15, 0, 0, 0, 0], days: 10 }),
     },
     expecting: 5,
   },
   {
     input: {
       name: "months",
-      dates: datesFrom({ startDate: [2024, 12, 12, 0, 0, 0, 0], days: 300 }),
+      dates: datesFrom({ startDate: [2024, 12, 15, 0, 0, 0, 0], days: 300 }),
     },
     expecting: 180,
   },
@@ -26,7 +26,7 @@ const testCases = [
 describe("inTheNext(...) regression", () => {
   testCases.forEach(({ input, expecting }, index) => {
     test(desc(index, input, expecting), ctx => {
-      mockDate(ctx, Date.UTC(2024, 11, 12, 0, 0, 0, 0));
+      mockDate(ctx, Date.UTC(2024, 11, 15, 0, 0, 0, 0));
 
       const days = input.dates.filter(
         against(
