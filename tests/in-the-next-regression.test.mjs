@@ -28,8 +28,6 @@ describe("inTheNext(...) regression", () => {
     test(desc(index, input, expecting), ctx => {
       mockDate(ctx, Date.UTC(2024, 11, 12, 0, 0, 0, 0));
 
-      console.log("input.dates", input.dates);
-
       const days = input.dates.filter(
         against(
           when(
@@ -43,8 +41,6 @@ describe("inTheNext(...) regression", () => {
           otherwise(false),
         ),
       );
-
-      console.log("days", days);
 
       assert.strictEqual(days.length, expecting);
     });
