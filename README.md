@@ -36,7 +36,7 @@ A tiny functional, declarative [pattern-matching](https://github.com/tc39/propos
 
 Pattern-matching is a declarative version of `if` and `switch`, where you describe the expected shape of your data using "patterns".
 
-```js
+```javascript
 import { match, when, otherwise } from 'match-iz'
 
 let result = match(data)(
@@ -48,7 +48,7 @@ let result = match(data)(
 
 Patterns are a combination of both functions and data, and because of this certain assumptions can be made by `match-iz` to help reduce the amount of boilerplate normally required to check that your data looks a certain way:
 
-```js
+```javascript
 // Imperative:
 if (typeof res?.statusCode === 'number') {
   if (res.statusCode >= 200 && res.statusCode < 300) {
@@ -71,7 +71,7 @@ Many [pattern-helpers](https://github.com/shuckster/match-iz/wiki) are provided 
 
 Here are some of the date ones:
 
-```js
+```javascript
 const isLastSundayOfMarch = allOf(nthSun(-1), isMar)
 const isTheWeekend = anyOf(allOf(isFri, isEvening), isSat, isSun)
 
@@ -113,7 +113,7 @@ function getResponse(res) {
 
 </details>
 
-```js
+```javascript
 function getResponse(res) {
   return match(res)(
     when({ statusCode: inRange(200, 299) }, () => res.body),
@@ -150,7 +150,7 @@ function performSearch(...args) {
 
 </details>
 
-```js
+```javascript
 function performSearch(...args) {
   return match(args)(
     when(eq([isString]), ([pattern]) => find({ pattern })),
@@ -187,7 +187,7 @@ function AccountPage(props) {
 
 </details>
 
-```js
+```javascript
 function AccountPage(props) {
   return match(props)(
     when({ loading: defined }, <Loading />),
@@ -225,7 +225,7 @@ function calculateExpr(expr) {
 
 </details>
 
-```js
+```javascript
 function calculateExpr(expr) {
   return match(expr)(
     when(/(?<left>\d+) \+ (?<right>\d+)/, groups =>
@@ -245,7 +245,7 @@ function calculateExpr(expr) {
 $ pnpm i match-iz
 ```
 
-```js
+```javascript
 // ESM
 import { match, ...etc } from 'match-iz'
 import { isSat, ...etc } from 'match-iz/dates'
