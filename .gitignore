@@ -5,3 +5,4 @@ pnpm-debug.log
 publish.sh
 tempCodeRunnerFile.*
 wiki
+.prs_config
