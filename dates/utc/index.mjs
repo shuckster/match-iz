@@ -115,7 +115,8 @@ const isTime = against(
 // prettier-ignore
 const inTimeRange = (mul) => ([nth]) => {
   const now = Date.now()
-  return isTime(inRange(now, now + (nth * mul)))
+  // TODO: Why does in-the-next-regression.test.mjs fail without -1?
+  return isTime(inRange(now, now + (nth * mul) - 1))
 }
 
 const msInMs = 1
