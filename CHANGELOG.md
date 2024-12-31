@@ -7,12 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [5.0.0] - 2024-12-31
+
 ### BREAKING
 
 - Exact array matches now require `eq`:
 
 ```javascript 
-// <= match-iz@4
+//
+// <= match-iz@4 behaviour
+// 
+
 match([1, 2, 3])(
   when([1, 2], 1),
   when([1, 2, 3], 2),
@@ -20,7 +25,10 @@ match([1, 2, 3])(
 )
 // 2 (array-matching was exact by default)
 
-// v5 onwards:
+//
+// v5 behaviour onwards:
+//
+
 match([1, 2, 3])(
   when([1, 2], 1),
   when([1, 2, 3], 2),
@@ -41,7 +49,7 @@ returning `1` instead of `2` as in `<=v4`.
 
 ### Added
 
-- `rest` introduced for slurping the values of arrays or objects:
+- `rest` introduced for slurping remaining values of arrays or objects:
 
 ```javascript
 // Objects
