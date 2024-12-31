@@ -153,9 +153,9 @@ function performSearch(...args) {
 ```js
 function performSearch(...args) {
   return match(args)(
-    when([isString], ([pattern]) => find({ pattern })),
-    when([isPojo], ([options]) => find(options)),
-    when([isString, isPojo], ([pattern, options]) =>
+    when(eq([isString]), ([pattern]) => find({ pattern })),
+    when(eq([isPojo]), ([options]) => find(options)),
+    when(eq([isString, isPojo]), ([pattern, options]) =>
       find({ pattern, ...options })
     ),
     otherwise(() => {
