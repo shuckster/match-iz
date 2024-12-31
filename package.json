@@ -57,7 +57,7 @@
     "email": "bugs+match-iz@conans.co.uk"
   },
   "scripts": {
-    "test": "node ./tests/run.mjs",
+    "test": "node --test ./tests/*.test.mjs",
     "lint": "eslint src/*.mjs dates/**/*.mjs tests/*.mjs",
     "build": "pnpm run build:esbuild",
     "build:check": "node ./tests/browser/exports.js",
