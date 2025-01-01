@@ -3,12 +3,7 @@ import { describe, test } from "node:test";
 
 import { eq, lastOf, match, otherwise, when } from "../src/match-iz.mjs";
 import { desc } from "./lib/describe.mjs";
-
-function* range(start, end) {
-  for (let i = start; i <= end; i++) {
-    yield i;
-  }
-}
+import { range } from "./lib/range.mjs";
 
 const testCases = [
   {
