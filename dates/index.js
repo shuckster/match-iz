@@ -1,6 +1,6 @@
 /*
  * match-iz
- * v5.0.0
+ * v5.0.1
  * https://github.com/shuckster/match-iz
  * License: MIT
  */
