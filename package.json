@@ -64,15 +64,18 @@
     "build:clean": "rimraf dist/ dates/index.js dates/utc/index.js; mkdir -p dist/",
     "build:all": "pnpm run build:clean ; pnpm run build ; pnpm run build:check",
     "build:watch": "pnpm run build:clean; nodemon ./build-config/esbuild.mjs",
-    "build:esbuild": "node ./build-config/esbuild.mjs"
+    "build:esbuild": "node ./build-config/esbuild.mjs",
+    "bench": "node ./bench/run.mjs"
   },
   "devDependencies": {
     "compose-paths": "^1.2.3",
     "dedent": "^0.7.0",
     "esbuild": "^0.18.20",
     "eslint": "^8.53.0",
+    "mitata": "^1.0.28",
     "nodemon": "^2.0.22",
     "rimraf": "^5.0.5",
+    "ts-pattern": "^5.6.0",
     "typescript": "^5.2.2"
   },
   "packageManager": "pnpm@9.12.1+sha512.e5a7e52a4183a02d5931057f7a0dbff9d5e9ce3161e33fa68ae392125b79282a8a8a470a51dfc8a0ed86221442eb2fb57019b0990ed24fab519bf0e1bc5ccfc4"

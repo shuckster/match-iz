@@ -27,6 +27,7 @@ A tiny functional, declarative [pattern-matching](https://github.com/tc39/propos
 
 - 👋 [Introduction](#introduction)
 - 👩‍🏫 [Before / After Examples](#before--after-examples)
+- 🏁 [Benchmarks](#benchmarks)
 - 📀 [Install / Use](#install--use)
 - 📖 [Documentation](https://github.com/shuckster/match-iz/wiki)
 - ✍️ [Credits](#credits)
@@ -258,6 +259,45 @@ function calculateExpr(expr) {
   )
 }
 ```
+
+## Benchmarks 
+
+There is a very small benchmarking suite that you can run yourself with:
+
+```sh
+pnpm run bench
+```
+
+Here's a run to give you an example without needing to go anywhere else:
+
+```sh 
+calculateExpr_vanilla         165.63 ns/iter 163.72 ns  █
+                     (160.47 ns … 194.63 ns) 187.64 ns  █
+                     (603.13 kb … 608.66 kb) 512.93 kb ▄█▇▂▂▂▁▁▁▁▁▁▁▁▁▂▃▂▂▁▁
+calculateExpr_matchiz_match   436.82 ns/iter 441.31 ns        █
+                     (418.42 ns … 689.60 ns) 479.57 ns  ▅     █▃
+                     (  2.65 mb …   2.86 mb) 879.46 kb ▆█▃▂▁▂▇██▄▂▁▁▁▁▁▁▁▁▁▁
+calculateExpr_matchiz_against 380.36 ns/iter 389.14 ns  █▅
+                     (368.65 ns … 409.00 ns) 398.41 ns  ██▅         ██
+                     (  1.71 mb …   1.73 mb) 987.37 kb ▄███▇▄▃▁▁▂▂▁▅████▃▃▃▁
+calculateExpr_tspattern       803.26 ns/iter 878.30 ns  ▄           █
+                       (632.93 ns … 1.24 µs) 995.19 ns  █           ██
+                     (  2.32 mb …   2.34 mb) 810.93 kb ▇█▁▁▁▁▁▁▁▁▂▁▆██▃▂▁▁▂▂
+
+                              ┌                                            ┐
+        calculateExpr_vanilla ┤ 165.63 ns
+  calculateExpr_matchiz_match ┤■■■■■■■■■■■■■■ 436.82 ns
+calculateExpr_matchiz_against ┤■■■■■■■■■■■ 380.36 ns
+      calculateExpr_tspattern ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 803.26 ns
+                              └                                            ┘
+```
+
+This compares `match-iz` with `ts-pattern`.
+
+Of course, when considering a library performance isn't the only thing that 
+might concern you. `ts-pattern` can calculate static-types for the patterns 
+described, while `match-iz` was written with JavaScripts dynamism in mind,
+and its TypeScript support is very basic and incomplete.
 
 # Install / Use:
 
