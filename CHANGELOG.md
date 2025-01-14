@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [5.0.1] - 2025-01-14
+
+### Added
+
+- Very basic benchmarks. Use `pnpm run bench`
+
+### Updated
+
+- README includes info about `rest`
+
 ## [5.0.0] - 2024-12-31
 
 ### BREAKING
