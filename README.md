@@ -84,6 +84,26 @@ match(new Date())(
 )
 ```
 
+[rest](https://github.com/shuckster/match-iz/wiki/Core-Library#rest) was introduced in `v5`:
+
+```javascript
+// For objects, use ...rest()
+match({ one: 1, two: 2, three: 3 })(
+  when({ one: 1, ...rest(isNumber) }, (_, rest) => {
+    console.log(rest);
+    // { two: 2, three: 3 }
+  }),
+)
+
+// For arrays, use rest()
+match([1, 2, 3])(
+  when([1, rest(isNumber)], (_, rest) => {
+    console.log(rest);
+    // [2, 3]
+  }),
+)
+```
+
 You can browse a few more [examples below](#before--after-examples), and full [documentation is over on the Github Wiki](https://github.com/shuckster/match-iz/wiki).
 
 ## Before / After Examples:
