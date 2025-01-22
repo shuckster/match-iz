@@ -1,17 +1,18 @@
 import { against, match, otherwise, when } from "match-iz";
 import { barplot, bench } from "mitata";
 import { match as pmatch, P } from "ts-pattern";
+import { MAX } from "./_iter.mjs";
 
 const add = (x, y) => Number(x) + Number(y);
 const subtract = (x, y) => Number(x) - Number(y);
 
-const OP = '+-'.split('');
+const OP = "+-".split("");
 const rint = () => Math.round(Math.random() * 100);
 const rop = () => OP[Math.floor(Math.random() * OP.length)];
 
 const makeInput = () => {
-  return rint() + ' ' + rop() + ' ' + rint();
-}
+  return rint() + " " + rop() + " " + rint();
+};
 
 function calculateExpr_vanilla(expr) {
   const rxAdd = /(?<left>\d+) \+ (?<right>\d+)/;
@@ -87,21 +88,20 @@ function calculateExpr_tspattern(expr) {
 
 export const calculateExpr = () => {
   barplot(() => {
-    bench("calculateExpr_vanilla", () => {
+    bench("calculateExpr_vanilla x $iter", () => {
       return calculateExpr_vanilla(makeInput());
-    });
+    }).range("iter", 1, MAX);
 
-    bench("calculateExpr_matchiz_match", () => {
+    bench("calculateExpr_matchiz_match x $iter", () => {
       return calculateExpr_matchiz_match(makeInput());
-    });
+    }).range("iter", 1, MAX);
 
-    bench("calculateExpr_matchiz_against", () => {
+    bench("calculateExpr_matchiz_against x $iter", () => {
       return calculateExpr_matchiz_against(makeInput());
-    });
+    }).range("iter", 1, MAX);
 
-    bench("calculateExpr_tspattern", () => {
+    bench("calculateExpr_tspattern x $iter", () => {
       return calculateExpr_tspattern(makeInput());
-    });
+    }).range("iter", 1, MAX);
   });
 };
-

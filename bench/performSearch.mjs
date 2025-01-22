@@ -1,6 +1,26 @@
 import { against, eq, isPojo, isString, match, otherwise, when } from "match-iz";
 import { barplot, bench } from "mitata";
 import { match as pmatch, P } from "ts-pattern";
+import { MAX } from "./_iter.mjs";
+
+function rString() {
+  return Math.random().toString(36).substring(2);
+}
+
+const ranges = {
+  string: () => rString(),
+};
+
+const patterns = [
+  () => [ranges.string()],
+  () => [{ pattern: ranges.string() }],
+  () => [ranges.string(), { pattern: ranges.string() }],
+];
+
+const makeInput = () => {
+  const key = Math.floor(Math.random() * patterns.length);
+  return patterns[key]();
+};
 
 const find = () => 1;
 
@@ -17,7 +37,7 @@ function performSearch_vanilla(...args) {
   if (args.length === 2 && isString(firstArg) && isPojo(secondArg)) {
     return find({ pattern: firstArg, ...secondArg });
   }
-  throw new Error("Invalid arguments");
+  throw new Error("Invalid arguments" + JSON.stringify({ cause: args }));
 }
 
 function performSearch_matchiz_match(...args) {
@@ -29,7 +49,7 @@ function performSearch_matchiz_match(...args) {
       ([pattern, options]) => find({ pattern, ...options }),
     ),
     otherwise(() => {
-      throw new Error("Invalid arguments");
+      throw new Error("Invalid arguments" + JSON.stringify({ cause: args }));
     }),
   );
 }
@@ -41,8 +61,8 @@ const performSearch_matchiz_against = against(
     eq([isString, isPojo]),
     ([pattern, options]) => find({ pattern, ...options }),
   ),
-  otherwise(() => {
-    throw new Error("Invalid arguments");
+  otherwise(args => {
+    throw new Error("Invalid arguments" + JSON.stringify({ cause: args }));
   }),
 );
 
@@ -55,27 +75,26 @@ function performSearch_tspattern(...args) {
       ([pattern, options]) => find({ pattern, ...options }),
     )
     .otherwise(() => {
-      throw new Error("Invalid arguments");
+      throw new Error("Invalid arguments" + JSON.stringify({ cause: args }));
     });
 }
 
 export const performSearch = () => {
   barplot(() => {
-    bench("performSearch_vanilla", () => {
-      return performSearch_vanilla({ pattern: "text" });
-    });
+    bench("performSearch_vanilla x $iter", () => {
+      return performSearch_vanilla(...makeInput());
+    }).range("iter", 1, MAX);
 
-    bench("performSearch_matchiz_match", () => {
-      return performSearch_matchiz_match({ pattern: "text" });
-    });
+    bench("performSearch_matchiz_match x $iter", () => {
+      return performSearch_matchiz_match(...makeInput());
+    }).range("iter", 1, MAX);
 
-    bench("performSearch_matchiz_against", () => {
-      return performSearch_matchiz_against([{ pattern: "text" }]);
-    });
+    bench("performSearch_matchiz_against x $iter", () => {
+      return performSearch_matchiz_against(makeInput());
+    }).range("iter", 1, MAX);
 
-    bench("performSearch_tspattern", () => {
-      return performSearch_tspattern({ pattern: "text" });
-    });
+    bench("performSearch_tspattern x $iter", () => {
+      return performSearch_tspattern(...makeInput());
+    }).range("iter", 1, MAX);
   });
 };
-
