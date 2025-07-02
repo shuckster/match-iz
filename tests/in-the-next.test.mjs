@@ -2,7 +2,7 @@ import assert from "node:assert";
 import { describe, test } from "node:test";
 
 import * as utc from "../dates/utc/index.mjs";
-import { against, allOf, otherwise, when } from "../src/match-iz.mjs";
+import { against, allOf, otherwise, when } from "match-iz";
 import { datesFrom } from "./lib/dates-from.mjs";
 import { desc } from "./lib/describe.mjs";
 

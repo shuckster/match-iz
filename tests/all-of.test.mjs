@@ -1,7 +1,7 @@
 import assert from "node:assert";
 import { describe, test } from "node:test";
 
-import { allOf, isArray, isPojo, match, not, when } from "../src/match-iz.mjs";
+import { allOf, isArray, isPojo, match, not, when, isNumber } from "match-iz";
 import { desc } from "./lib/describe.mjs";
 
 const testCases = [
@@ -15,6 +15,7 @@ describe("allOf() / AND", () => {
   testCases.forEach(({ input, expecting }, index) => {
     test(desc(index, input, expecting), () => {
       const output = match(input)(
+        when({ num: isNumber }, x => {}),
         when(allOf(isPojo, { option: "yes" }, { quantity: 1 }))("1"),
         when(allOf(isPojo, { option: "yes", quantity: 2 }))("2"),
         when(allOf(isPojo, { quantity: 3 }, { option: "yes" }))("3"),

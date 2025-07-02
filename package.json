@@ -68,10 +68,13 @@
     "bench": "node ./bench/run.mjs"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.20.0",
+    "@typescript-eslint/parser": "^8.20.0",
     "compose-paths": "^1.2.3",
     "dedent": "^0.7.0",
     "esbuild": "^0.18.20",
-    "eslint": "^8.53.0",
+    "eslint": "^9.18.0",
+    "globals": "^15.14.0",
     "mitata": "^1.0.28",
     "nodemon": "^2.0.22",
     "rimraf": "^5.0.5",

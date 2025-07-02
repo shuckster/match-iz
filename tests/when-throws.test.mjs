@@ -1,7 +1,7 @@
 import assert from "node:assert";
 import { describe, test } from "node:test";
 
-import { when } from "../src/match-iz.mjs";
+import { when } from "match-iz";
 import { maybeTry } from "./lib/maybe.mjs";
 
 describe("when() throws...", () => {

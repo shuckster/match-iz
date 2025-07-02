@@ -1,12 +1,20 @@
 {
   "compilerOptions": {
     "target": "ES2015",
+    "allowJs": true,
     "checkJs": true,
+    "noEmit": true,
+    "skipLibCheck": true,
     "paths": {
       "match-iz": ["./src/match-iz.mjs"],
       "match-iz/dates": ["./dates/index.mjs"],
       "match-iz/dates/utc": ["./dates/utc/index.mjs"]
     }
   },
-  "include": ["src/**/*", "dates/**/*"]
+  "include": [
+    "index.d.ts",
+    "src/**/*",
+    "dates/**/*",
+    "tests/**/*"
+  ]
 }

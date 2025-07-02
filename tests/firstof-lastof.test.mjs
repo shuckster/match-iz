@@ -1,7 +1,7 @@
 import assert from "node:assert";
 import { describe, test } from "node:test";
 
-import { firstOf, isNumber, isString, lastOf, match, when } from "../src/match-iz.mjs";
+import { firstOf, isNumber, isString, lastOf, match, when } from "match-iz";
 import { desc } from "./lib/describe.mjs";
 
 const testCases = [

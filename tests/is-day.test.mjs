@@ -2,7 +2,7 @@ import assert from "node:assert";
 import { describe, test } from "node:test";
 
 import * as local from "../dates/index.mjs";
-import { against, allOf, gt, otherwise, when } from "../src/match-iz.mjs";
+import { against, allOf, gt, otherwise, when } from "match-iz";
 import { datesFrom } from "./lib/dates-from.mjs";
 import { desc } from "./lib/describe.mjs";
 

@@ -1,7 +1,7 @@
 import assert from "node:assert";
 import { describe, test } from "node:test";
 
-import { match, otherwise, pluck, when } from "../src/match-iz.mjs";
+import { match, otherwise, pluck, when } from "match-iz";
 import { desc } from "./lib/describe.mjs";
 
 const cases = [

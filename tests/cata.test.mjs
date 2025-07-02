@@ -1,7 +1,7 @@
 import assert from "node:assert";
 import { describe, test } from "node:test";
 
-import { cata, isNumber, match, otherwise } from "../src/match-iz.mjs";
+import { cata, isNumber, match, otherwise } from "match-iz";
 import { desc } from "./lib/describe.mjs";
 import { safe } from "./lib/maybe.mjs";
 

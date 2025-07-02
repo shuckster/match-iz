@@ -1,7 +1,7 @@
 import assert from "node:assert";
 import { describe, test } from "node:test";
 
-import { gte, match, not, when } from "../src/match-iz.mjs";
+import { gte, match, not, when } from "match-iz";
 import { desc } from "./lib/describe.mjs";
 
 const testCases = [

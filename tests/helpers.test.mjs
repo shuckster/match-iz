@@ -1,7 +1,7 @@
 import assert from "node:assert";
 import { describe, test } from "node:test";
 
-import { defined, empty, endsWith, gt, gte, includes, inRange, lt, lte, match, startsWith, when } from "../src/match-iz.mjs";
+import { defined, empty, endsWith, gt, gte, includes, inRange, lt, lte, match, startsWith, when } from "match-iz";
 import { desc } from "./lib/describe.mjs";
 
 const testCases = [
