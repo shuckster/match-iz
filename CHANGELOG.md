@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [5.0.2] - 2025-07-02
+
+- Improved `index.d.ts` to give typings to `when()` callbacks and return-types 
+  for `match()` and `against()`. Not perfect, but better.
+
 ## [5.0.1] - 2025-01-14
 
 ### Added
