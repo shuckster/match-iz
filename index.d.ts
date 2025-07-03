@@ -9,7 +9,9 @@ type UnionToIntersection<U> = (
  * Recursively infers a TypeScript type from a match-iz pattern.
  * @template P - The type of the pattern.
  */
-export type PatternAsType<P> = P extends (value: unknown) => value is infer R
+export type PatternAsType<P> = P extends RegExp
+  ? RegExpMatchArray | Record<string, string | undefined> // Handle RegExp patterns
+  : P extends (value: unknown) => value is infer R
   ? R // Handle type guard predicates, extracting the guarded type.
   : P extends (value: infer V) => boolean
   ? V // Handle simple boolean predicates, inferring the input type.
