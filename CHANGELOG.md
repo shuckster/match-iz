@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [5.0.3] - 2025-07-04
+
+- Added JSDoc descriptions/examples back into `index.d.ts`
+
 ## [5.0.2] - 2025-07-02
 
 - Improved `index.d.ts` to give typings to `when()` callbacks and return-types 
