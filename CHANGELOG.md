@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [5.0.4] - 2025-07-17
+
+- Fill-out some more JSDoc into the typedef files.
+
 ## [5.0.3] - 2025-07-04
 
 - Added JSDoc descriptions/examples back into `index.d.ts`
