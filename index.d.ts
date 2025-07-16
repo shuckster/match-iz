@@ -32,7 +32,16 @@ type IntersectPatternTypes<P extends readonly unknown[]> = UnionToIntersection<
 export type TPredicateAsserting<Kind> = (value: unknown) => value is Kind;
 export type TPredicate<Input> = (value: Input) => boolean;
 export type TPattern<Input> = Input | TPredicate<Input>;
-export type THandler<Input, Output> = (value: Input) => Output;
+/**
+ * The type of the value captured by the `rest()` pattern matcher.
+ * It can be an array of values, an object with string keys and values, or undefined.
+ */
+export type TRestResult = unknown[] | Record<string, unknown> | undefined;
+
+export type THandler<Input, Output> = (
+  value: Input,
+  rest: TRestResult
+) => Output;
 
 export type TEvaluator<Input, Output> = {
   matched: (value: Input) => boolean;
@@ -911,13 +920,13 @@ declare module 'match-iz' {
    *
    * @param {TPattern} [pattern] - An optional pattern that the remaining items must match.
    * @returns {object} A special object to be used inside array or object patterns.
-   * @remarks When used in an array pattern, `rest()` should typically be the last element to capture the remaining elements. When used in an object pattern, it should be spread (`...rest()`) to capture remaining properties. The captured values are available in the handler as the second argument.
+   * @remarks When used in an array pattern, `rest()` should typically be the last element to capture the remaining elements. When used in an object pattern, it should be spread (`...rest()`) to capture remaining properties. The captured values are passed as the second argument to the handler, and their type will be `TRestResult`. You can use a type assertion in the handler if you have more specific knowledge about the shape of the rest value.
    * @example
    * // Array rest
    * import { match, when, rest, otherwise } from 'match-iz';
    *
    * const processArray = (arr) => match(arr)(
-   *   when([1, 2, rest()], ([one, two, ...rest]) => `Rest: ${rest.join(',')}`),
+   *   when([1, 2, rest()], (value, rest) => `Rest: ${(rest as number[]).join(',')}`),
    *   otherwise(() => 'No match')
    * );
    *
@@ -928,7 +937,7 @@ declare module 'match-iz' {
    * import { match, when, rest, otherwise } from 'match-iz';
    *
    * const processObject = (obj) => match(obj)(
-   *   when({ a: 1, ...rest() }, ({ a, ...rest }) => `Rest: ${JSON.stringify(rest)}`),
+   *   when({ a: 1, ...rest() }, (value, rest) => `Rest: ${JSON.stringify(rest)}`),
    *   otherwise(() => 'No match')
    * );
    *
