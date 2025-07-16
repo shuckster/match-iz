@@ -634,6 +634,48 @@ declare module 'match-iz' {
   export function includes(content: unknown): TPredicate;
 
   /**
+   * A predicate that checks if a value is equal to the pattern. It differs
+   * from the default pattern matching by requiring the value to have the
+   * same number of properties (for objects) or elements (for arrays) as
+   * the pattern.
+   *
+   * @template P - The pattern to match against.
+   * @param {P} pattern - The pattern to check for equality against.
+   * @returns {TPredicateAsserting<PatternAsType<P>>} A predicate function.
+   * @example
+   * import { match, when, eq, otherwise } from 'match-iz';
+   *
+   * const matchValue = (value) => match(value)(
+   *   when(eq({ a: 1 }), () => 'Matches { a: 1 }'),
+   *   otherwise(() => 'No match')
+   * );
+   *
+   * matchValue({ a: 1 }); // 'Matches { a: 1 }'
+   * matchValue({ a: 1, b: 2 }); // 'No match'
+   */
+  export function eq<P>(pattern: P): TPredicateAsserting<PatternAsType<P>>;
+
+  /**
+   * A predicate that checks for deep value equality, recursively applying
+   * `eq` to nested objects.
+   *
+   * @template P - The pattern to match against.
+   * @param {P} pattern - The pattern to check for deep equality against.
+   * @returns {TPredicateAsserting<PatternAsType<P>>} A predicate function.
+   * @example
+   * import { match, when, deepEq, otherwise } from 'match-iz';
+   *
+   * const matchValue = (value) => match(value)(
+   *   when(deepEq({ a: { b: 2 } }), () => 'Matches { a: { b: 2 } }'),
+   *   otherwise(() => 'No match')
+   * );
+   *
+   * matchValue({ a: { b: 2 } }); // 'Matches { a: { b: 2 } }'
+   * matchValue({ a: { b: 2, c: 3 } }); // 'No match'
+   */
+  export function deepEq<P>(pattern: P): TPredicateAsserting<PatternAsType<P>>;
+
+  /**
    * A predicate that negates the result of another pattern.
    *
    * @param {TPattern} pattern - The pattern to negate.
@@ -863,6 +905,36 @@ declare module 'match-iz' {
    * getStatus({});                  // 'No status'
    */
   export function pluck(predicate?: TPredicate): TPredicate;
+
+  /**
+   * Captures the remaining elements of an array or properties of an object.
+   *
+   * @param {TPattern} [pattern] - An optional pattern that the remaining items must match.
+   * @returns {object} A special object to be used inside array or object patterns.
+   * @remarks When used in an array pattern, `rest()` should typically be the last element to capture the remaining elements. When used in an object pattern, it should be spread (`...rest()`) to capture remaining properties. The captured values are available in the handler as the second argument.
+   * @example
+   * // Array rest
+   * import { match, when, rest, otherwise } from 'match-iz';
+   *
+   * const processArray = (arr) => match(arr)(
+   *   when([1, 2, rest()], ([one, two, ...rest]) => `Rest: ${rest.join(',')}`),
+   *   otherwise(() => 'No match')
+   * );
+   *
+   * processArray([1, 2, 3, 4]); // 'Rest: 3,4'
+   *
+   * @example
+   * // Object rest
+   * import { match, when, rest, otherwise } from 'match-iz';
+   *
+   * const processObject = (obj) => match(obj)(
+   *   when({ a: 1, ...rest() }, ({ a, ...rest }) => `Rest: ${JSON.stringify(rest)}`),
+   *   otherwise(() => 'No match')
+   * );
+   *
+   * processObject({ a: 1, b: 2, c: 3 }); // 'Rest: {"b":2,"c":3}'
+   */
+  export function rest(pattern?: TPattern): object;
 
   /**
    * A predicate that checks if a value is an array.
