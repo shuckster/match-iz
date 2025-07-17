@@ -1,3 +1,16 @@
+import type {
+  TPredicate,
+  TPredicateAsserting,
+  Plucked,
+  ExtractPlucked
+} from './common';
+
+// Helper: if a pluck appears anywhere in P, use that type; otherwise fallback to PatternAsType<P>
+type HandlerValue<P> =
+  ExtractPlucked<P> extends never
+    ? PatternAsType<P>
+    : ExtractPlucked<P>;
+
 // Helper type to convert a union of types to an intersection.
 type UnionToIntersection<U> = (
   U extends unknown ? (k: U) => void : never
@@ -29,8 +42,8 @@ type IntersectPatternTypes<P extends readonly unknown[]> = UnionToIntersection<
   UnionPatternTypes<P>
 >;
 
-import type { TPredicate, TPredicateAsserting } from './common'
 export type TPattern<Input> = Input | TPredicate<Input>;
+
 /**
  * The type of the value captured by the `rest()` pattern matcher.
  * It can be an array of values, an object with string keys and values, or undefined.
@@ -189,7 +202,7 @@ declare module 'match-iz' {
    */
   export function when<P, O>(
     pattern: P,
-    handler: THandler<PatternAsType<P>, O> | O
+    handler: THandler<HandlerValue<P>, O> | O
   ): TMatchTester<unknown, O>;
 
   /**
@@ -211,7 +224,9 @@ declare module 'match-iz' {
    */
   export function when<P>(
     pattern: P
-  ): <O>(handler: THandler<PatternAsType<P>, O> | O) => TMatchTester<unknown, O>;
+  ): <O>(
+    handler: THandler<HandlerValue<P>, O> | O
+  ) => TMatchTester<unknown, O>;
 
   /**
    * Defines a pattern with a guard and a corresponding handler.
@@ -875,6 +890,7 @@ declare module 'match-iz' {
    * import { match, when, instanceOf, otherwise } from 'match-iz';
    *
    * class MyClass {}
+   *
    * const checkInstance = (obj) => match(obj)(
    *   when(instanceOf(MyClass), () => 'Is MyClass instance'),
    *   otherwise(() => 'Not MyClass instance')
@@ -886,33 +902,23 @@ declare module 'match-iz' {
   export function instanceOf<T>(constructor: new (...args: unknown[]) => T): TPredicateAsserting<T>;
 
   /**
-   * A predicate that plucks a value from a pattern, optionally taking a pattern itself.
+   * “Pluck” any sub‑pattern out of the match target and hand its value
+   * to your handler.  If you supply a pattern `P`, it will only match
+   * when that sub‑pattern matches, and the handler will get the inner
+   * `PatternAsType<P>`.
    *
-   * @param {TPredicate} [predicate] - An optional predicate to apply to the plucked value.
-   * @returns {TPredicate} A predicate function.
-   * @remarks The dynamic nature of `pluck()` makes its return value difficult to type statically. The type of the plucked value in the `when()` handler cannot be inferred and will be typed as `unknown`.
-   * @example
-   * import { match, when, pluck, gt, otherwise } from 'match-iz';
-   *
-   * const checkUserAge = (user) => match(user)(
-   *   when({ age: pluck(gt(18)) }, (age) => `User is an adult: ${age}`),
-   *   otherwise(() => 'User is a minor')
-   * );
-   * checkUserAge({ name: 'Alice', age: 25 }); // 'User is an adult: 25'
-   * checkUserAge({ name: 'Bob', age: 16 });   // 'User is a minor'
+   * @param {P} [pattern] — any match‑iz pattern (literal, object, array, predicate, etc.)
+   * @returns `Plucked<PatternAsType<P>>` at type‑level; at runtime it’s your
+   *          predicate/function/regexp/etc. unchanged.
    *
    * @example
-   * import { match, when, pluck, otherwise } from 'match-iz';
-   *
-   * const getStatus = (data) => match(data)(
-   *   when({ status: pluck() }, (status) => `Status: ${status}`),
-   *   otherwise(() => 'No status')
-   * );
-   *
-   * getStatus({ status: 'active' }); // 'Status: active'
-   * getStatus({});                  // 'No status'
+   * when({ foo: pluck(isString) }, (s) => s); // string
+   * when({ foo: pluck(/bar/)    }, (m) => m); // RegExpMatchArray
+   * when({ foo: pluck({ a:1 })  }, (o) => o); // { a: number }
    */
-  export function pluck(predicate?: TPredicate): TPredicate;
+  export function pluck<P>(
+    pattern?: P
+  ): Plucked<PatternAsType<P>>;
 
   /**
    * Captures the remaining elements of an array or properties of an object.
