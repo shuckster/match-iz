@@ -1,5 +1,6 @@
-export type TPredicate = (value: unknown) => boolean
-export type TPredicateOrNumber = TPredicate | number
+export type TPredicate<Input> = (value: Input) => boolean
+export type TPredicateAsserting<Kind> = (value: unknown) => value is Kind
+export type TPredicateOrNumber = TPredicate<number> | number
 
 export type TTimeFrame = 'seconds' | 'minutes' | 'hours' | 'days' | 'months' | 'years'
 

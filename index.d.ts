@@ -29,8 +29,7 @@ type IntersectPatternTypes<P extends readonly unknown[]> = UnionToIntersection<
   UnionPatternTypes<P>
 >;
 
-export type TPredicateAsserting<Kind> = (value: unknown) => value is Kind;
-export type TPredicate<Input> = (value: Input) => boolean;
+import type { TPredicate, TPredicateAsserting } from './dates/types'
 export type TPattern<Input> = Input | TPredicate<Input>;
 /**
  * The type of the value captured by the `rest()` pattern matcher.
