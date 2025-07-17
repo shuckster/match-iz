@@ -42,6 +42,7 @@
     "CHANGELOG.md",
     "README.md",
     "LICENSE",
+    "common.d.ts",
     "index.d.ts"
   ],
   "engines": {

@@ -1,4 +1,5 @@
-import type { TPredicateAsserting, TPredicateOrNumber, TTimeFrame, TDateTime } from './types'
+import type { TPredicateAsserting } from '../common'
+import type { TPredicateOrNumber, TTimeFrame, TDateTime } from './common'
 
 declare module 'match-iz/dates' {
   /**
