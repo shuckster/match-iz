@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [5.0.7] - 2025-07-18
+
+- Using `pluck()` now affects the type of the handler-argument. This is a
+  WIP, it does not apply to all `when`-overloads.
+
 ## [5.0.6] - 2025-07-17
 
 - Fill-out some more JSDoc into the typedef files.
