@@ -456,7 +456,7 @@ declare module 'match-iz' {
    * checkDefined(null);      // 'Value is undefined or null'
    * checkDefined(undefined); // 'Value is undefined or null'
    */
-  export declare const defined: TPredicateAsserting<Exclude<unknown, EmptyValue>>;
+  export const defined: TPredicateAsserting<Exclude<unknown, EmptyValue>>;
 
   /**
    * A predicate that checks if a value is empty (e.g., empty string, empty array, or empty object).
@@ -473,7 +473,7 @@ declare module 'match-iz' {
    * checkEmpty({});      // 'Value is empty'
    * checkEmpty('hello'); // 'Value is not empty'
    */
-  export declare const empty: TPredicateAsserting<EmptyValue>;
+  export const empty: TPredicateAsserting<EmptyValue>;
 
   /**
    * A predicate that checks if a value is truthy.
@@ -492,7 +492,7 @@ declare module 'match-iz' {
    * checkTruthy(0);      // 'Value is falsy'
    * checkTruthy('');     // 'Value is falsy'
    */
-  export declare const truthy: TPredicateAsserting<Exclude<unknown, FalsyValue>>;
+  export const truthy: TPredicateAsserting<Exclude<unknown, FalsyValue>>;
 
   /**
    * A predicate that checks if a value is falsy.
@@ -508,7 +508,7 @@ declare module 'match-iz' {
    * checkFalsy(null);  // 'Value is falsy'
    * checkFalsy(1);     // 'Value is truthy'
    */
-  export declare const falsy: TPredicateAsserting<FalsyValue>;
+  export const falsy: TPredicateAsserting<FalsyValue>;
 
   /**
    * A predicate that checks if a number is greater than the specified value.
@@ -656,7 +656,7 @@ declare module 'match-iz' {
    * checkContent(['banana', 'apple']); // 'Contains apple'
    * checkContent('orange');            // 'Does not contain apple'
    */
-  export declare function includes(
+  export function includes(
     content: string
   ): TPredicateAsserting<string>;
 
@@ -677,7 +677,7 @@ declare module 'match-iz' {
    * checkContent(['banana', 'apple']); // 'Contains apple'
    * checkContent('orange');            // 'Does not contain apple'
    */
-  export declare function includes<T>(
+  export function includes<T>(
     content: Array<T>
   ): TPredicateAsserting<T[]>;
 
@@ -739,7 +739,7 @@ declare module 'match-iz' {
    * checkNotString(123);    // 'Not a string'
    * checkNotString('test'); // 'Is a string'
    */
-  export declare function not<P extends TPattern>(
+  export function not<P extends TPattern>(
     pattern: P
   ): P extends (v: unknown) => v is infer K
     ? (v: unknown) => v is Exclude<unknown, K>
