@@ -39,3 +39,11 @@ export type EmptyValue =
   | []                         // empty tuple → any array of length 0
   | Record<PropertyKey, never> // plain object with no own keys
 
+export type FalsyValue =
+  | false
+  | ''
+  | 0
+  | 0n
+  | null
+  | undefined;
+

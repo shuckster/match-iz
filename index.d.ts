@@ -2,7 +2,9 @@ import type {
   TPredicate,
   TPredicateAsserting,
   Plucked,
-  ExtractPlucked
+  ExtractPlucked,
+  EmptyValue,
+  FalsyValue
 } from './common';
 
 // Helper: if a pluck appears anywhere in P, use that type; otherwise fallback to PatternAsType<P>
@@ -490,7 +492,7 @@ declare module 'match-iz' {
    * checkTruthy(0);      // 'Value is falsy'
    * checkTruthy('');     // 'Value is falsy'
    */
-  export const truthy: TPredicate;
+  export declare const truthy: TPredicateAsserting<Exclude<unknown, FalsyValue>>;
 
   /**
    * A predicate that checks if a value is falsy.
@@ -506,7 +508,7 @@ declare module 'match-iz' {
    * checkFalsy(null);  // 'Value is falsy'
    * checkFalsy(1);     // 'Value is truthy'
    */
-  export const falsy: TPredicate;
+  export declare const falsy: TPredicateAsserting<FalsyValue>;
 
   /**
    * A predicate that checks if a number is greater than the specified value.
@@ -650,11 +652,34 @@ declare module 'match-iz' {
    *   otherwise(() => 'Does not contain apple')
    * );
    *
-   * checkContent('red apple');    // 'Contains apple'
+   * checkContent('red apple');         // 'Contains apple'
    * checkContent(['banana', 'apple']); // 'Contains apple'
-   * checkContent('orange');      // 'Does not contain apple'
+   * checkContent('orange');            // 'Does not contain apple'
    */
-  export function includes(content: unknown): TPredicate;
+  export declare function includes(
+    content: string
+  ): TPredicateAsserting<string>;
+
+  /**
+   * A predicate that checks if a string or array includes the specified content.
+   *
+   * @param {unknown} content - The content to check for.
+   * @returns {TPredicate} A predicate function.
+   * @example
+   * import { match, when, includes, otherwise } from 'match-iz';
+   *
+   * const checkContent = (data) => match(data)(
+   *   when(includes('apple'), () => 'Contains apple'),
+   *   otherwise(() => 'Does not contain apple')
+   * );
+   *
+   * checkContent('red apple');         // 'Contains apple'
+   * checkContent(['banana', 'apple']); // 'Contains apple'
+   * checkContent('orange');            // 'Does not contain apple'
+   */
+  export declare function includes<T>(
+    content: Array<T>
+  ): TPredicateAsserting<T[]>;
 
   /**
    * A predicate that checks if a value is equal to the pattern. It differs
@@ -673,7 +698,7 @@ declare module 'match-iz' {
    *   otherwise(() => 'No match')
    * );
    *
-   * matchValue({ a: 1 }); // 'Matches { a: 1 }'
+   * matchValue({ a: 1 });       // 'Matches { a: 1 }'
    * matchValue({ a: 1, b: 2 }); // 'No match'
    */
   export function eq<P>(pattern: P): TPredicateAsserting<PatternAsType<P>>;
@@ -693,7 +718,7 @@ declare module 'match-iz' {
    *   otherwise(() => 'No match')
    * );
    *
-   * matchValue({ a: { b: 2 } }); // 'Matches { a: { b: 2 } }'
+   * matchValue({ a: { b: 2 } });       // 'Matches { a: { b: 2 } }'
    * matchValue({ a: { b: 2, c: 3 } }); // 'No match'
    */
   export function deepEq<P>(pattern: P): TPredicateAsserting<PatternAsType<P>>;
@@ -714,7 +739,11 @@ declare module 'match-iz' {
    * checkNotString(123);    // 'Not a string'
    * checkNotString('test'); // 'Is a string'
    */
-  export function not(pattern: TPattern): TPredicate;
+  export declare function not<P extends TPattern>(
+    pattern: P
+  ): P extends (v: unknown) => v is infer K
+    ? (v: unknown) => v is Exclude<unknown, K>
+    : (v: unknown) => boolean;
 
   /**
    * A combinator that checks if a value matches all of the specified patterns.
@@ -860,7 +889,9 @@ declare module 'match-iz' {
    * checkColor('red');    // 'Primary color'
    * checkColor('yellow'); // 'Other color'
    */
-  export function includedIn<const P extends readonly unknown[]>(...these: P): TPredicateAsserting<P[number]>;
+  export function includedIn<const P extends readonly TPattern[]>(
+    ...these: P
+  ): TPredicateAsserting<UnionPatternTypes<P>>;
 
   /**
    * A predicate that checks if an object has the specified own properties.
