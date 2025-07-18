@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Using `pluck()` now affects the type of the handler-argument. This is a
   WIP, it does not apply to all `when`-overloads.
 
+- Update types for `isStrictly`, `includedIn`, `falsy`, `truthy`, `includes`,
+  `not`, `spread`, `defined`, `empty`
+
 ## [5.0.6] - 2025-07-17
 
 - Fill-out some more JSDoc into the typedef files.
