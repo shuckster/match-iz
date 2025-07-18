@@ -450,11 +450,11 @@ declare module 'match-iz' {
    *   otherwise(() => 'Value is undefined or null')
    * );
    *
-   * checkDefined(10);    // 'Value is defined'
-   * checkDefined(null);  // 'Value is undefined or null'
+   * checkDefined(10);        // 'Value is defined'
+   * checkDefined(null);      // 'Value is undefined or null'
    * checkDefined(undefined); // 'Value is undefined or null'
    */
-  export const defined: TPredicate;
+  export declare const defined: TPredicateAsserting<Exclude<unknown, EmptyValue>>;
 
   /**
    * A predicate that checks if a value is empty (e.g., empty string, empty array, or empty object).
@@ -466,12 +466,12 @@ declare module 'match-iz' {
    *   otherwise(() => 'Value is not empty')
    * );
    *
-   * checkEmpty('');       // 'Value is empty'
+   * checkEmpty('');      // 'Value is empty'
    * checkEmpty([]);      // 'Value is empty'
    * checkEmpty({});      // 'Value is empty'
    * checkEmpty('hello'); // 'Value is not empty'
    */
-  export const empty: TPredicate;
+  export declare const empty: TPredicateAsserting<EmptyValue>;
 
   /**
    * A predicate that checks if a value is truthy.
@@ -488,7 +488,7 @@ declare module 'match-iz' {
    * checkTruthy('abc');  // 'Value is truthy'
    * checkTruthy(false);  // 'Value is falsy'
    * checkTruthy(0);      // 'Value is falsy'
-   * checkTruthy('');      // 'Value is falsy'
+   * checkTruthy('');     // 'Value is falsy'
    */
   export const truthy: TPredicate;
 
@@ -1112,5 +1112,9 @@ declare module 'match-iz' {
    * checkValues({ x: 15, y: 25 }); // 'x: 15, y: 25'
    * checkValues({ x: 5, y: 25 });  // 'Values not large enough'
    */
-  export function spread(fn: TPredicate): object;
+   export function spread<Input>(
+     fn: Input
+   ): {
+     [key: string]: Input;
+   };
 }

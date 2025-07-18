@@ -32,3 +32,10 @@ export type ExtractPlucked<P> =
     ? never
     : _ExtractPlucked<P>;
 
+export type EmptyValue =
+  | null
+  | undefined
+  | ''                         // empty string
+  | []                         // empty tuple → any array of length 0
+  | Record<PropertyKey, never> // plain object with no own keys
+
