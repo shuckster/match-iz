@@ -1100,7 +1100,9 @@ declare module 'match-iz' {
    * checkValue(5);  // 'Is strictly 5'
    * checkValue('5'); // 'Not strictly 5'
    */
-  export const isStrictly: TPredicate;
+  export function isStrictly<K>(
+    pattern: K
+  ): TPredicateAsserting<K>;
 
   /**
    * A predicate that checks if a value is iterable.
