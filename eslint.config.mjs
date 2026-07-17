@@ -1,20 +1,22 @@
-import { FlatCompat } from "@eslint/eslintrc";
 import js from "@eslint/js";
 import globals from "globals";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 import tseslint from "typescript-eslint";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all,
-});
-
-export default [
-  ...compat.extends("eslint:recommended"),
+export default tseslint.config(
+  {
+    ignores: [
+      "dist/**",
+      "node_modules/**",
+      // Built CJS companions of ESM sources
+      "dates/index.js",
+      "dates/utc/index.js",
+      "asserts/index.js",
+      // Local scratch / tooling noise
+      "_scratch/**",
+      "wiki/**",
+    ],
+  },
+  js.configs.recommended,
   {
     languageOptions: {
       globals: {
@@ -22,16 +24,39 @@ export default [
         ...globals.commonjs,
         ...globals.node,
       },
-
-      ecmaVersion: 11,
+      // Align with modern Node + features used in the tree (e.g. Error.cause)
+      ecmaVersion: 2022,
       sourceType: "module",
     },
   },
   ...tseslint.configs.recommended,
   {
-    files: ["index.d.ts", "dates/index.d.ts", "dates/utc/index.d.ts"],
-    rules: {
-      "no-unused-vars": "off",
+    files: ["**/*.{js,cjs,mjs}"],
+    languageOptions: {
+      sourceType: "module",
     },
   },
-];
+  // CJS build-check script uses require()
+  {
+    files: ["tests/browser/**/*.{js,cjs}"],
+    languageOptions: {
+      sourceType: "commonjs",
+      globals: {
+        ...globals.node,
+        ...globals.commonjs,
+      },
+    },
+    rules: {
+      "@typescript-eslint/no-require-imports": "off",
+    },
+  },
+  {
+    files: ["**/*.d.ts", "tests/types/**/*.{ts,tsx}"],
+    rules: {
+      // Ambient declarations and type-only tests often look "unused" to core rules
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-unused-expressions": "off",
+    },
+  },
+);

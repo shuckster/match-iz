@@ -25,6 +25,10 @@ function optionsFrom(pkg) {
         /utc/index.mjs                    = ESM_SRC_DATES_UTC
         /utc/index.js                     = CJS_DIST_DATES_UTC
 
+      /asserts
+        /index.mjs                        = ESM_SRC_ASSERTS
+        /index.js                         = CJS_DIST_ASSERTS
+
   `)
 
   const outputs = [
@@ -48,6 +52,12 @@ function optionsFrom(pkg) {
     {
       src: paths.ESM_SRC_DATES_UTC,
       dist: paths.CJS_DIST_DATES_UTC,
+      format: 'cjs'
+    },
+    // CJS ASSERTS
+    {
+      src: paths.ESM_SRC_ASSERTS,
+      dist: paths.CJS_DIST_ASSERTS,
       format: 'cjs'
     },
     // BROWSER BUILD

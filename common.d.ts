@@ -6,6 +6,37 @@ export type TPredicateAsserting<Kind> = (value: unknown) => value is Kind;
 export declare const pluckBrand: unique symbol;
 export type Plucked<T> = { [pluckBrand]: T };
 
+// A unique symbol brand and wrapper for the value captured by `rest()`.
+// `rest(pattern)` carries `pattern` at the type-level so handlers can infer
+// the type of their second argument.
+export declare const restBrand: unique symbol;
+export type Rest<T> = { [restBrand]: T };
+
+// Distinct markers so the extractor can remember whether a `rest()` brand was
+// found inside an array pattern or an object pattern. The wrapped `T` is the
+// original *pattern* supplied to `rest()`; `PatternAsType` is applied later in
+// index.d.ts (which owns that type).
+export type RestFromArray<T> = { __restKind: 'array'; pattern: T };
+export type RestFromObject<T> = { __restKind: 'object'; pattern: T };
+
+// Walks a pattern looking for a `Rest<…>` brand, remembering the container it
+// was found in. Resolves to `never` if no `rest()` is present.
+export type ExtractRest<P> =
+  P extends Rest<infer U>
+    ? RestFromObject<U>
+    : P extends readonly (infer E)[]
+    ? PromoteToArray<ExtractRest<E>>
+    : P extends object
+    ? { [K in keyof P]: ExtractRest<P[K]> }[keyof P]
+    : never;
+
+// A `rest()` inside an array yields `RestFromObject` from the base case;
+// promote it to `RestFromArray` so the array container wins. Nested objects
+// inside arrays keep their object tag.
+type PromoteToArray<R> = R extends RestFromObject<infer U>
+  ? RestFromArray<U>
+  : R;
+
 // Helper: is `true` present in the boolean union B?
 export type TAnyTrue<B extends boolean> = true extends B ? true : false;
 

@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "baseUrl": "../..",
+    "paths": {
+      "match-iz": ["./index.d.ts"],
+      "match-iz/asserts": ["./asserts/index.d.ts"]
+    }
+  },
+  "include": [
+    "./**/*.ts",
+    "../../index.d.ts",
+    "../../common.d.ts",
+    "../../asserts/index.d.ts"
+  ]
+}

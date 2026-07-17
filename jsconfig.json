@@ -5,14 +5,12 @@
     "checkJs": true,
     "noEmit": true,
     "skipLibCheck": true,
-    "paths": {
-      "match-iz": ["./src/match-iz.mjs"],
-      "match-iz/dates": ["./dates/index.mjs"],
-      "match-iz/dates/utc": ["./dates/utc/index.mjs"]
-    }
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext"
   },
   "include": [
     "index.d.ts",
+    "common.d.ts",
     "src/**/*",
     "dates/**/*",
     "tests/**/*"

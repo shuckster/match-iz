@@ -25,6 +25,14 @@
 
 A tiny functional, declarative [pattern-matching](https://github.com/tc39/proposal-pattern-matching) library.
 
+---
+
+<center>
+  <img src="./screenshot.png" width="400" />
+</center>
+
+---
+
 - 👋 [Introduction](#introduction)
 - 👩‍🏫 [Before / After Examples](#before--after-examples)
 - 🏁 [Benchmarks](#benchmarks)
@@ -91,19 +99,65 @@ match(new Date())(
 // For objects, use ...rest()
 match({ one: 1, two: 2, three: 3 })(
   when({ one: 1, ...rest(isNumber) }, (_, rest) => {
-    console.log(rest);
+    console.log(rest)
     // { two: 2, three: 3 }
-  }),
+  })
 )
 
 // For arrays, use rest()
 match([1, 2, 3])(
   when([1, rest(isNumber)], (_, rest) => {
-    console.log(rest);
+    console.log(rest)
     // [2, 3]
-  }),
+  })
 )
 ```
+
+### Typing notes (TypeScript / checkJs)
+
+- `pluck(isString)` rewrites the **first** `when` handler argument to the plucked type (here `string`).
+- `rest(isNumber)` / `...rest(isNumber)` types the **second** handler argument (`number[]` or `Record<string, number>`).
+- In **JavaScript**, enable checking (`// @ts-check` or `"checkJs": true`) so the language service applies these types.
+- Resolve `match-iz` through the package entry (with its `.d.ts`); path-mapping to untyped source will lose inference.
+- Hovering `pluck()` / `rest()` themselves may show internal brand types — that is how inference works. Check the **handler parameters**, not the pattern expression.
+
+### Asserts (`match-iz/asserts`)
+
+Invariant-style checks: throw if a value does not match a pattern, and **narrow** the value’s type when it does.
+
+`asserts` and `makeAsserter()` share the **same dual signature**:
+
+| Form | Call | Notes |
+|------|------|--------|
+| Direct | `asserts(pattern, value, description?)` | Best for TypeScript narrowing |
+| Curried | `asserts(pattern)` → `(value, description?)` | Reuse; annotate with `TAssertMatch<P>` in TS |
+
+```javascript
+import { asserts, makeAsserter } from 'match-iz/asserts'
+import { isNumber, isString } from 'match-iz'
+
+// Direct (best for TypeScript narrowing):
+function greet(user) {
+  asserts({ id: isNumber, name: isString }, user, 'expected a user')
+  // TypeScript: user is { id: number, name: string }
+  return user.name
+}
+
+// Curried (reuse). In TypeScript, annotate the binding for narrowing:
+//   const isUser: TAssertMatch<typeof pattern> = asserts(pattern)
+const isUser = asserts({ id: isNumber, name: isString })
+isUser({ id: 1, name: 'Ada' })
+
+// Custom failure handling — same dual signature as `asserts`:
+const assertsStrict = makeAsserter((input, description) => {
+  throw new Error(`${description}: ${JSON.stringify(input)}`)
+})
+assertsStrict(isString, value)
+const isName = assertsStrict(isString)
+isName(value)
+```
+
+On failure (default), throws `TypeError` with the optional description as the message and the bad value as `error.cause`. Custom `onFailure` handlers should throw so narrowing stays honest.
 
 You can browse a few more [examples below](#before--after-examples), and full [documentation is over on the Github Wiki](https://github.com/shuckster/match-iz/wiki).
 
@@ -260,7 +314,7 @@ function calculateExpr(expr) {
 }
 ```
 
-## Benchmarks 
+## Benchmarks
 
 There is a very small benchmarking suite that you can run yourself with:
 
@@ -270,7 +324,7 @@ pnpm run bench
 
 Here's a run to give you an example without needing to go anywhere else:
 
-```sh 
+```sh
 calculateExpr_vanilla         165.63 ns/iter 163.72 ns  █
                      (160.47 ns … 194.63 ns) 187.64 ns  █
                      (603.13 kb … 608.66 kb) 512.93 kb ▄█▇▂▂▂▁▁▁▁▁▁▁▁▁▂▃▂▂▁▁
@@ -294,8 +348,8 @@ calculateExpr_matchiz_against ┤■■■■■■■■■■■ 380.36 ns
 
 This compares `match-iz` with `ts-pattern`.
 
-Of course, when considering a library performance isn't the only thing that 
-might concern you. `ts-pattern` can calculate static-types for the patterns 
+Of course, when considering a library performance isn't the only thing that
+might concern you. `ts-pattern` can calculate static-types for the patterns
 described, while `match-iz` was written with JavaScripts dynamism in mind,
 and its TypeScript support is very basic and incomplete.
 

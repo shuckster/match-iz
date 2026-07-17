@@ -7,6 +7,56 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [5.0.8] - 2026-07-18
+
+### Added
+
+- `match-iz/asserts` — invariant-style pattern assertions:
+  - `asserts(pattern)(value, description?)` throws `TypeError` on mismatch
+    (bad value as `error.cause`) and narrows `value` to `PatternAsType<P>`
+  - `makeAsserter(onFailure?)` for custom failure handling (must throw for
+    narrowing to remain sound)
+
+- `rest()` / `...rest()` types the **second** `when` handler argument:
+  - Array patterns: `rest(isString)` → `string[]` (or `unknown[]` when unfiltered)
+  - Object patterns: `...rest(isNumber)` → `Record<string, number>` (or
+    `Record<string, unknown>` when unfiltered)
+  - Applies to curried `when`, multi-guard overloads, and the primary pattern
+
+- `pluck()` typing for the **first** handler argument is hardened (works with
+  curried `when` and no longer leaks internal brand keys via `PatternAsType`)
+
+- `pnpm run test:types` — compile-time checks for rest/pluck inference
+  (`tests/types/`)
+
+- `pnpm run test:coverage` — Node native coverage over `dist/**` and `dates/**`
+
+- Broader date-helper runtime coverage (`tests/date-helpers.test.mjs`)
+
+- README: typing notes for TypeScript / `checkJs` consumers
+
+### Fixed
+
+- Rest brand no longer pollutes the first handler argument (object-spread
+  `...rest()` was previously collapsed via structural typing)
+- Pluck brands stripped from `PatternAsType` the same way as rest brands
+- `HandlerValue` uses a non-distributive `[ExtractPlucked<P>] extends [never]`
+  check
+- Local `jsconfig.json` no longer path-maps `match-iz` to untyped `src/`
+  (broke IDE inference when testing in this repo)
+- Package `exports` condition order: `types` before `import`/`require`
+  (correct TypeScript resolution; silences esbuild warnings)
+
+### Chore
+
+- Dev-dependency upgrades: esbuild 0.28, eslint 10, typescript-eslint 8.64,
+  typescript 5.9, nodemon 3, rimraf 6, globals 17, mitata, ts-pattern, dedent,
+  `@eslint/js`
+- ESLint flat config uses native `@eslint/js` + `typescript-eslint` (no
+  `@eslint/eslintrc` FlatCompat)
+- TypeScript held at **5.9.x** (`typescript-eslint` still requires
+  `typescript < 6.1`)
+
 ## [5.0.7] - 2025-07-18
 
 - Using `pluck()` now affects the type of the handler-argument. This is a

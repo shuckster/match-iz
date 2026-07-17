@@ -134,7 +134,7 @@ const curriedWhen = needle => handler => haystack => {
       !isFunction(handler)
         ? handler
         : isString(haystack) && isRegExp(needle)
-        ? handler(...argsFrom(haystack.match(needle), ctx.rest))
+        ? handler(...argsFrom(haystack.match(needle)))
         : handler(haystack, ctx.rest),
   }
 };

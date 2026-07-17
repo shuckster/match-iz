@@ -3,15 +3,35 @@ import type {
   TPredicateAsserting,
   Plucked,
   ExtractPlucked,
+  Rest,
+  ExtractRest,
+  RestFromArray,
+  RestFromObject,
   EmptyValue,
   FalsyValue
 } from './common';
 
-// Helper: if a pluck appears anywhere in P, use that type; otherwise fallback to PatternAsType<P>
-type HandlerValue<P> =
-  ExtractPlucked<P> extends never
-    ? PatternAsType<P>
-    : ExtractPlucked<P>;
+// Helper: if a pluck appears anywhere in P, use that type; otherwise fallback to PatternAsType<P>.
+// Tuple form avoids distributive `extends never` quirks.
+type HandlerValue<P> = [ExtractPlucked<P>] extends [never]
+  ? PatternAsType<P>
+  : ExtractPlucked<P>;
+
+// Helper: infer the type of the second (`rest`) handler argument from a
+// pattern `P`. A `rest()` inside an array pattern yields `PatternAsType<T>[]`;
+// inside an object pattern it yields `Record<string, PatternAsType<T>>`.
+// When no `rest()` is present, falls back to the wide `TRestResult`.
+type HandlerRest<P> = [ExtractRest<P>] extends [never]
+  ? TRestResult
+  : ExtractRest<P> extends RestFromArray<infer T>
+  ? PatternAsType<T>[]
+  : ExtractRest<P> extends RestFromObject<infer T>
+  ? Record<string, PatternAsType<T>>
+  : TRestResult;
+
+// Keys that exist only as phantom brand markers (pluck / rest). Dropped from
+// object pattern shapes so they never appear on the first handler argument.
+type BrandKey = keyof Rest<unknown> | keyof Plucked<unknown>;
 
 // Helper type to convert a union of types to an intersection.
 type UnionToIntersection<U> = (
@@ -23,9 +43,33 @@ type UnionToIntersection<U> = (
 /**
  * Recursively infers a TypeScript type from a match-iz pattern.
  * @template P - The type of the pattern.
+ *
+ * Phantom brands from `pluck()` / `rest()` are treated specially so they do
+ * not leak into the first handler argument:
+ * - exact `Plucked<T>` / `Rest<T>` → contribute `PatternAsType<T>`
+ * - object spreads that *contain* a brand key → brand key is omitted
  */
 export type PatternAsType<P> = P extends RegExp
   ? RegExpMatchArray | Record<string, string | undefined> // Handle RegExp patterns
+  : // Exact pluck brand (not a larger object that merely contains it)
+    P extends Plucked<infer T>
+  ? keyof P extends keyof Plucked<unknown>
+    ? PatternAsType<T>
+    : {
+        -readonly [K in keyof P as K extends BrandKey
+          ? never
+          : K]: PatternAsType<P[K]>;
+      }
+  : // Exact rest brand only (object spreads that *contain* the brand are
+    // handled by dropping the brand key below).
+    P extends Rest<infer T>
+  ? keyof P extends keyof Rest<unknown>
+    ? PatternAsType<T>
+    : {
+        -readonly [K in keyof P as K extends BrandKey
+          ? never
+          : K]: PatternAsType<P[K]>;
+      }
   : P extends (value: unknown) => value is infer R
   ? R // Handle type guard predicates, extracting the guarded type.
   : P extends (value: infer V) => boolean
@@ -33,7 +77,12 @@ export type PatternAsType<P> = P extends RegExp
   : P extends readonly (infer E)[]
   ? readonly PatternAsType<E>[] // Handle array patterns recursively.
   : P extends object
-  ? { -readonly [K in keyof P]: PatternAsType<P[K]> } // Handle object patterns recursively.
+  ? {
+      // Drop phantom pluckBrand / restBrand keys from pattern objects
+      -readonly [K in keyof P as K extends BrandKey
+        ? never
+        : K]: PatternAsType<P[K]>;
+    }
   : P; // Handle literal values (string, number, etc.).
 
 // Infer a union of types from a tuple of patterns.
@@ -55,6 +104,12 @@ export type TRestResult = unknown[] | Record<string, unknown> | undefined;
 export type THandler<Input, Output> = (
   value: Input,
   rest: TRestResult
+) => Output;
+
+// Like `THandler`, but with a separately-inferred type for the `rest` argument.
+export type THandlerWithRest<Input, RestValue, Output> = (
+  value: Input,
+  rest: RestValue
 ) => Output;
 
 export type TEvaluator<Input, Output> = {
@@ -204,7 +259,7 @@ declare module 'match-iz' {
    */
   export function when<P, O>(
     pattern: P,
-    handler: THandler<HandlerValue<P>, O> | O
+    handler: THandlerWithRest<HandlerValue<P>, HandlerRest<P>, O> | O
   ): TMatchTester<unknown, O>;
 
   /**
@@ -227,7 +282,7 @@ declare module 'match-iz' {
   export function when<P>(
     pattern: P
   ): <O>(
-    handler: THandler<HandlerValue<P>, O> | O
+    handler: THandlerWithRest<HandlerValue<P>, HandlerRest<P>, O> | O
   ) => TMatchTester<unknown, O>;
 
   /**
@@ -238,7 +293,7 @@ declare module 'match-iz' {
    * @template O - The output type of the handler.
    * @param {P} pattern - The main pattern.
    * @param {G1} guard1 - The first guard pattern.
-   * @param {THandler<PatternAsType<P> & PatternAsType<G1>, O> | O} handler - The handler to execute if all patterns match.
+   * @param {THandlerWithRest<PatternAsType<P> & PatternAsType<G1>, HandlerRest<P>, O> | O} handler - The handler to execute if all patterns match.
    * @returns {TMatchTester<unknown, O>} A match tester object.
    * @example
    * import { match, when, isNumber, gt, otherwise } from 'match-iz';
@@ -254,7 +309,13 @@ declare module 'match-iz' {
   export function when<P, G1, O>(
     pattern: P,
     guard1: G1,
-    handler: THandler<PatternAsType<P> & PatternAsType<G1>, O> | O
+    handler:
+      | THandlerWithRest<
+          PatternAsType<P> & PatternAsType<G1>,
+          HandlerRest<P>,
+          O
+        >
+      | O
   ): TMatchTester<unknown, O>;
 
   /**
@@ -267,7 +328,7 @@ declare module 'match-iz' {
    * @param {P} pattern - The main pattern.
    * @param {G1} guard1 - The first guard pattern.
    * @param {G2} guard2 - The second guard pattern.
-   * @param {THandler<PatternAsType<P> & PatternAsType<G1> & PatternAsType<G2>, O> | O} handler - The handler to execute if all patterns match.
+   * @param {THandlerWithRest<PatternAsType<P> & PatternAsType<G1> & PatternAsType<G2>, HandlerRest<P>, O> | O} handler - The handler to execute if all patterns match.
    * @returns {TMatchTester<unknown, O>} A match tester object.
    * @example
    * import { match, when, isString, startsWith, endsWith, otherwise } from 'match-iz';
@@ -284,12 +345,13 @@ declare module 'match-iz' {
     pattern: P,
     guard1: G1,
     guard2: G2,
-    handler: THandler<
-      PatternAsType<P> &
-        PatternAsType<G1> &
-        PatternAsType<G2>,
-      O
-    > | O
+    handler:
+      | THandlerWithRest<
+          PatternAsType<P> & PatternAsType<G1> & PatternAsType<G2>,
+          HandlerRest<P>,
+          O
+        >
+      | O
   ): TMatchTester<unknown, O>;
 
   /**
@@ -304,7 +366,7 @@ declare module 'match-iz' {
    * @param {G1} guard1 - The first guard pattern.
    * @param {G2} guard2 - The second guard pattern.
    * @param {G3} guard3 - The third guard pattern.
-   * @param {THandler<PatternAsType<P> & PatternAsType<G1> & PatternAsType<G2> & PatternAsType<G3>, O> | O} handler - The handler to execute if all patterns match.
+   * @param {THandlerWithRest<PatternAsType<P> & PatternAsType<G1> & PatternAsType<G2> & PatternAsType<G3>, HandlerRest<P>, O> | O} handler - The handler to execute if all patterns match.
    * @returns {TMatchTester<unknown, O>} A match tester object.
    */
   export function when<P, G1, G2, G3, O>(
@@ -312,13 +374,16 @@ declare module 'match-iz' {
     guard1: G1,
     guard2: G2,
     guard3: G3,
-    handler: THandler<
-      PatternAsType<P> &
-        PatternAsType<G1> &
-        PatternAsType<G2> &
-        PatternAsType<G3>,
-      O
-    > | O
+    handler:
+      | THandlerWithRest<
+          PatternAsType<P> &
+            PatternAsType<G1> &
+            PatternAsType<G2> &
+            PatternAsType<G3>,
+          HandlerRest<P>,
+          O
+        >
+      | O
   ): TMatchTester<unknown, O>;
 
   /**
@@ -335,7 +400,7 @@ declare module 'match-iz' {
    * @param {G2} guard2 - The second guard pattern.
    * @param {G3} guard3 - The third guard pattern.
    * @param {G4} guard4 - The fourth guard pattern.
-   * @param {THandler<PatternAsType<P> & PatternAsType<G1> & PatternAsType<G2> & PatternAsType<G3> & PatternAsType<G4>, O> | O} handler - The handler to execute if all patterns match.
+   * @param {THandlerWithRest<PatternAsType<P> & PatternAsType<G1> & PatternAsType<G2> & PatternAsType<G3> & PatternAsType<G4>, HandlerRest<P>, O> | O} handler - The handler to execute if all patterns match.
    * @returns {TMatchTester<unknown, O>} A match tester object.
    */
   export function when<P, G1, G2, G3, G4, O>(
@@ -344,14 +409,17 @@ declare module 'match-iz' {
     guard2: G2,
     guard3: G3,
     guard4: G4,
-    handler: THandler<
-      PatternAsType<P> &
-        PatternAsType<G1> &
-        PatternAsType<G2> &
-        PatternAsType<G3> &
-        PatternAsType<G4>,
-      O
-    > | O
+    handler:
+      | THandlerWithRest<
+          PatternAsType<P> &
+            PatternAsType<G1> &
+            PatternAsType<G2> &
+            PatternAsType<G3> &
+            PatternAsType<G4>,
+          HandlerRest<P>,
+          O
+        >
+      | O
   ): TMatchTester<unknown, O>;
 
   /**
@@ -370,7 +438,7 @@ declare module 'match-iz' {
    * @param {G3} guard3 - The third guard pattern.
    * @param {G4} guard4 - The fourth guard pattern.
    * @param {G5} guard5 - The fifth guard pattern.
-   * @param {THandler<PatternAsType<P> & PatternAsType<G1> & PatternAsType<G2> & PatternAsType<G3> & PatternAsType<G4> & PatternAsType<G5>, O> | O} handler - The handler to execute if all patterns match.
+   * @param {THandlerWithRest<PatternAsType<P> & PatternAsType<G1> & PatternAsType<G2> & PatternAsType<G3> & PatternAsType<G4> & PatternAsType<G5>, HandlerRest<P>, O> | O} handler - The handler to execute if all patterns match.
    * @returns {TMatchTester<unknown, O>} A match tester object.
    */
   export function when<P, G1, G2, G3, G4, G5, O>(
@@ -380,15 +448,18 @@ declare module 'match-iz' {
     guard3: G3,
     guard4: G4,
     guard5: G5,
-    handler: THandler<
-      PatternAsType<P> &
-        PatternAsType<G1> &
-        PatternAsType<G2> &
-        PatternAsType<G3> &
-        PatternAsType<G4> &
-        PatternAsType<G5>,
-      O
-    > | O
+    handler:
+      | THandlerWithRest<
+          PatternAsType<P> &
+            PatternAsType<G1> &
+            PatternAsType<G2> &
+            PatternAsType<G3> &
+            PatternAsType<G4> &
+            PatternAsType<G5>,
+          HandlerRest<P>,
+          O
+        >
+      | O
   ): TMatchTester<unknown, O>;
 
   /**
@@ -726,7 +797,7 @@ declare module 'match-iz' {
   /**
    * A predicate that negates the result of another pattern.
    *
-   * @param {TPattern} pattern - The pattern to negate.
+   * @param {TPattern<unknown>} pattern - The pattern to negate.
    * @returns {TPredicate} A predicate function.
    * @example
    * import { match, when, not, isString, otherwise } from 'match-iz';
@@ -739,7 +810,7 @@ declare module 'match-iz' {
    * checkNotString(123);    // 'Not a string'
    * checkNotString('test'); // 'Is a string'
    */
-  export function not<P extends TPattern>(
+  export function not<P extends TPattern<unknown>>(
     pattern: P
   ): P extends (v: unknown) => v is infer K
     ? (v: unknown) => v is Exclude<unknown, K>
@@ -748,7 +819,7 @@ declare module 'match-iz' {
   /**
    * A combinator that checks if a value matches all of the specified patterns.
    *
-   * @template {readonly TPattern[]} P - A tuple of patterns.
+   * @template {readonly TPattern<unknown>[]} P - A tuple of patterns.
    * @param {...P} these - The patterns to check against.
    * @returns {TPredicateAsserting<IntersectPatternTypes<P>>} A predicate
    *   function.
@@ -764,14 +835,14 @@ declare module 'match-iz' {
    * checkRange(3);  // 'Out of range'
    * checkRange(12); // 'Out of range'
    */
-  export function allOf<const P extends readonly TPattern[]>(
+  export function allOf<const P extends readonly TPattern<unknown>[]>(
     ...these: P
   ): TPredicateAsserting<IntersectPatternTypes<P>>;
 
   /**
    * A combinator that checks if a value matches any of the specified patterns.
    *
-   * @template {readonly TPattern[]} P - A tuple of patterns.
+   * @template {readonly TPattern<unknown>[]} P - A tuple of patterns.
    * @param {...P} these - The patterns to check against.
    * @returns {TPredicateAsserting<UnionPatternTypes<P>>} A predicate function.
    * @example
@@ -786,14 +857,14 @@ declare module 'match-iz' {
    * checkType(123);    // 'String or Number'
    * checkType(true);   // 'Other type'
    */
-  export function anyOf<const P extends readonly TPattern[]>(
+  export function anyOf<const P extends readonly TPattern<unknown>[]>(
     ...these: P
   ): TPredicateAsserting<UnionPatternTypes<P>>;
 
   /**
    * A combinator that checks if a value matches any of the specified patterns, returning the first match.
    *
-   * @template {readonly TPattern[]} P - A tuple of patterns.
+   * @template {readonly TPattern<unknown>[]} P - A tuple of patterns.
    * @param {...P} these - The patterns to check against.
    * @returns {TPredicateAsserting<UnionPatternTypes<P>>} A predicate function.
    * @example
@@ -808,14 +879,14 @@ declare module 'match-iz' {
    * processArray([2, 3, 4]); // 'Starts with 1 or 2'
    * processArray([3, 4, 5]); // 'Does not start with 1 or 2'
    */
-  export function firstOf<const P extends readonly TPattern[]>(
+  export function firstOf<const P extends readonly TPattern<unknown>[]>(
     ...these: P
   ): TPredicateAsserting<UnionPatternTypes<P>>;
 
   /**
    * A combinator that checks if a value matches any of the specified patterns, returning the last match.
    *
-   * @template {readonly TPattern[]} P - A tuple of patterns.
+   * @template {readonly TPattern<unknown>[]} P - A tuple of patterns.
    * @param {...P} these - The patterns to check against.
    * @returns {TPredicateAsserting<UnionPatternTypes<P>>} A predicate function.
    * @example
@@ -830,7 +901,7 @@ declare module 'match-iz' {
    * processArray([2, 3, 4]); // 'Ends with 3 or 4'
    * processArray([4, 5, 6]); // 'Does not end with 3 or 4'
    */
-  export function lastOf<const P extends readonly TPattern[]>(
+  export function lastOf<const P extends readonly TPattern<unknown>[]>(
     ...these: P
   ): TPredicateAsserting<UnionPatternTypes<P>>;
 
@@ -889,7 +960,7 @@ declare module 'match-iz' {
    * checkColor('red');    // 'Primary color'
    * checkColor('yellow'); // 'Other color'
    */
-  export function includedIn<const P extends readonly TPattern[]>(
+  export function includedIn<const P extends readonly TPattern<unknown>[]>(
     ...these: P
   ): TPredicateAsserting<UnionPatternTypes<P>>;
 
@@ -954,15 +1025,15 @@ declare module 'match-iz' {
   /**
    * Captures the remaining elements of an array or properties of an object.
    *
-   * @param {TPattern} [pattern] - An optional pattern that the remaining items must match.
+   * @param {TPattern<unknown>} [pattern] - An optional pattern that the remaining items must match.
    * @returns {object} A special object to be used inside array or object patterns.
-   * @remarks When used in an array pattern, `rest()` should typically be the last element to capture the remaining elements. When used in an object pattern, it should be spread (`...rest()`) to capture remaining properties. The captured values are passed as the second argument to the handler, and their type will be `TRestResult`. You can use a type assertion in the handler if you have more specific knowledge about the shape of the rest value.
+   * @remarks When used in an array pattern, `rest()` should typically be the last element to capture the remaining elements. When used in an object pattern, it should be spread (`...rest()`) to capture remaining properties. The captured values are passed as the second argument to the handler. When a filter pattern is supplied (e.g. `rest(isString)`), the handler's `rest` argument is inferred: `PatternAsType<P>[]` inside array patterns, or `Record<string, PatternAsType<P>>` inside object patterns. Without `rest()` the argument falls back to `TRestResult`.
    * @example
-   * // Array rest
-   * import { match, when, rest, otherwise } from 'match-iz';
+   * // Array rest (filtered → rest inferred as string[])
+   * import { match, when, rest, isString, otherwise } from 'match-iz';
    *
    * const processArray = (arr) => match(arr)(
-   *   when([1, 2, rest()], (value, rest) => `Rest: ${(rest as number[]).join(',')}`),
+   *   when([1, 2, rest(isString)], (value, rest) => `Rest: ${rest.join(',')}`),
    *   otherwise(() => 'No match')
    * );
    *
@@ -979,7 +1050,7 @@ declare module 'match-iz' {
    *
    * processObject({ a: 1, b: 2, c: 3 }); // 'Rest: {"b":2,"c":3}'
    */
-  export function rest(pattern?: TPattern): object;
+  export function rest<P = TPattern<unknown>>(pattern?: P): Rest<P>;
 
   /**
    * A predicate that checks if a value is an array.

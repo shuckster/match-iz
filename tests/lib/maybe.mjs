@@ -43,7 +43,7 @@ export const safe = (predicate = x => x != null) => {
 export const maybeTry = f => {
   try {
     return Just(f())
-  } catch (e) {
+  } catch {
     return Nothing()
   }
 }
