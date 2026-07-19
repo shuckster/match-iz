@@ -12,8 +12,8 @@ importers:
         specifier: ^10.0.1
         version: 10.0.1(eslint@10.7.0)
       compose-paths:
-        specifier: ^1.2.3
-        version: 1.2.3
+        specifier: ^1.3.0
+        version: 1.3.0
       dedent:
         specifier: ^1.7.2
         version: 1.7.2
@@ -367,9 +367,9 @@ packages:
     resolution: {integrity: sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw==}
     engines: {node: '>= 8.10.0'}
 
-  compose-paths@1.2.3:
-    resolution: {integrity: sha512-nGWk0pF7SHFQDb9rPVfiXXJU1dosQZxLvLrQNbu6qJaIGU4981pRw2y6aq6aQN3puFDjKbiPlB8KJNMQGRq0dw==}
-    engines: {node: '>=10'}
+  compose-paths@1.3.0:
+    resolution: {integrity: sha512-NxkGnLCw+zXvSwarFA8Gwawfa31tDpYlNXISYiHjSuyNpSjFyZWV/aCQqlMdVsBL5WLOxEHOU8fLAv0BYel1Lg==}
+    engines: {node: '>=20'}
 
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
@@ -993,7 +993,7 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
-  compose-paths@1.2.3: {}
+  compose-paths@1.3.0: {}
 
   cross-spawn@7.0.6:
     dependencies:
