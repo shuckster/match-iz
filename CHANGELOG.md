@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Public type exports for pluck/rest pattern machinery (for downstream libraries
+  such as `sift-r`):
+  - `Plucked`, `ExtractPlucked`
+  - `Rest`, `ExtractRest`, `RestFromArray`, `RestFromObject`
+  - `PatternHandlerInput<P>` — first `when` handler argument for a single pattern
+  - `PatternHandlerInputFromAll<Ps>` — same for multi-pattern / multi-guard `when`
+
+### Fixed
+
+- Multi-guard `when(P, G1, …, handler)` overloads now honour `pluck()` on any
+  of the patterns (same semantics as single-pattern / curried `when`). The
+  handler’s first argument is the plucked payload when present; otherwise the
+  intersection of each pattern’s `PatternAsType` (previous behaviour).
+- Completes the 5.0.7 WIP: pluck typing now covers **all** `when` overloads
+  (1 pattern, curried, and 1–5 guards).
+
 ## [5.0.8] - 2026-07-18
 
 ### Added

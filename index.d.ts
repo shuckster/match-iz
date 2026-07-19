@@ -11,11 +11,30 @@ import type {
   FalsyValue
 } from './common';
 
-// Helper: if a pluck appears anywhere in P, use that type; otherwise fallback to PatternAsType<P>.
-// Tuple form avoids distributive `extends never` quirks.
-type HandlerValue<P> = [ExtractPlucked<P>] extends [never]
+// Re-export pluck/rest type machinery for downstream libraries (e.g. sift-r).
+export type {
+  Plucked,
+  ExtractPlucked,
+  Rest,
+  ExtractRest,
+  RestFromArray,
+  RestFromObject
+} from './common';
+
+/**
+ * First `when` handler argument type for a single pattern `P`.
+ * - If `P` contains `pluck(...)`, resolves to the plucked payload type(s).
+ * - Otherwise resolves to {@link PatternAsType}<P> (shape of a successful match).
+ *
+ * Downstream libraries can use this to type “what does matching P produce?”
+ * without re-implementing pluck walking.
+ */
+export type PatternHandlerInput<P> = [ExtractPlucked<P>] extends [never]
   ? PatternAsType<P>
   : ExtractPlucked<P>;
+
+// Internal alias used throughout when() overloads.
+type HandlerValue<P> = PatternHandlerInput<P>;
 
 // Helper: infer the type of the second (`rest`) handler argument from a
 // pattern `P`. A `rest()` inside an array pattern yields `PatternAsType<T>[]`;
@@ -92,6 +111,17 @@ type UnionPatternTypes<P extends readonly unknown[]> = PatternAsType<P[number]>;
 type IntersectPatternTypes<P extends readonly unknown[]> = UnionToIntersection<
   UnionPatternTypes<P>
 >;
+
+/**
+ * First handler argument for multi-pattern `when(P, G1, …, handler)`.
+ * Prefer pluck payload if any pattern contains `pluck`; otherwise intersect
+ * each pattern’s {@link PatternAsType} (guards refine the matched value).
+ */
+export type PatternHandlerInputFromAll<Ps extends readonly unknown[]> = [
+  ExtractPlucked<Ps[number]>
+] extends [never]
+  ? IntersectPatternTypes<Ps>
+  : ExtractPlucked<Ps[number]>;
 
 export type TPattern<Input> = Input | TPredicate<Input>;
 
@@ -237,7 +267,7 @@ declare module 'match-iz' {
    * @template P - The pattern to match against.
    * @template O - The output type of the handler.
    * @param {P} pattern - The pattern to match. Can be a literal value, an object, an array, or a predicate function.
-   * @param {THandler<PatternAsType<P>, O> | O} handler - The handler to execute if the pattern matches. Can be a function or a value.
+   * @param {THandlerWithRest<PatternHandlerInput<P>, HandlerRest<P>, O> | O} handler - The handler to execute if the pattern matches. With `pluck()`, the first argument is the plucked payload (see {@link PatternHandlerInput}).
    * @returns {TMatchTester<unknown, O>} A match tester object.
    * @example
    * import { match, when, otherwise } from 'match-iz';
@@ -267,7 +297,7 @@ declare module 'match-iz' {
    *
    * @template P - The pattern to match against.
    * @param {P} pattern - The pattern to match.
-   * @returns {<O>(handler: THandler<PatternAsType<P>, O> | O) => TMatchTester<unknown, O>} A function that takes a handler and returns a match tester object.
+   * @returns {<O>(handler: THandlerWithRest<PatternHandlerInput<P>, HandlerRest<P>, O> | O) => TMatchTester<unknown, O>} A function that takes a handler and returns a match tester object.
    * @example
    * import { match, when, isNumber, otherwise } from 'match-iz';
    *
@@ -288,12 +318,16 @@ declare module 'match-iz' {
   /**
    * Defines a pattern with a guard and a corresponding handler.
    *
+   * When any of the patterns contains `pluck()`, the handler’s first argument
+   * is the plucked payload (see {@link PatternHandlerInputFromAll}); otherwise
+   * it is the intersection of each pattern’s {@link PatternAsType}.
+   *
    * @template P - The pattern to match against.
    * @template G1 - The first guard pattern.
    * @template O - The output type of the handler.
    * @param {P} pattern - The main pattern.
    * @param {G1} guard1 - The first guard pattern.
-   * @param {THandlerWithRest<PatternAsType<P> & PatternAsType<G1>, HandlerRest<P>, O> | O} handler - The handler to execute if all patterns match.
+   * @param {THandlerWithRest<PatternHandlerInputFromAll<readonly [P, G1]>, HandlerRest<P>, O> | O} handler - The handler to execute if all patterns match.
    * @returns {TMatchTester<unknown, O>} A match tester object.
    * @example
    * import { match, when, isNumber, gt, otherwise } from 'match-iz';
@@ -311,7 +345,7 @@ declare module 'match-iz' {
     guard1: G1,
     handler:
       | THandlerWithRest<
-          PatternAsType<P> & PatternAsType<G1>,
+          PatternHandlerInputFromAll<readonly [P, G1]>,
           HandlerRest<P>,
           O
         >
@@ -321,6 +355,8 @@ declare module 'match-iz' {
   /**
    * Defines a pattern with two guards and a corresponding handler.
    *
+   * Pluck-aware: see {@link PatternHandlerInputFromAll}.
+   *
    * @template P - The pattern to match against.
    * @template G1 - The first guard pattern.
    * @template G2 - The second guard pattern.
@@ -328,7 +364,7 @@ declare module 'match-iz' {
    * @param {P} pattern - The main pattern.
    * @param {G1} guard1 - The first guard pattern.
    * @param {G2} guard2 - The second guard pattern.
-   * @param {THandlerWithRest<PatternAsType<P> & PatternAsType<G1> & PatternAsType<G2>, HandlerRest<P>, O> | O} handler - The handler to execute if all patterns match.
+   * @param {THandlerWithRest<PatternHandlerInputFromAll<readonly [P, G1, G2]>, HandlerRest<P>, O> | O} handler - The handler to execute if all patterns match.
    * @returns {TMatchTester<unknown, O>} A match tester object.
    * @example
    * import { match, when, isString, startsWith, endsWith, otherwise } from 'match-iz';
@@ -347,7 +383,7 @@ declare module 'match-iz' {
     guard2: G2,
     handler:
       | THandlerWithRest<
-          PatternAsType<P> & PatternAsType<G1> & PatternAsType<G2>,
+          PatternHandlerInputFromAll<readonly [P, G1, G2]>,
           HandlerRest<P>,
           O
         >
@@ -356,6 +392,8 @@ declare module 'match-iz' {
 
   /**
    * Defines a pattern with three guards and a corresponding handler.
+   *
+   * Pluck-aware: see {@link PatternHandlerInputFromAll}.
    *
    * @template P - The pattern to match against.
    * @template G1 - The first guard pattern.
@@ -366,7 +404,7 @@ declare module 'match-iz' {
    * @param {G1} guard1 - The first guard pattern.
    * @param {G2} guard2 - The second guard pattern.
    * @param {G3} guard3 - The third guard pattern.
-   * @param {THandlerWithRest<PatternAsType<P> & PatternAsType<G1> & PatternAsType<G2> & PatternAsType<G3>, HandlerRest<P>, O> | O} handler - The handler to execute if all patterns match.
+   * @param {THandlerWithRest<PatternHandlerInputFromAll<readonly [P, G1, G2, G3]>, HandlerRest<P>, O> | O} handler - The handler to execute if all patterns match.
    * @returns {TMatchTester<unknown, O>} A match tester object.
    */
   export function when<P, G1, G2, G3, O>(
@@ -376,10 +414,7 @@ declare module 'match-iz' {
     guard3: G3,
     handler:
       | THandlerWithRest<
-          PatternAsType<P> &
-            PatternAsType<G1> &
-            PatternAsType<G2> &
-            PatternAsType<G3>,
+          PatternHandlerInputFromAll<readonly [P, G1, G2, G3]>,
           HandlerRest<P>,
           O
         >
@@ -388,6 +423,8 @@ declare module 'match-iz' {
 
   /**
    * Defines a pattern with four guards and a corresponding handler.
+   *
+   * Pluck-aware: see {@link PatternHandlerInputFromAll}.
    *
    * @template P - The pattern to match against.
    * @template G1 - The first guard pattern.
@@ -400,7 +437,7 @@ declare module 'match-iz' {
    * @param {G2} guard2 - The second guard pattern.
    * @param {G3} guard3 - The third guard pattern.
    * @param {G4} guard4 - The fourth guard pattern.
-   * @param {THandlerWithRest<PatternAsType<P> & PatternAsType<G1> & PatternAsType<G2> & PatternAsType<G3> & PatternAsType<G4>, HandlerRest<P>, O> | O} handler - The handler to execute if all patterns match.
+   * @param {THandlerWithRest<PatternHandlerInputFromAll<readonly [P, G1, G2, G3, G4]>, HandlerRest<P>, O> | O} handler - The handler to execute if all patterns match.
    * @returns {TMatchTester<unknown, O>} A match tester object.
    */
   export function when<P, G1, G2, G3, G4, O>(
@@ -411,11 +448,7 @@ declare module 'match-iz' {
     guard4: G4,
     handler:
       | THandlerWithRest<
-          PatternAsType<P> &
-            PatternAsType<G1> &
-            PatternAsType<G2> &
-            PatternAsType<G3> &
-            PatternAsType<G4>,
+          PatternHandlerInputFromAll<readonly [P, G1, G2, G3, G4]>,
           HandlerRest<P>,
           O
         >
@@ -424,6 +457,8 @@ declare module 'match-iz' {
 
   /**
    * Defines a pattern with five guards and a corresponding handler.
+   *
+   * Pluck-aware: see {@link PatternHandlerInputFromAll}.
    *
    * @template P - The pattern to match against.
    * @template G1 - The first guard pattern.
@@ -438,7 +473,7 @@ declare module 'match-iz' {
    * @param {G3} guard3 - The third guard pattern.
    * @param {G4} guard4 - The fourth guard pattern.
    * @param {G5} guard5 - The fifth guard pattern.
-   * @param {THandlerWithRest<PatternAsType<P> & PatternAsType<G1> & PatternAsType<G2> & PatternAsType<G3> & PatternAsType<G4> & PatternAsType<G5>, HandlerRest<P>, O> | O} handler - The handler to execute if all patterns match.
+   * @param {THandlerWithRest<PatternHandlerInputFromAll<readonly [P, G1, G2, G3, G4, G5]>, HandlerRest<P>, O> | O} handler - The handler to execute if all patterns match.
    * @returns {TMatchTester<unknown, O>} A match tester object.
    */
   export function when<P, G1, G2, G3, G4, G5, O>(
@@ -450,12 +485,7 @@ declare module 'match-iz' {
     guard5: G5,
     handler:
       | THandlerWithRest<
-          PatternAsType<P> &
-            PatternAsType<G1> &
-            PatternAsType<G2> &
-            PatternAsType<G3> &
-            PatternAsType<G4> &
-            PatternAsType<G5>,
+          PatternHandlerInputFromAll<readonly [P, G1, G2, G3, G4, G5]>,
           HandlerRest<P>,
           O
         >
