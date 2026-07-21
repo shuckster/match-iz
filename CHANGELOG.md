@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+
+- **Types packaging (5.1.0 regression):** `index.d.ts` no longer mixes top-level
+  `export type` with runtime API only inside `declare module 'match-iz'`.
+  Typings are a single ESM-style surface (`export function` / `export type` at
+  file scope) so ESLint `import/named` and similar resolvers see named value
+  exports (`when`, `pluck`, …) while type helpers remain importable. Runtime
+  unchanged.
+
 ## [5.1.0] - 2026-07-19
 
 ### Added
